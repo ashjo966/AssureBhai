@@ -224,34 +224,20 @@ ${JSON.stringify(lifeStats, null, 2)}
 </LIFE_IRDAI_STATS>
 `;
 
-    // 6. Assemble User Prompt with Multimodal PDF + Extracted Document & Injected User Context
-    const userPromptText = `
+    // 6. Assemble User Prompt with Extracted Document & Injected User Context
+    const userMessageContent = `
 <USER_CONTEXT>
 ${JSON.stringify(userContext, null, 2)}
 </USER_CONTEXT>
 
-${extractedText.trim().length > 0 ? `<UNTRUSTED_DOCUMENT>\n${extractedText.slice(0, 45000)}\n</UNTRUSTED_DOCUMENT>` : ""}
-
-Please extract all policy details and output the structured JSON payload according to the system instructions.
+<UNTRUSTED_DOCUMENT>
+${extractedText.slice(0, 150000)}
+</UNTRUSTED_DOCUMENT>
 `;
-
-    const genAIContents: any[] = [];
-
-    // If PDF buffer is available and within multimodal size limit (<= 20MB), pass it directly to Gemini
-    if (buffer && buffer.length > 0 && buffer.length <= 20 * 1024 * 1024) {
-      genAIContents.push({
-        inlineData: {
-          data: buffer.toString("base64"),
-          mimeType: "application/pdf",
-        },
-      });
-    }
-
-    genAIContents.push({ text: userPromptText });
 
     // 7. Call Google GenAI SDK (Gemini) in JSON mode
     const ai = getGenAIClient();
-    const candidateModels = ["gemini-2.5-flash", "gemini-3.5-flash-lite", "gemini-3.6-flash"];
+    const candidateModels = ["gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-3.7-flash"];
 
     let responseText = "";
     let lastError: any = null;
@@ -261,7 +247,7 @@ Please extract all policy details and output the structured JSON payload accordi
         const response = await withRetry(() =>
           ai.models.generateContent({
             model: modelName,
-            contents: genAIContents,
+            contents: userMessageContent,
             config: {
               systemInstruction: fullSystemPrompt,
               responseMimeType: "application/json",
@@ -316,7 +302,7 @@ Please extract all policy details and output the structured JSON payload accordi
       }
       fs.writeFileSync(path.join(debugDir, "1_extracted_markitdown.md"), extractedText, "utf-8");
       fs.writeFileSync(path.join(debugDir, "2_parser_system_prompt.txt"), fullSystemPrompt, "utf-8");
-      fs.writeFileSync(path.join(debugDir, "2_parser_user_prompt.txt"), userPromptText, "utf-8");
+      fs.writeFileSync(path.join(debugDir, "2_parser_user_prompt.txt"), userMessageContent, "utf-8");
       fs.writeFileSync(path.join(debugDir, "3_parser_response.json"), JSON.stringify(parsedPayload, null, 2), "utf-8");
     } catch (debugErr) {
       console.warn("Failed to persist debug artifacts:", debugErr);
