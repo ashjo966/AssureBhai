@@ -61,25 +61,26 @@ export async function convertPdfToMarkdown(buffer: Buffer): Promise<string> {
     // 1. Write the temporary PDF file to os.tmpdir()
     await fs.promises.writeFile(tempFilePath, buffer);
 
-    // 2. Try invoking python3 first, fallback to python if unavailable
+    // 2. Try invoking configured PYTHON_PATH or python3 first, fallback to python if unavailable
     let executionResult: SpawnResult | null = null;
     let python3Error: Error | unknown = null;
+    const primaryPython = process.env.PYTHON_PATH || "python3";
 
     try {
-      const result = await runPythonCommand("python3", [scriptPath, tempFilePath]);
+      const result = await runPythonCommand(primaryPython, [scriptPath, tempFilePath]);
       if (result.code === 0) {
         executionResult = result;
       } else {
         python3Error = new Error(
-          `python3 exited with code ${result.code}: ${result.stderr || result.stdout}`
+          `${primaryPython} exited with code ${result.code}: ${result.stderr || result.stdout}`
         );
       }
     } catch (err) {
       python3Error = err;
     }
 
-    // Fallback to 'python' if python3 failed or was not found
-    if (!executionResult) {
+    // Fallback to 'python' if primary command failed or was not found
+    if (!executionResult && primaryPython !== "python") {
       try {
         const result = await runPythonCommand("python", [scriptPath, tempFilePath]);
         if (result.code === 0) {
@@ -91,11 +92,18 @@ export async function convertPdfToMarkdown(buffer: Buffer): Promise<string> {
         }
       } catch (pythonErr) {
         throw new Error(
-          `Failed to execute MarkItDown conversion using python3 and python.\n` +
-          `python3 error: ${python3Error instanceof Error ? python3Error.message : String(python3Error)}\n` +
-          `python error: ${pythonErr instanceof Error ? pythonErr.message : String(pythonErr)}`
+          `Failed to execute MarkItDown conversion using ${primaryPython} and python.\n` +
+          `Primary error: ${python3Error instanceof Error ? python3Error.message : String(python3Error)}\n` +
+          `Fallback error: ${pythonErr instanceof Error ? pythonErr.message : String(pythonErr)}`
         );
       }
+    }
+
+    if (!executionResult) {
+      throw new Error(
+        `Failed to execute MarkItDown conversion using ${primaryPython}.\n` +
+        `Error: ${python3Error instanceof Error ? python3Error.message : String(python3Error)}`
+      );
     }
 
     return executionResult.stdout;
