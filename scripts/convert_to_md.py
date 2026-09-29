@@ -7,6 +7,43 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
+def extract_with_markitdown(file_path):
+    try:
+        from markitdown import MarkItDown
+        md = MarkItDown()
+        result = md.convert(file_path)
+        if result and result.text_content and len(result.text_content.strip()) > 20:
+            return result.text_content
+    except Exception as e:
+        sys.stderr.write(f"MarkItDown primary extraction failed: {e}\n")
+    return None
+
+def extract_with_pypdf(file_path):
+    try:
+        import pypdf
+        reader = pypdf.PdfReader(file_path)
+        text_parts = []
+        for page in reader.pages:
+            t = page.extract_text()
+            if t:
+                text_parts.append(t)
+        combined = "\n\n".join(text_parts)
+        if len(combined.strip()) > 20:
+            return combined
+    except Exception as e:
+        sys.stderr.write(f"pypdf extraction failed: {e}\n")
+    return None
+
+def extract_with_pdfminer(file_path):
+    try:
+        from pdfminer.high_level import extract_text
+        text = extract_text(file_path)
+        if text and len(text.strip()) > 20:
+            return text
+    except Exception as e:
+        sys.stderr.write(f"pdfminer extraction failed: {e}\n")
+    return None
+
 def main():
     if len(sys.argv) < 2:
         sys.stderr.write("Usage: python convert_to_md.py <file_path>\n")
@@ -20,14 +57,21 @@ def main():
         sys.stderr.write(f"File not found: {file_path}\n")
         sys.exit(1)
 
-    try:
-        from markitdown import MarkItDown
-        md = MarkItDown()
-        result = md.convert(file_path)
-        output_text = result.text_content if result and result.text_content else ""
-        sys.stdout.write(output_text)
-    except Exception as e:
-        sys.stderr.write(f"Error converting document with MarkItDown: {e}\n")
+    # 1. Try MarkItDown
+    text = extract_with_markitdown(file_path)
+
+    # 2. Fallback to pypdf
+    if not text:
+        text = extract_with_pypdf(file_path)
+
+    # 3. Fallback to pdfminer
+    if not text:
+        text = extract_with_pdfminer(file_path)
+
+    if text:
+        sys.stdout.write(text)
+    else:
+        sys.stderr.write("All text extraction methods produced empty output.\n")
         sys.exit(1)
 
 if __name__ == "__main__":
