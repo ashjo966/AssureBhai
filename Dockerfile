@@ -18,6 +18,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Install Python 3, pip, and venv for PDF parsing
@@ -40,5 +41,5 @@ COPY --from=builder /app/src/data ./src/data
 
 EXPOSE 3000
 
-# Bind to Railway's dynamic PORT environment variable
+# Bind to Railway's dynamic PORT environment variable on 0.0.0.0
 CMD ["node", "server.js"]
