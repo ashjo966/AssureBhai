@@ -1,0 +1,792 @@
+
+<USER_CONTEXT>
+{
+  "primary_residence_pincode": 560035,
+  "covered_member_age": 33,
+  "dependents": [
+    {
+      "relation": "Spouse",
+      "age": 33
+    },
+    {
+      "relation": "Son",
+      "age": 2
+    }
+  ],
+  "state": "Karnataka",
+  "city_tier": "Tier-1",
+  "expected_insurance_zone": "Zone 1"
+}
+</USER_CONTEXT>
+
+<UNTRUSTED_DOCUMENT>
+Date : 31 May 2025
+
+Mr Ashwin Vishwas Joshi
+M2068, Republic Of Whitefield
+Brookefield
+Bangalore
+Bangalore 560066
+Karnataka
+State Code : 29
+
+Policy No: 53516644
+Mobile No: XXXXXX3839
+
+Dear Mr Ashwin Vishwas Joshi,
+
+Thank You for trusting us as your preferred Health Insurer.
+
+At  Care  Health  insurance,  it  is  our  endeavor  to  make  quality  healthcare  easily  accessible  for  our  customers  as  well  as  ensure  a  truly  hassle-free  claim
+servicing experience
+
+To help you understand our services better, please go through the 'Know your policy better' kit that accompanies this
+letter and constitutes the following
+
+l
+
+l
+
+l
+
+l
+
+l
+
+Policy certificate
+
+Premium Acknowledgement
+
+Key Policy Information
+
+Claim Process -
+
+http://bit.ly/3EyPRnT
+
+Policy Terms and Conditions- https://bit.ly/3QfgyU8 and also available on Customer App
+
+Also  appended  herewith  for  your  convenience  is  your  Care  Health  Card.  This  card  should  be  presented  at  the  time  of  an  emergency  or  a  planned
+hospitalization, to avail cashless treatment at our network of over 16000+ cashless network pan-India.
+
+To  further  simplify  procedures,  we're  online  as  well.  Visit  our  portal  www.careinsurance.com  and  view  network  hospitals  across  the  country,  cashless
+procedures and do much more.
+
+For any assistance, please feel free to write to us at https://www.careinsurance.com/contact-us.html.
+
+Once again, we thank you for this opportunity to serve you, and wish you and your loved ones good health always!
+
+Team Care Health Insurance
+
+CUSTOMER APP
+
+For Android
+
+For iOS
+
+Policy Certificate
+
+Mr Ashwin Vishwas Joshi
+M2068, Republic Of Whitefield
+Brookefield
+Bangalore
+Bangalore 560066
+Karnataka
+State Code : 29
+
+Policy No.
+
+Plan Name
+
+Cover Type
+
+53516644
+
+Care Supreme
+
+Floater
+
+Policy Period - Start Date
+
+Policy Period - End Date
+
+00:00 hrs 01-Jun-2025
+
+Midnight 31-May-2028
+
+Nominee Name (Relation)
+
+Shini M (WIFE)
+
+Premium Paid
+
+Rs.73,153.00
+( Premium Rs 61994.04 + Underwriting Loading
+ Rs. 0.00 + CGST Rs. 5,579.37 + IGST Rs. 0.00 +
+SGST/UGST Rs. 5,579.37 )
+
+Premium Payment Mode
+
+Single Premium
+
+Policyholder
+
+Mr Ashwin Vishwas Joshi
+
+Gender
+
+Male
+
+Date Of Birth
+
+06-Aug-1993
+
+Age
+
+31
+
+Client ID
+
+E8029240
+
+Details of Insured Person
+
+Name
+
+Client ID
+
+Relationship
+
+Date of Birth
+(DD-MM-YYYY)
+
+Age
+
+Pre-existing diseases
+(since)
+
+Ashwin Vishwas Joshi
+
+E8029240
+
+MEMBER
+
+06-Aug-1993
+
+Shini M
+
+Abhir Ashwin Joshi
+
+E8029242
+
+E8029244
+
+SPOUSE
+
+SON
+
+05-Apr-1993
+
+02-Oct-2024
+
+31
+
+32
+
+00
+
+NONE
+
+NONE
+
+NONE
+
+Contact details for Claims & Policy Servicing
+
+Insured with
+the Company
+(since)
+
+Sum Insured
+
+01-Jun-2025
+
+50,00,000.00
+
+01-Jun-2025
+
+01-Jun-2025
+
+Correspondence address
+
+E-mail ID for Claims
+
+Website
+
+Intermediary Details
+
+Care Health Insurance Limited, Vipul Tech Square, Tower C, 3rd Floor, Golf Course Road, Sector-43,
+Gurugram-122009 (Haryana)
+
+claims@careinsurance.com
+
+www.careinsurance.com
+
+Name
+Tacterial Consulting Private
+Limited
+
+Code
+
+Contact Details
+
+20367898
+
++91-8048816818
+
+Schedule of Benefits
+
+S No.
+
+Particulars
+
+Sum Insured
+
+In-Patient Care
+
+Day Care Treatment
+
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+7
+
+8
+
+9
+
+Basis of Offering
+
+5000000
+
+Up to SI
+
+All Day Care Procedures
+
+Advance Technology Methods
+
+Up to SI
+
+Pre-Hospitalization Medical Expenses
+
+Post Hospitalization Medical Expenses
+
+AYUSH Treatment
+
+Domiciliary Hospitalization
+
+Organ Donor Cover
+
+Up to SI, Pre-Hospitalization expense cover for 60 days prior to
+hospitalization
+Up to SI, Post-Hospitalization expense cover for 180 days after
+discharge
+
+Up to SI
+
+Up to SI
+
+Up to SI
+
+Up to SI.
+
+50% of SI, max up to 100% of SI.
+
+Available for unlimited times for unrelated or same illness.
+
+Available for Consultations with General Physicians
+
+Doctor on chat, Healthy tips reminder, etc.
+
+Discounts on services such as consultations, diagnostics etc at our
+network
+
+All categories covered.
+
+No Limit
+
+24 Months
+
+36 Months
+
+30 Days
+
+Details
+
+Upto 100% increase in the Sum Insured, on a cumulative basis for
+each completed and continuous policy year upto a max of 500%
+Discount on renewal premium based on active days achieved.
+Online fitness  Coaching/Counselling session from Wellness
+Coaches
+
+Up to 5 lacs per year.
+
+Coverage of specified 68 Non Payable Items as defined in TandC
+
+Schedule of Benefits
+
+10
+
+11
+
+12
+
+13
+
+14
+
+15
+
+16
+
+17
+
+18
+
+19
+
+20
+
+Ambulance Cover
+
+Cumulative Bonus
+
+Unlimited Automatic Recharge
+
+Unlimited E-Consultations
+
+Health Services (Health Portal)
+
+Health Services (Discount Connect)
+
+Room Rent
+
+ICU
+
+Named Ailments Coverage
+
+Pre-existing Diseases Coverage
+
+Initial Wait Period
+
+Optional Cover
+
+S NO.
+
+Particulars
+
+1
+
+2
+
+3
+
+4
+
+Cumulative Bonus Super
+
+Wellness Benefit
+
+Air Ambulance Cover
+
+Claim Shield
+
+For Care Health Insurance Limited
+
+Authorized Signatory
+
+Date of Issue :
+
+31 May 2025
+
+Place of Issue :
+
+Gurgaon, Haryana
+
+Service Branch :
+
+No 1 Amarjyothi Co ? operative housing society layout Vijayanagar
+? Nagarbhavi main road Vijaynagar Bangalore Karnataka
+560040Bangalore,Karnataka,560040
+
+Branch Contact No. :
+
+9289454743
+
+Consolidated Stamp Duty paide vide E-Challan GRN No. 0129097790 dated 06/03/2025. RCM Applicability - N/A
+SAC: 997133 and Description of Service: Accident and Health Insurance Services State
+GSTIN No.: 29AADCR6281N1ZO
+UIN :CHIHLIP25047V022425
+
+Note:
+
+-
+
+-
+
+-
+
+-
+
+Attached with this Policy Certificate are the Policy terms and conditions, Optional Covers (if opted) and Annexures. Please ensure that
+these documents have been received, read and understood. If any of these documents have not been received, please feel free to write
+to us at https://www.careinsurance.com/contact-us.html
+
+For waiting periods and exclusions under this Policy, please refer to Clause 4 of the Policy terms and conditions.
+
+This Policy Certificate in original must be surrendered to the Company in case of cancellation of the Policy.
+
+This soft copy of the policy is as valid as a hard copy and can be used for claims. A physical hard copy will not be dispatched.
+
+Premium Acknowledgement
+
+Policy No.
+
+Client ID
+
+Policyholder
+
+Address
+
+53516644
+
+E8029240
+
+Mr Ashwin Vishwas Joshi
+
+M2068, Republic Of Whitefield
+Brookefield
+Bangalore
+Bangalore 560066
+Karnataka
+
+Policy Period
+
+01-Jun-2025 to 31-May-2028
+
+Premium Details
+
+Particulars
+
+Gross Premium
+
+Care Supreme
+
+Cumulative Bonus Super
+
+Wellness Benefit (Supreme)
+
+Air Ambulance Cover (Supreme)
+
+Claim Shield
+
+Goods & Services Tax (GST)
+
+Total
+
+The Premium is rounded off to the nearest rupee.
+
+Amount (in Rs.)
+
+53,740.35
+
+4,030.47
+
+174.12
+
+1,160.64
+
+2,888.46
+
+11,158.74
+
+73,153.00
+
+S.No. Receipt Number Amount
+
+Mode of Payment
+
+1
+
+C2712662
+
+73,153.00
+
+IPG
+
+Eligibility of Premium for Deduction u/s 80D of the Income Tax Act, 1961
+The  premium  paid  through  any  mode  other  than  cash  for  this  policy  is  eligible  for  Income  tax  benefits  to  the  person  making  the  payment
+subject  to  the  provisions  of  section  80D  of  the  Income  Tax  Act,  1961  and  amendments  thereof.  Effective  from  Assessment  year  2019-20,  in
+cases  where  health  insurance  premium  for  multiple  years  is  paid  in  one  year,  it  will  be  eligible  for  proportionate  deduction  in  the  years  in
+which the health insurance continues to be effective.
+
+For Care Health Insurance Limited
+
+Authorized Signatory
+
+Date of Issue :
+
+31 May 2025
+
+Place of Issue :
+
+Gurgaon, Haryana
+
+Note:
+
+1) In case of any discrepancy, the Policyholder is requested to contact the Company immediately.
+
+2) Any amount paid in cash towards the premium would not qualify for tax benefits as mentioned above.
+3)
+
+This  document  must  be  surrendered  to  the  Company  in  case  of  Cancellation  of  the  Policy  or  for  the  issuance  of  a  fresh  certificate  in
+the case of any alteration in the Policy.
+
+4) This  Policy  is  issued  subject  to  realization  of  the  premium  amount.  In  case  the  instrument  given  towards  the  premium  amount  is
+dishonored,  then  the  cover  provided  under  this  Policy  shall  automatically  get  cancelled.  In  the  given  scenario,  if  any  amount  has  been
+paid  by  the  Company  in  respect  of  a  claim  or  due  to  any  other  reason  than  the  amount  so  advanced  by  the  Company  shall  be
+refunded to the Company forthwith.
+
+5) We may credit upto Rs. 1/- to your account for validation, before remitting any further payment.
+
+Proposal Form-'CARE SUPREME'
+
+Dear Mr Ashwin Vishwas Joshi
+
+In reference to your online proposal (1120110702246) for 'Care Supreme'- Comprehensive Health Insurance policy, please find below the
+details as provided by you:
+
+Proposer Details
+
+Name
+
+Address
+
+Date of Birth
+
+Landline
+
+Mobile
+
+E-mail
+
+:
+
+:
+
+:
+
+:
+
+:
+
+:
+
+Mr Ashwin Vishwas Joshi
+
+M2068, Republic Of Whitefield
+Brookefield
+Bangalore Bangalore,Karnataka
+560066
+
+06-Aug-1993
+
+XXXXXX3839
+
+aXXXXXX6@gmail.com
+
+Details of the Persons be Insured
+
+Name
+
+Ashwin Vishwas Joshi
+
+Shini M
+
+Abhir Ashwin Joshi
+
+Additional Details
+
+Date of Birth
+
+06-Aug-1993
+
+05-Apr-1993
+
+02-Oct-2024
+
+Relation
+
+MEMBER
+
+SPOUSE
+
+SON
+
+Pre-existing Diseases
+
+NONE
+
+NONE
+
+NONE
+
+1. Does any person(s) to be insured has any pre-existing diseases?
+
+Insured1
+
+Insured2
+
+Insured3
+
+N
+
+N
+
+N
+
+2. Have any of the person(s) to be insured ever filed a claim with their current / previous insurer?
+
+Insured1
+
+Insured2
+
+Insured3
+
+N
+
+N
+
+N
+
+3.
+
+Has any of your proposal(s) for Health insurance been declined, cancelled, charged a higher premium or issued with
+special condition(s)?
+
+Insured1
+
+Insured2
+
+Insured3
+
+N
+
+N
+
+N
+
+4.
+
+Is any of the person(s) proposed for insurance covered under any other health insurance policy with the Company?
+
+Insured1
+
+Insured2
+
+Insured3
+
+N
+
+N
+
+N
+
+You agreed to following terms & conditions of the purchase of policy
+
+a.  I   have  read  and  understood  the  Brochure/Prospectus/Sales  Literature/Terms  and  Conditions  of  the  Policy  and  confirm  to  abide  by
+the same.
+
+b.  Receipt  of  proposal  form  by  the  Company  shall  not  be  construed  as  acceptance  of  proposal.  Commencement  of  risk  under  the
+Policy  shall  be  subject  to  realization  of  full  premium  and  individual  underwriting  by  the  Company.  The  Company  at  its  sole  discretion
+reserves the right to accept or reject or load any proposal. Policy would start from the date as specified in the Policy Certificate.
+
+c.  I  understand  that  the  Policy  Period  Start  Date  as  specified  in  the  Policy  Certificate  shall  be  from  the  00:00  hours  of  the  next  day  of
+the Proposal receipt at branch/online, proposed policy period start date as opted by me or cheque date, whichever is later.
+
+d.  I  understand  that  the  Policy  shall  become  void  at  the  Company's  option,  in  the  event  of  any  untrue  or  incorrect  statement,
+misrepresentation,  non-description  or  non-disclosure  of  any  material  fact,  in  the  proposal  form/personal  statement,  declaration  and
+connected documents or any material information having been withheld by me or anyone acting on my behalf.
+
+e.  I  hereby  declare  that  the  lives  proposed  to  be  insured  would  submit  to  medical  examinations  before  the  nominated  doctors  of  the
+Company or undergo diagnostic or other medical tests, as suggested by the Company for its underwriting.
+
+f.  I  consent  to  and  authorize  the  Company  and/or  any  of  its  authorized  representative  agents  to  seek  medical  information  from  any
+hospital/ medical practitioner or any other related entity that I have attended or may attend in future concerning any illness or injury.
+
+g. I consent to provide a valid age proof and identity proof at the time of claims or any other time when required by the Company.
+
+h.  I  authorize  the  Company  to  exchange,  share  or  part  with  the  information  relating  to  myself/person(s)  to  be  insured  with  any  external
+entity  other  than  regulatory  and  statutory  bodies,  as  may  be  required  and  I  will  not  hold  the  Company  or  its  agents  liable  for  use/
+sharing of this information.
+
+i.  I/We  agree  and  undertake  to  convey  to  the  Company  any  change/alterations  carried  out  in  the  risk  proposed  for  insurance  after
+submission of this proposal form.
+
+j.  I/We  consent  to  receive  information  from  the  Company  the  through  physical,  electronic  or  telecommunication  means  from  time  to
+time.
+
+The  undersigned  hereby  declare  on  my  behalf  and  on  behalf  of  each  of  the  persons  proposed  to  be  insured  that  the  above
+statements  and  particulars  are  true,  complete  and  correct  in  all  respects  and  that  all  information  which  is  relevant  to  this  proposal  has
+been  disclosed  and  not  withheld  from  the  Company.  I  declare  that  the  money  used  to  make  the  premium  payment  has  not  been
+derived  from  any  illegal  activity  or  unaccounted  funds.  I  further  declare  and  agree  that  this  declaration  and  the  answers  given  above
+shall be held to be promissory and shall be the basis of the contract between me/us and the Company.
+
+By  virtue  of  this  communication,  I  give  my  implicit  approval  on  receiving  Whatsapp,  SMS,  E-mail  (Transactional  &  promotional)  from
+the company.
+
+The details mentioned in above proposal form have been verified through OTP received on my registered mobile number.
+
+No physical Health Cards will be dispatched. The electronic version of the card below will be accepted across all network providers.
+
+Policy No.
+
+53516644
+
+Member ID
+E8029240
+E8029242
+E8029244
+
+NAME
+
+DOB
+06-Aug-1993 Ashwin Vishwas Joshi
+05-Apr-1993
+Shini M
+02-Oct-2024 Abhir Ashwin Joshi
+
+www.careinsurance.com
+
+Submit Your Queries/Requests: www.careinsurance.com/contact-us.html
+
+Disclaimer
+1. This card is not transferable
+2. Use of this card is governed by the policy terms &
+conditions
+3. To avail cashless facility.this card needs to be produced along with photo
+ID proof
+4. Valid upto policy period end date or cancellation date,whichever is earlier
+
+IRDAI Registration No.148
+
+
+</UNTRUSTED_DOCUMENT>

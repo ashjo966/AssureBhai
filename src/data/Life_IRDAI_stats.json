@@ -1,0 +1,185 @@
+{
+  "regulatory_benchmarks": {
+    "minimum_solvency_ratio": 1.50,
+    "healthy_csr_threshold": 98.0,
+    "healthy_amount_settlement_threshold": 95.0,
+    "statutory_protection": "Section 45 of Insurance Act prohibits questioning claims after 3 years"
+  },
+  "insurers": {
+    "lic": {
+      "name": "Life Insurance Corporation of India",
+      "aliases": ["lic", "lic of india", "life insurance corporation"],
+      "solvency_ratio": 2.11,
+      "claim_settlement_ratio": 98.82,
+      "complaints_per_10k_claims": 11
+    },
+    "acko": {
+      "name": "Acko Life Insurance Ltd.",
+      "aliases": ["acko", "acko life"],
+      "solvency_ratio": 1.96,
+      "claim_settlement_ratio": 98.50,
+      "complaints_per_10k_claims": 7
+    },
+    "aditya_birla_sun_life": {
+      "name": "Aditya Birla Sun Life Insurance Co. Ltd.",
+      "aliases": ["aditya birla sun life", "birla sun life", "absli"],
+      "solvency_ratio": 1.84,
+      "claim_settlement_ratio": 98.40,
+      "complaints_per_10k_claims": 9
+    },
+    "bandhan_life": {
+      "name": "Bandhan Life Insurance Co. Ltd.",
+      "aliases": ["bandhan life", "aegon life", "bandhan"],
+      "solvency_ratio": 2.69,
+      "claim_settlement_ratio": 99.66,
+      "complaints_per_10k_claims": 8
+    },
+    "ageas_federal_life": {
+      "name": "Ageas Federal Life Insurance Co. Ltd.",
+      "aliases": ["ageas federal", "idbi federal", "ageas life"],
+      "solvency_ratio": 2.70,
+      "claim_settlement_ratio": 96.49,
+      "complaints_per_10k_claims": 10
+    },
+    "aviva_life": {
+      "name": "Aviva Life Insurance Company India Ltd.",
+      "aliases": ["aviva", "aviva life"],
+      "solvency_ratio": 2.18,
+      "claim_settlement_ratio": 98.98,
+      "complaints_per_10k_claims": 10
+    },
+    "bajaj_allianz_life": {
+      "name": "Bajaj Allianz Life Insurance Co. Ltd.",
+      "aliases": ["bajaj allianz life", "bajaj life"],
+      "solvency_ratio": 3.59,
+      "claim_settlement_ratio": 97.69,
+      "complaints_per_10k_claims": 7
+    },
+    "bharti_axa_life": {
+      "name": "Bharti AXA Life Insurance Co. Ltd.",
+      "aliases": ["bharti axa", "bharti axa life"],
+      "solvency_ratio": 1.63,
+      "claim_settlement_ratio": 99.09,
+      "complaints_per_10k_claims": 8
+    },
+    "canara_hsbc": {
+      "name": "Canara HSBC Life Insurance Co. Ltd.",
+      "aliases": ["canara hsbc", "canara hsbc obc", "canara life"],
+      "solvency_ratio": 2.06,
+      "claim_settlement_ratio": 99.23,
+      "complaints_per_10k_claims": 7
+    },
+    "credit_access": {
+      "name": "CreditAccess Life Insurance Ltd.",
+      "aliases": ["credit access", "creditaccess", "creditaccess life"],
+      "solvency_ratio": 2.14,
+      "claim_settlement_ratio": 97.50,
+      "complaints_per_10k_claims": 6
+    },
+    "edelweiss_tokio": {
+      "name": "Edelweiss Tokio Life Insurance Co. Ltd.",
+      "aliases": ["edelweiss tokio", "edelweiss life"],
+      "solvency_ratio": 2.12,
+      "claim_settlement_ratio": 99.23,
+      "complaints_per_10k_claims": 9
+    },
+    "future_generali": {
+      "name": "Generali Central Life Insurance Co. Ltd.",
+      "aliases": ["future generali", "future generali life", "generali central"],
+      "solvency_ratio": 1.70,
+      "claim_settlement_ratio": 96.08,
+      "complaints_per_10k_claims": 13
+    },
+    "go_digit": {
+      "name": "Go Digit Life Insurance Ltd.",
+      "aliases": ["go digit", "go digit life", "digit life"],
+      "solvency_ratio": 1.92,
+      "claim_settlement_ratio": 98.20,
+      "complaints_per_10k_claims": 6
+    },
+    "hdfc_life": {
+      "name": "HDFC Life Insurance Co. Ltd.",
+      "aliases": ["hdfc life", "hdfc standard life", "hdfc"],
+      "solvency_ratio": 1.80,
+      "claim_settlement_ratio": 99.39,
+      "complaints_per_10k_claims": 6
+    },
+    "icici_prudential_life": {
+      "name": "ICICI Prudential Life Insurance Co. Ltd.",
+      "aliases": ["icici pru", "icici prudential", "icici prudential life", "icici life"],
+      "solvency_ratio": 2.15,
+      "claim_settlement_ratio": 99.17,
+      "complaints_per_10k_claims": 8
+    },
+    "indiafirst": {
+      "name": "IndiaFirst Life Insurance Co. Ltd.",
+      "aliases": ["indiafirst", "india first", "indiafirst life"],
+      "solvency_ratio": 2.00,
+      "claim_settlement_ratio": 98.04,
+      "complaints_per_10k_claims": 9
+    },
+    "kotak_mahindra": {
+      "name": "Kotak Mahindra Life Insurance Co. Ltd.",
+      "aliases": ["kotak mahindra", "kotak life", "kotak mahindra life", "kotak"],
+      "solvency_ratio": 2.21,
+      "claim_settlement_ratio": 98.82,
+      "complaints_per_10k_claims": 6
+    },
+    "axis_max": {
+      "name": "Axis Max Life Insurance Co. Ltd.",
+      "aliases": ["axis max", "max life", "axis max life", "max financial"],
+      "solvency_ratio": 2.01,
+      "claim_settlement_ratio": 99.22,
+      "complaints_per_10k_claims": 5
+    },
+    "pnb_metlife": {
+      "name": "PNB MetLife India Insurance Co. Ltd.",
+      "aliases": ["pnb metlife", "metlife", "pnb life"],
+      "solvency_ratio": 1.72,
+      "claim_settlement_ratio": 99.20,
+      "complaints_per_10k_claims": 8
+    },
+    "pramerica": {
+      "name": "Pramerica Life Insurance Co. Ltd.",
+      "aliases": ["pramerica", "pramerica life", "dhfl pramerica"],
+      "solvency_ratio": 3.75,
+      "claim_settlement_ratio": 99.06,
+      "complaints_per_10k_claims": 7
+    },
+    "reliance_nippon": {
+      "name": "Reliance Nippon Life Insurance Co. Ltd.",
+      "aliases": ["reliance nippon", "reliance life"],
+      "solvency_ratio": 2.31,
+      "claim_settlement_ratio": 98.74,
+      "complaints_per_10k_claims": 11
+    },
+    "sbi_life": {
+      "name": "SBI Life Insurance Co. Ltd.",
+      "aliases": ["sbi life", "state bank life"],
+      "solvency_ratio": 1.91,
+      "claim_settlement_ratio": 97.69,
+      "complaints_per_10k_claims": 9
+    },
+    "sriram_life": {
+      "name": "Shriram Life Insurance Co. Ltd.",
+      "aliases": ["sriram life", "shriram life", "shriram"],
+      "solvency_ratio": 1.79,
+      "claim_settlement_ratio": 98.09,
+      "complaints_per_10k_claims": 12
+    },
+    "star_union_dai_ichi": {
+      "name": "Star Union Dai-ichi Life Insurance Co. Ltd.",
+      "aliases": ["star union dai-ichi", "sud life", "star union"],
+      "solvency_ratio": 2.04,
+      "claim_settlement_ratio": 98.66,
+      "complaints_per_10k_claims": 9
+    },
+    "tata_aia": {
+      "name": "Tata AIA Life Insurance Co. Ltd.",
+      "aliases": ["tata aia", "tata aia life", "tata life"],
+      "solvency_ratio": 1.80,
+      "claim_settlement_ratio": 99.41,
+      "complaints_per_10k_claims": 7
+    }
+  }
+}

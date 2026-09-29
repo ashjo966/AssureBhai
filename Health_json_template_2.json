@@ -1,0 +1,115 @@
+{
+  "document_validity": {
+    "is_insurance_document": true,
+    "unsupported_document_reason": null
+  },
+  "user_profile_context": {
+    "primary_residence_pincode": 560035,
+    "state": "Karnataka",
+    "city_tier": "Tier-1",
+    "expected_insurance_zone": "Zone 1",
+    "covered_member_age": 32,
+    "dependents": [
+      {
+        "relation": "Spouse",
+        "age": 32
+      },
+      {
+        "relation": "Daughter",
+        "age": 2
+      }
+    ]
+  },
+  "policy_classification": {
+    "policy_issuer": "Niva Bupa Health Insurance",
+    "policy_type": "Health",
+    "policy_sub_type": "Family floater",
+    "maternity_covered": true,
+    "maternity_details": {
+      "maternity_waiting_period_months": 24,
+      "normal_delivery_sublimit": 50000,
+      "c_section_delivery_sublimit": 75000,
+      "newborn_coverage_days": 90
+    }
+  },
+  "irdai_benchmarks": {
+    "solvency_ratio": 3.03,
+    "claim_settlement_ratio": 91.8,
+    "incurred_claims_ratio": 59.43,
+    "cashless_hospitals": 10500,
+    "cashless_claim_share_pct": 76.5,
+    "complaints_per_10k_claims": 24
+  },
+  "financial_terms": {
+    "sum_insured": 1000000,
+    "base_premium": 61994.04,
+    "tenure_years": 3,
+    "payment_frequency": "Single Premium",
+    "annualized_base_premium": 20664.68,
+    "co_payment_percentage": 0,
+    "zone_pricing_tier": "Zone 1",
+    "no_claim_bonus_step_up": 50,
+    "multi_individual_discount": 0,
+    "super_top_up_deductible": null
+  },
+  "stay_and_admission_caps": {
+    "room_rent_cap_category": "Single Private A/C Room",
+    "proportionate_deduction_active": false,
+    "pre_hospitalization_days": 60,
+    "post_hospitalization_days": 180,
+    "daycare_procedures_included": true,
+    "domiciliary_hospitalization_included": true,
+    "ambulance_sublimit_cap": 3000
+  },
+  "timeline_lockouts": {
+    "initial_waiting_days": 30,
+    "pre_existing_disease_months": 36,
+    "specific_illness_waiting_periods": [
+      {
+        "illness": "Cataract",
+        "wait_period_months": 12
+      },
+      {
+        "illness": "Hernia",
+        "wait_period_months": 24
+      },
+      {
+        "illness": "Joint Replacement",
+        "wait_period_months": 24
+      }
+    ],
+    "moratorium_milestone_years": 5
+  },
+  "structural_restoration_and_perks": {
+    "restoration_benefit_type": "partial_exhaustion",
+    "restoration_same_illness_active": true,
+    "modern_treatment_sublimits": [
+      {
+        "treatment_name": "Robotic Surgery",
+        "limit_amount": 200000
+      },
+      {
+        "treatment_name": "Stem Cell Therapy",
+        "limit_amount": 150000
+      }
+    ],
+    "consumables_included": true,
+    "ayush_cap": 1000000,
+    "organ_donor_covered": true,
+    "free_checkup_schedule": "Every Renewal Year",
+    "opd_consults_included": false
+  },
+  "lifecycle_boundaries": {
+    "primary_in_house_tpa": true,
+    "age_premium_slabs": [
+      "18-35",
+      "36-40",
+      "41-45",
+      "46-50",
+      "51-55"
+    ],
+    "dependent_child_expiry_age": 25,
+    "newborn_midterm_addition_allowed": true,
+    "newborn_addition_fee_type": "pro_rata_premium"
+  }
+}

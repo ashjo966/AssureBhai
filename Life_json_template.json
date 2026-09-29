@@ -1,0 +1,58 @@
+{
+  "document_validity": {
+    "is_insurance_document": true,
+    "unsupported_document_reason": null
+  },
+  "user_profile_context": {
+    "primary_residence_pincode": 560035,
+	"state": "Karnataka",
+	"city_tier": "Tier-1",
+	"expected_insurance_zone": "Zone 1",
+	"covered_member_age": 32,
+    "dependents": [
+      {
+        "relation": "Spouse",
+        "age": 32
+      },
+      {
+        "relation": "Daughter",
+        "age": 4
+      }
+    ]
+  },
+  "policy_classification": {
+    "policy_issuer": "HDFC Life",
+    "policy_type": "Life",
+    "policy_sub_type": "Term",
+    "is_return_of_premium_trop": false
+  },
+  "irdai_benchmarks": {
+    "solvency_ratio": 1.80,
+    "claim_settlement_ratio": 99.39,
+    "complaints_per_10k_claims": 6
+  },
+  "financial_terms": {
+    "sum_assured": 10000000,
+    "base_premium": 12000,
+    "premium_payment_frequency": "Annual",
+    "premium_payment_term_years": 30,
+    "policy_term_years": 40
+  },
+  "payout_and_lifecycle_structures": {
+    "death_benefit_payout_mode": "Lump Sum",
+    "grace_period_days": 30,
+    "suicide_exclusion_window_months": 12,
+    "moratorium_period_years": 5
+  },
+  "riders_and_add_ons": {
+    "accidental_death_benefit": {
+      "is_active": true,
+      "rider_sum_assured": 2500000
+    },
+    "critical_illness_rider": {
+      "is_active": false,
+      "rider_sum_assured": null
+    },
+    "waiver_of_premium_on_disability": true
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "document_validity": {
+    "is_insurance_document": true,
+    "unsupported_document_reason": null
+  },
+  "user_profile_context": {
+    "primary_residence_pincode": 560001,
+    "covered_member_age": 34,
+    "dependents": [
+      {
+        "relation": "Spouse",
+        "age": 32
+      },
+      {
+        "relation": "Daughter",
+        "age": 4
+      }
+    ]
+  },
+  "policy_classification": {
+    "policy_issuer": "HDFC Life",
+    "policy_type": "Life",
+    "policy_sub_type": "Term",
+    "is_return_of_premium_trop": false
+  },
+  "financial_terms": {
+    "sum_assured": 10000000,
+    "base_premium": 12000,
+    "premium_payment_frequency": "Annual",
+    "premium_payment_term_years": 30,
+    "policy_term_years": 40
+  },
+  "payout_and_lifecycle_structures": {
+    "death_benefit_payout_mode": "Lump Sum",
+    "grace_period_days": 30,
+    "suicide_exclusion_window_months": 12,
+    "claim_settlement_ratio_percentage": 99.1,
+    "solvency_ratio": 1.85,
+    "moratorium_period_years": 5
+  },
+  "riders_and_add_ons": {
+    "accidental_death_benefit": {
+      "is_active": true,
+      "rider_sum_assured": 2500000
+    },
+    "critical_illness_rider": {
+      "is_active": false,
+      "rider_sum_assured": null
+    },
+    "waiver_of_premium_on_disability": true
+  }
+}

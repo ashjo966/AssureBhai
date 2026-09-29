@@ -1,0 +1,332 @@
+{
+  "regulatory_benchmarks": {
+    "minimum_solvency_ratio": 1.50,
+    "healthy_csr_range": [88.0, 98.0],
+    "ideal_icr_range": [65.0, 85.0],
+    "icr_warning_high": 95.0,
+    "icr_warning_low": 50.0,
+    "recommended_min_network": 8000
+  },
+  "insurers": {
+    "acko": {
+      "name": "Acko General Insurance Ltd.",
+      "aliases": ["acko", "acko general", "acko health"],
+      "solvency_ratio": 2.45,
+      "claim_settlement_ratio": 95.64,
+      "incurred_claims_ratio": 59.43,
+      "cashless_hospitals": 7100,
+      "cashless_claim_share_pct": 84.0,
+      "complaints_per_10k_claims": 15
+    },
+    "bajaj_allianz": {
+      "name": "Bajaj Allianz General Insurance Co. Ltd.",
+      "aliases": ["bajaj allianz", "bajaj allianz general", "bajaj general"],
+      "solvency_ratio": 3.25,
+      "claim_settlement_ratio": 95.63,
+      "incurred_claims_ratio": 88.87,
+      "cashless_hospitals": 10000,
+      "cashless_claim_share_pct": 78.2,
+      "complaints_per_10k_claims": 18
+    },
+    "cholamandalam_ms": {
+      "name": "Cholamandalam MS General Insurance Co. Ltd.",
+      "aliases": ["cholamandalam ms", "chola ms", "cholamandalam"],
+      "solvency_ratio": 1.71,
+      "claim_settlement_ratio": 92.40,
+      "incurred_claims_ratio": 81.31,
+      "cashless_hospitals": 8500,
+      "cashless_claim_share_pct": 72.0,
+      "complaints_per_10k_claims": 23
+    },
+    "future_generali_india": {
+      "name": "Future Generali India Insurance Co. Ltd.",
+      "aliases": ["future generali", "future generali india", "future general"],
+      "solvency_ratio": 1.62,
+      "claim_settlement_ratio": 90.80,
+      "incurred_claims_ratio": 78.45,
+      "cashless_hospitals": 7200,
+      "cashless_claim_share_pct": 67.5,
+      "complaints_per_10k_claims": 22
+    },
+    "go_digit": {
+      "name": "Go Digit General Insurance Ltd.",
+      "aliases": ["go digit", "godigit", "digit", "digit general"],
+      "solvency_ratio": 1.88,
+      "claim_settlement_ratio": 99.01,
+      "incurred_claims_ratio": 83.78,
+      "cashless_hospitals": 8200,
+      "cashless_claim_share_pct": 77.0,
+      "complaints_per_10k_claims": 17
+    },
+    "hdfc_ergo": {
+      "name": "HDFC ERGO General Insurance Co. Ltd.",
+      "aliases": ["hdfc ergo", "hdfc general", "apollo munich"],
+      "solvency_ratio": 1.94,
+      "claim_settlement_ratio": 97.61,
+      "incurred_claims_ratio": 85.65,
+      "cashless_hospitals": 12000,
+      "cashless_claim_share_pct": 86.0,
+      "complaints_per_10k_claims": 14
+    },
+    "icici_lombard": {
+      "name": "ICICI Lombard General Insurance Co. Ltd.",
+      "aliases": ["icici lombard", "icici general", "bharti axa general"],
+      "solvency_ratio": 2.62,
+      "claim_settlement_ratio": 95.70,
+      "incurred_claims_ratio": 82.57,
+      "cashless_hospitals": 11000,
+      "cashless_claim_share_pct": 80.4,
+      "complaints_per_10k_claims": 16
+    },
+    "iffco_tokio": {
+      "name": "IFFCO Tokio General Insurance Co. Ltd.",
+      "aliases": ["iffco tokio", "iffco", "itgi"],
+      "solvency_ratio": 1.68,
+      "claim_settlement_ratio": 91.20,
+      "incurred_claims_ratio": 86.20,
+      "cashless_hospitals": 8600,
+      "cashless_claim_share_pct": 69.4,
+      "complaints_per_10k_claims": 21
+    },
+    "kshema": {
+      "name": "Kshema General Insurance Ltd.",
+      "aliases": ["kshema", "kshema general"],
+      "solvency_ratio": 1.98,
+      "claim_settlement_ratio": 88.50,
+      "incurred_claims_ratio": 72.10,
+      "cashless_hospitals": 5000,
+      "cashless_claim_share_pct": 58.0,
+      "complaints_per_10k_claims": 19
+    },
+    "liberty": {
+      "name": "Liberty General Insurance Ltd.",
+      "aliases": ["liberty", "liberty general", "liberty videocon"],
+      "solvency_ratio": 1.56,
+      "claim_settlement_ratio": 89.40,
+      "incurred_claims_ratio": 79.10,
+      "cashless_hospitals": 6200,
+      "cashless_claim_share_pct": 64.0,
+      "complaints_per_10k_claims": 25
+    },
+    "magma": {
+      "name": "Magma HDI General Insurance Co. Ltd.",
+      "aliases": ["magma", "magma hdi", "sanlam general"],
+      "solvency_ratio": 1.74,
+      "claim_settlement_ratio": 88.90,
+      "incurred_claims_ratio": 74.50,
+      "cashless_hospitals": 5800,
+      "cashless_claim_share_pct": 62.5,
+      "complaints_per_10k_claims": 24
+    },
+    "navi": {
+      "name": "Navi General Insurance Ltd.",
+      "aliases": ["navi", "navi general"],
+      "solvency_ratio": 1.85,
+      "claim_settlement_ratio": 92.10,
+      "incurred_claims_ratio": 68.30,
+      "cashless_hospitals": 6500,
+      "cashless_claim_share_pct": 79.0,
+      "complaints_per_10k_claims": 16
+    },
+    "raheja_qbe": {
+      "name": "Raheja QBE General Insurance Co. Ltd.",
+      "aliases": ["raheja qbe", "raheja"],
+      "solvency_ratio": 1.95,
+      "claim_settlement_ratio": 87.80,
+      "incurred_claims_ratio": 71.40,
+      "cashless_hospitals": 5400,
+      "cashless_claim_share_pct": 61.0,
+      "complaints_per_10k_claims": 20
+    },
+    "reliance": {
+      "name": "Reliance General Insurance Co. Ltd.",
+      "aliases": ["reliance", "reliance general"],
+      "solvency_ratio": 1.58,
+      "claim_settlement_ratio": 92.30,
+      "incurred_claims_ratio": 84.10,
+      "cashless_hospitals": 9100,
+      "cashless_claim_share_pct": 71.8,
+      "complaints_per_10k_claims": 27
+    },
+    "royal_sundaram": {
+      "name": "Royal Sundaram General Insurance Co. Ltd.",
+      "aliases": ["royal sundaram", "sundaram general"],
+      "solvency_ratio": 1.78,
+      "claim_settlement_ratio": 91.70,
+      "incurred_claims_ratio": 79.80,
+      "cashless_hospitals": 7800,
+      "cashless_claim_share_pct": 70.5,
+      "complaints_per_10k_claims": 22
+    },
+    "sbi": {
+      "name": "SBI General Insurance Co. Ltd.",
+      "aliases": ["sbi", "sbi general", "state bank general"],
+      "solvency_ratio": 1.98,
+      "claim_settlement_ratio": 95.94,
+      "incurred_claims_ratio": 82.19,
+      "cashless_hospitals": 8000,
+      "cashless_claim_share_pct": 69.0,
+      "complaints_per_10k_claims": 25
+    },
+    "sriram": {
+      "name": "Shriram General Insurance Co. Ltd.",
+      "aliases": ["sriram", "shriram", "shriram general"],
+      "solvency_ratio": 2.14,
+      "claim_settlement_ratio": 88.10,
+      "incurred_claims_ratio": 76.20,
+      "cashless_hospitals": 6000,
+      "cashless_claim_share_pct": 63.0,
+      "complaints_per_10k_claims": 21
+    },
+    "tata_aig": {
+      "name": "Tata AIG General Insurance Co. Ltd.",
+      "aliases": ["tata aig", "tata aig general", "tata general"],
+      "solvency_ratio": 1.91,
+      "claim_settlement_ratio": 94.20,
+      "incurred_claims_ratio": 83.13,
+      "cashless_hospitals": 9500,
+      "cashless_claim_share_pct": 75.0,
+      "complaints_per_10k_claims": 19
+    },
+    "universal_sompo": {
+      "name": "Universal Sompo General Insurance Co. Ltd.",
+      "aliases": ["universal sompo", "sompo"],
+      "solvency_ratio": 1.72,
+      "claim_settlement_ratio": 90.40,
+      "incurred_claims_ratio": 81.60,
+      "cashless_hospitals": 6800,
+      "cashless_claim_share_pct": 65.2,
+      "complaints_per_10k_claims": 26
+    },
+    "zuno": {
+      "name": "Zuno General Insurance Ltd.",
+      "aliases": ["zuno", "zuno general", "edelweiss general"],
+      "solvency_ratio": 1.81,
+      "claim_settlement_ratio": 91.20,
+      "incurred_claims_ratio": 69.80,
+      "cashless_hospitals": 5500,
+      "cashless_claim_share_pct": 76.0,
+      "complaints_per_10k_claims": 18
+    },
+    "zurich_kotak": {
+      "name": "Zurich Kotak General Insurance Co. (India) Ltd.",
+      "aliases": ["zurich kotak", "kotak general", "kotak mahindra general"],
+      "solvency_ratio": 5.73,
+      "claim_settlement_ratio": 91.50,
+      "incurred_claims_ratio": 62.56,
+      "cashless_hospitals": 7500,
+      "cashless_claim_share_pct": 68.0,
+      "complaints_per_10k_claims": 20
+    },
+    "national": {
+      "name": "National Insurance Co. Ltd.",
+      "aliases": ["national", "national insurance", "nic"],
+      "solvency_ratio": -0.67,
+      "claim_settlement_ratio": 93.76,
+      "incurred_claims_ratio": 90.62,
+      "cashless_hospitals": 7600,
+      "cashless_claim_share_pct": 55.0,
+      "complaints_per_10k_claims": 42
+    },
+    "new_india_assurance": {
+      "name": "The New India Assurance Co. Ltd.",
+      "aliases": ["new india assurance", "new india", "nia"],
+      "solvency_ratio": 1.91,
+      "claim_settlement_ratio": 98.00,
+      "incurred_claims_ratio": 106.67,
+      "cashless_hospitals": 8500,
+      "cashless_claim_share_pct": 62.0,
+      "complaints_per_10k_claims": 34
+    },
+    "oriental": {
+      "name": "The Oriental Insurance Co. Ltd.",
+      "aliases": ["oriental", "oriental insurance", "oic"],
+      "solvency_ratio": -1.03,
+      "claim_settlement_ratio": 88.70,
+      "incurred_claims_ratio": 100.73,
+      "cashless_hospitals": 7800,
+      "cashless_claim_share_pct": 58.0,
+      "complaints_per_10k_claims": 39
+    },
+    "united_india": {
+      "name": "United India Insurance Co. Ltd.",
+      "aliases": ["united india", "uiic"],
+      "solvency_ratio": -0.65,
+      "claim_settlement_ratio": 95.03,
+      "incurred_claims_ratio": 109.72,
+      "cashless_hospitals": 7900,
+      "cashless_claim_share_pct": 56.0,
+      "complaints_per_10k_claims": 38
+    },
+    "aditya_birla": {
+      "name": "Aditya Birla Health Insurance Co. Ltd.",
+      "aliases": ["aditya birla", "aditya birla health", "abhi"],
+      "solvency_ratio": 1.84,
+      "claim_settlement_ratio": 96.25,
+      "incurred_claims_ratio": 72.98,
+      "cashless_hospitals": 10500,
+      "cashless_claim_share_pct": 71.0,
+      "complaints_per_10k_claims": 22
+    },
+    "care": {
+      "name": "Care Health Insurance Ltd.",
+      "aliases": ["care", "care health", "religare", "religare health"],
+      "solvency_ratio": 1.68,
+      "claim_settlement_ratio": 95.45,
+      "incurred_claims_ratio": 59.28,
+      "cashless_hospitals": 11400,
+      "cashless_claim_share_pct": 74.0,
+      "complaints_per_10k_claims": 21
+    },
+    "galaxy": {
+      "name": "Galaxy Health Insurance Co. Ltd.",
+      "aliases": ["galaxy", "galaxy health"],
+      "solvency_ratio": 2.10,
+      "claim_settlement_ratio": 90.00,
+      "incurred_claims_ratio": 65.00,
+      "cashless_hospitals": 5000,
+      "cashless_claim_share_pct": 60.0,
+      "complaints_per_10k_claims": 16
+    },
+    "manipal_cigna": {
+      "name": "ManipalCigna Health Insurance Co. Ltd.",
+      "aliases": ["manipal cigna", "manipalcigna", "cigna ttk", "cigna"],
+      "solvency_ratio": 1.76,
+      "claim_settlement_ratio": 92.80,
+      "incurred_claims_ratio": 64.41,
+      "cashless_hospitals": 9200,
+      "cashless_claim_share_pct": 73.2,
+      "complaints_per_10k_claims": 26
+    },
+    "narayana": {
+      "name": "Narayana Health Insurance Ltd.",
+      "aliases": ["narayana", "narayana health"],
+      "solvency_ratio": 1.61,
+      "claim_settlement_ratio": 90.50,
+      "incurred_claims_ratio": 62.00,
+      "cashless_hospitals": 6500,
+      "cashless_claim_share_pct": 70.0,
+      "complaints_per_10k_claims": 18
+    },
+    "niva_bupa": {
+      "name": "Niva Bupa Health Insurance Co. Ltd.",
+      "aliases": ["niva bupa", "max bupa", "bupa"],
+      "solvency_ratio": 3.03,
+      "claim_settlement_ratio": 91.80,
+      "incurred_claims_ratio": 59.43,
+      "cashless_hospitals": 10500,
+      "cashless_claim_share_pct": 76.5,
+      "complaints_per_10k_claims": 24
+    },
+    "star_health_and_allied": {
+      "name": "Star Health and Allied Insurance Co. Ltd.",
+      "aliases": ["star health and allied", "star health", "star allied", "star"],
+      "solvency_ratio": 2.21,
+      "claim_settlement_ratio": 89.20,
+      "incurred_claims_ratio": 66.81,
+      "cashless_hospitals": 14200,
+      "cashless_claim_share_pct": 82.0,
+      "complaints_per_10k_claims": 28
+    }
+  }
+}
