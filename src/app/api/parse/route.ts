@@ -6,6 +6,8 @@ import { convertPdfToMarkdown } from "@/lib/markitdown";
 import { resolvePincode } from "@/lib/resolvePincode";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 // Lazily initialize GoogleGenAI client
 function getGenAIClient() {
@@ -168,12 +170,18 @@ export async function POST(req: NextRequest) {
     try {
       extractedText = await convertPdfToMarkdown(buffer);
     } catch (markitdownErr) {
-      console.warn("MarkItDown extraction failed, falling back to pdf-parse:", markitdownErr);
+      console.warn("MarkItDown extraction failed, attempting fallback:", markitdownErr);
+    }
+
+    // Secondary fallback: Extract text with pdf-parse if MarkItDown failed or returned insufficient text
+    if (!extractedText || extractedText.trim().length < 50) {
       try {
         const { PDFParse } = require("pdf-parse");
         const pdfInstance = new PDFParse({ data: buffer });
         const pdfData = await pdfInstance.getText();
-        extractedText = pdfData.text || "";
+        if (pdfData?.text && pdfData.text.trim().length > 0) {
+          extractedText = pdfData.text;
+        }
         await pdfInstance.destroy();
       } catch (pdfErr) {
         console.warn("pdf-parse extraction fallback failed:", pdfErr);

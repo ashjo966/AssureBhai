@@ -12,9 +12,12 @@ interface SpawnResult {
 /**
  * Executes a python command with arguments, returning stdout/stderr and exit code.
  */
-function runPythonCommand(cmd: string, args: string[]): Promise<SpawnResult> {
+function runPythonCommand(cmd: string, args: string[], timeoutMs = 15000): Promise<SpawnResult> {
   return new Promise((resolve, reject) => {
-    let child;
+    let child: any;
+    let timer: NodeJS.Timeout | null = null;
+    let isSettled = false;
+
     try {
       child = spawn(cmd, args, {
         windowsHide: true,
@@ -26,6 +29,18 @@ function runPythonCommand(cmd: string, args: string[]): Promise<SpawnResult> {
     let stdout = "";
     let stderr = "";
 
+    timer = setTimeout(() => {
+      if (!isSettled) {
+        isSettled = true;
+        try {
+          child.kill("SIGKILL");
+        } catch {
+          // ignore
+        }
+        reject(new Error(`Python command timed out after ${timeoutMs}ms`));
+      }
+    }, timeoutMs);
+
     child.stdout?.on("data", (chunk: Buffer) => {
       stdout += chunk.toString("utf-8");
     });
@@ -34,12 +49,20 @@ function runPythonCommand(cmd: string, args: string[]): Promise<SpawnResult> {
       stderr += chunk.toString("utf-8");
     });
 
-    child.on("error", (err) => {
-      reject(err);
+    child.on("error", (err: any) => {
+      if (!isSettled) {
+        isSettled = true;
+        if (timer) clearTimeout(timer);
+        reject(err);
+      }
     });
 
-    child.on("close", (code) => {
-      resolve({ stdout, stderr, code });
+    child.on("close", (code: number | null) => {
+      if (!isSettled) {
+        isSettled = true;
+        if (timer) clearTimeout(timer);
+        resolve({ stdout, stderr, code });
+      }
     });
   });
 }

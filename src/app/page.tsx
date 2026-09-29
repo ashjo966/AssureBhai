@@ -45,6 +45,10 @@ function formatFriendlyErrorMessage(err: unknown, fallback: string): string {
     return "This website is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.";
   }
 
+  if (lower.includes("failed to fetch") || lower.includes("networkerror") || lower.includes("load failed")) {
+    return "Upload connection timed out or was interrupted. Please check your network and try again.";
+  }
+
   return rawMsg || fallback;
 }
 
