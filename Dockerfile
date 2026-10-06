@@ -38,6 +38,7 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/src/data ./src/data
+COPY --from=builder /app/assurebhai_feedback.xlsx ./assurebhai_feedback.xlsx
 
 EXPOSE 3000
 

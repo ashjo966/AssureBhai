@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Shield } from "lucide-react";
-import { Markdown } from "@/components/markdown";
+import { MessageSquare } from "lucide-react";
 import { AnalysisReport } from "@/components/analysis-report";
+import { FeedbackWidget } from "@/components/FeedbackModal";
 import { resolvePincode, MospiStats } from "@/lib/resolvePincode";
 
 interface Dependent {
@@ -72,6 +72,7 @@ export default function Home() {
   const [isParsing, setIsParsing] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   // Errors and Results
   const [error, setError] = useState<string | null>(null);
@@ -346,6 +347,15 @@ export default function Home() {
                 Analyze new policy
               </button>
             )}
+            <button
+              id="feedback-button"
+              type="button"
+              onClick={() => setIsFeedbackOpen(true)}
+              className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 text-xs sm:text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 active:bg-amber-800 rounded-lg shadow-sm transition-all whitespace-nowrap cursor-pointer"
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              Feedback
+            </button>
             <a
               id="creator-about"
               href="https://ashjo966.github.io/"
@@ -708,6 +718,12 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* Feedback Floating Widget Modal */}
+      <FeedbackWidget
+        isOpen={isFeedbackOpen}
+        onClose={() => setIsFeedbackOpen(false)}
+      />
     </div>
   );
 }
