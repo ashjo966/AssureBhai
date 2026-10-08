@@ -46,10 +46,12 @@ def extract_with_pdfminer(file_path):
 
 def main():
     if len(sys.argv) < 2:
-        sys.stderr.write("Usage: python convert_to_md.py <file_path>\n")
+        sys.stderr.write("Usage: python convert_to_md.py <file_path> [password]\n")
         sys.exit(1)
 
     file_path = sys.argv[1]
+    password = sys.argv[2] if len(sys.argv) > 2 and sys.argv[2] else None
+
     if not os.path.isabs(file_path):
         file_path = os.path.abspath(file_path)
 
@@ -57,22 +59,57 @@ def main():
         sys.stderr.write(f"File not found: {file_path}\n")
         sys.exit(1)
 
-    # 1. Try MarkItDown
-    text = extract_with_markitdown(file_path)
+    temp_decrypted_path = None
+    try:
+        from pypdf import PdfReader, PdfWriter
+        try:
+            reader = PdfReader(file_path)
+            if reader.is_encrypted:
+                if not password:
+                    sys.stderr.write("ERROR: PDF_PASSWORD_REQUIRED\n")
+                    sys.exit(2)
 
-    # 2. Fallback to pypdf
-    if not text:
-        text = extract_with_pypdf(file_path)
+                # Decrypt PDF
+                decrypt_result = reader.decrypt(password)
+                if decrypt_result == 0:
+                    sys.stderr.write("ERROR: INVALID_PDF_PASSWORD\n")
+                    sys.exit(3)
 
-    # 3. Fallback to pdfminer
-    if not text:
-        text = extract_with_pdfminer(file_path)
+                # Save decrypted buffer to a temporary file for MarkItDown
+                writer = PdfWriter()
+                for page in reader.pages:
+                    writer.add_page(page)
+                temp_decrypted_path = file_path.replace(".pdf", "_decrypted.pdf")
+                with open(temp_decrypted_path, "wb") as f:
+                    writer.write(f)
+                file_path = temp_decrypted_path
+        except SystemExit:
+            raise
+        except Exception as pdf_err:
+            sys.stderr.write(f"PDF decryption check error: {pdf_err}\n")
 
-    if text:
-        sys.stdout.write(text)
-    else:
-        sys.stderr.write("All text extraction methods produced empty output.\n")
-        sys.exit(1)
+        # 1. Try MarkItDown
+        text = extract_with_markitdown(file_path)
+
+        # 2. Fallback to pypdf
+        if not text:
+            text = extract_with_pypdf(file_path)
+
+        # 3. Fallback to pdfminer
+        if not text:
+            text = extract_with_pdfminer(file_path)
+
+        if text:
+            sys.stdout.write(text)
+        else:
+            sys.stderr.write("All text extraction methods produced empty output.\n")
+            sys.exit(1)
+    finally:
+        if temp_decrypted_path and os.path.exists(temp_decrypted_path):
+            try:
+                os.remove(temp_decrypted_path)
+            except Exception:
+                pass
 
 if __name__ == "__main__":
     main()

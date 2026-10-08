@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { GoogleGenAI } from "@google/genai";
-import { convertPdfToMarkdown } from "@/lib/markitdown";
+import { convertPdfToMarkdown, PdfPasswordError } from "@/lib/markitdown";
 import { resolvePincode } from "@/lib/resolvePincode";
 
 export const runtime = "nodejs";
@@ -119,6 +119,7 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
     const userContextRaw = formData.get("user_context") as string | null;
+    const password = ((formData.get("password") as string | null) || "").trim() || undefined;
 
     if (!file) {
       return NextResponse.json(
@@ -168,8 +169,34 @@ export async function POST(req: NextRequest) {
     let extractedText = "";
 
     try {
-      extractedText = await convertPdfToMarkdown(buffer);
-    } catch (markitdownErr) {
+      extractedText = await convertPdfToMarkdown(buffer, password);
+    } catch (markitdownErr: any) {
+      if (
+        markitdownErr instanceof PdfPasswordError ||
+        markitdownErr?.code === "PDF_PASSWORD_REQUIRED" ||
+        markitdownErr?.message?.includes("PDF_PASSWORD_REQUIRED")
+      ) {
+        return NextResponse.json(
+          {
+            error: "PDF_PASSWORD_REQUIRED",
+            message: "This policy document is password-protected. Please enter your policy password.",
+          },
+          { status: 400 }
+        );
+      }
+      if (
+        markitdownErr instanceof PdfPasswordError ||
+        markitdownErr?.code === "INVALID_PDF_PASSWORD" ||
+        markitdownErr?.message?.includes("INVALID_PDF_PASSWORD")
+      ) {
+        return NextResponse.json(
+          {
+            error: "INVALID_PDF_PASSWORD",
+            message: "Incorrect password. Most insurers use your Date of Birth (DDMMYYYY) or PAN.",
+          },
+          { status: 400 }
+        );
+      }
       console.warn("MarkItDown extraction failed, attempting fallback:", markitdownErr);
     }
 
@@ -215,27 +242,15 @@ export async function POST(req: NextRequest) {
 
     // 4. Load parser prompt directly from prompts/ directory
     const promptFilePath = path.join(process.cwd(), "prompts", "parser_prompt.txt");
-    const baseParserPrompt = fs.readFileSync(promptFilePath, "utf-8");
+    const fullSystemPrompt = fs.readFileSync(promptFilePath, "utf-8");
 
-    // 5. Load IRDAI statistical benchmarks from src/data ONLY
+    // 5. Load IRDAI statistical benchmarks from src/data for deterministic post-enrichment
     const { healthStats, lifeStats } = loadIRDAIStats();
-
-    const fullSystemPrompt = `${baseParserPrompt}
-
-### PRE-LOADED IRDAI STATISTICAL BENCHMARK METRICS (FROM LOCAL src/data)
-<HEALTH_IRDAI_STATS>
-${JSON.stringify(healthStats, null, 2)}
-</HEALTH_IRDAI_STATS>
-
-<LIFE_IRDAI_STATS>
-${JSON.stringify(lifeStats, null, 2)}
-</LIFE_IRDAI_STATS>
-`;
 
     // 6. Assemble User Prompt with Extracted Document & Injected User Context
     const userMessageContent = `
 <USER_CONTEXT>
-${JSON.stringify(userContext, null, 2)}
+${JSON.stringify(userContext)}
 </USER_CONTEXT>
 
 <UNTRUSTED_DOCUMENT>
@@ -260,6 +275,9 @@ ${extractedText.slice(0, 150000)}
               systemInstruction: fullSystemPrompt,
               responseMimeType: "application/json",
               temperature: 0.1,
+              thinkingConfig: {
+                thinkingBudget: 0,
+              },
             },
           })
         );

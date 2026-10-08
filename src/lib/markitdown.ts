@@ -9,6 +9,31 @@ interface SpawnResult {
   code: number | null;
 }
 
+export class PdfPasswordError extends Error {
+  code: "PDF_PASSWORD_REQUIRED" | "INVALID_PDF_PASSWORD";
+  constructor(code: "PDF_PASSWORD_REQUIRED" | "INVALID_PDF_PASSWORD", message: string) {
+    super(message);
+    this.name = "PdfPasswordError";
+    this.code = code;
+  }
+}
+
+function checkAndThrowPasswordError(result: SpawnResult | null) {
+  if (!result) return;
+  if (result.code === 2 || result.stderr?.includes("PDF_PASSWORD_REQUIRED")) {
+    throw new PdfPasswordError(
+      "PDF_PASSWORD_REQUIRED",
+      "This policy document is password-protected. Please enter your policy password."
+    );
+  }
+  if (result.code === 3 || result.stderr?.includes("INVALID_PDF_PASSWORD")) {
+    throw new PdfPasswordError(
+      "INVALID_PDF_PASSWORD",
+      "Incorrect password. Most insurers use your Date of Birth (DDMMYYYY) or PAN."
+    );
+  }
+}
+
 /**
  * Executes a python command with arguments, returning stdout/stderr and exit code.
  */
@@ -72,9 +97,10 @@ function runPythonCommand(cmd: string, args: string[], timeoutMs = 15000): Promi
  * Seamlessly tries 'python3' first, falling back to 'python' if 'python3' is unavailable or fails.
  *
  * @param buffer - Buffer containing the PDF document
+ * @param password - Optional password for password-protected/encrypted PDF documents
  * @returns Promise<string> containing extracted Markdown text
  */
-export async function convertPdfToMarkdown(buffer: Buffer): Promise<string> {
+export async function convertPdfToMarkdown(buffer: Buffer, password?: string): Promise<string> {
   const scriptPath = path.join(process.cwd(), "scripts", "convert_to_md.py");
   const randomSuffix = Math.random().toString(36).substring(2, 9);
   const tempFileName = `assurebhai-temp-${Date.now()}-${randomSuffix}.pdf`;
@@ -84,13 +110,16 @@ export async function convertPdfToMarkdown(buffer: Buffer): Promise<string> {
     // 1. Write the temporary PDF file to os.tmpdir()
     await fs.promises.writeFile(tempFilePath, buffer);
 
+    const scriptArgs = password ? [scriptPath, tempFilePath, password] : [scriptPath, tempFilePath];
+
     // 2. Try invoking configured PYTHON_PATH or python3 first, fallback to python if unavailable
     let executionResult: SpawnResult | null = null;
     let python3Error: Error | unknown = null;
     const primaryPython = process.env.PYTHON_PATH || "python3";
 
     try {
-      const result = await runPythonCommand(primaryPython, [scriptPath, tempFilePath]);
+      const result = await runPythonCommand(primaryPython, scriptArgs);
+      checkAndThrowPasswordError(result);
       if (result.code === 0) {
         executionResult = result;
       } else {
@@ -99,13 +128,17 @@ export async function convertPdfToMarkdown(buffer: Buffer): Promise<string> {
         );
       }
     } catch (err) {
+      if (err instanceof PdfPasswordError) {
+        throw err;
+      }
       python3Error = err;
     }
 
     // Fallback to 'python' if primary command failed or was not found
     if (!executionResult && primaryPython !== "python") {
       try {
-        const result = await runPythonCommand("python", [scriptPath, tempFilePath]);
+        const result = await runPythonCommand("python", scriptArgs);
+        checkAndThrowPasswordError(result);
         if (result.code === 0) {
           executionResult = result;
         } else {
@@ -114,6 +147,9 @@ export async function convertPdfToMarkdown(buffer: Buffer): Promise<string> {
           );
         }
       } catch (pythonErr) {
+        if (pythonErr instanceof PdfPasswordError) {
+          throw pythonErr;
+        }
         throw new Error(
           `Failed to execute MarkItDown conversion using ${primaryPython} and python.\n` +
           `Primary error: ${python3Error instanceof Error ? python3Error.message : String(python3Error)}\n` +

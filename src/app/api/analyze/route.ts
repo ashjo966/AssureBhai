@@ -73,7 +73,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: unsupportedReason,
-          analysis: unsupportedReason,
         },
         { status: 400 }
       );
@@ -90,7 +89,7 @@ export async function POST(request: NextRequest) {
     // 4. Construct the prompt with <POLICY_EXTRACT_JSON> and <MOSPI_ACTUARIAL_BENCHMARKS>
     const userPrompt = `
 <POLICY_EXTRACT_JSON>
-${JSON.stringify(policy_data, null, 2)}
+${JSON.stringify(policy_data)}
 </POLICY_EXTRACT_JSON>
 
 <MOSPI_ACTUARIAL_BENCHMARKS>
@@ -100,43 +99,7 @@ ${JSON.stringify(policy_data, null, 2)}
 </MOSPI_ACTUARIAL_BENCHMARKS>
 `;
 
-    // 5. Call Gemini with gemini-3.7-flash model and retry wrapper
-    let responseText = "";
-    let lastAnalyzeErr: any = null;
-
-    for (const modelName of candidateAnalyzeModels) {
-      try {
-        const response = await withRetry(() =>
-          ai.models.generateContent({
-            model: modelName,
-            contents: userPrompt,
-            config: {
-              systemInstruction: analysisPrompt,
-              temperature: 0.2,
-            },
-          })
-        );
-        responseText = response.text || "";
-        if (responseText) break;
-      } catch (err: any) {
-        lastAnalyzeErr = err;
-        console.warn(`Gemini analyze model ${modelName} failed, checking fallbacks...`, err.message || err);
-      }
-    }
-
-    if (!responseText) {
-      throw lastAnalyzeErr || new Error("Empty response received from Gemini analysis model.");
-    }
-
-    // Clean markdown if wrapped in outer markdown fence
-    let cleanMarkdown = responseText.trim();
-    if (cleanMarkdown.startsWith("```markdown") && cleanMarkdown.endsWith("```")) {
-      cleanMarkdown = cleanMarkdown.replace(/^```markdown\s*/, "").replace(/\s*```$/, "").trim();
-    } else if (cleanMarkdown.startsWith("```") && cleanMarkdown.endsWith("```")) {
-      cleanMarkdown = cleanMarkdown.replace(/^```\s*/, "").replace(/\s*```$/, "").trim();
-    }
-
-    // 6. Persist exact analysis artifacts to scratch/last_run
+    // Persist input for debugging
     try {
       const debugDir = path.join(process.cwd(), "scratch", "last_run");
       if (!fs.existsSync(debugDir)) {
@@ -147,12 +110,78 @@ ${JSON.stringify(policy_data, null, 2)}
         JSON.stringify({ policy_data, mospi_grounding }, null, 2),
         "utf-8"
       );
-      fs.writeFileSync(path.join(debugDir, "5_analysis_output.md"), cleanMarkdown, "utf-8");
     } catch (debugErr) {
       console.warn("Failed to persist debug artifacts:", debugErr);
     }
 
-    return NextResponse.json({ analysis: cleanMarkdown });
+    // 5. Call Gemini with generateContentStream and retry wrapper
+    let streamResult: any = null;
+    let lastAnalyzeErr: any = null;
+
+    for (const modelName of candidateAnalyzeModels) {
+      try {
+        streamResult = await withRetry(() =>
+          ai.models.generateContentStream({
+            model: modelName,
+            contents: userPrompt,
+            config: {
+              systemInstruction: analysisPrompt,
+              temperature: 0.2,
+              thinkingConfig: {
+                thinkingBudget: 1024,
+              },
+            },
+          })
+        );
+        if (streamResult) break;
+      } catch (err: any) {
+        lastAnalyzeErr = err;
+        console.warn(`Gemini analyze stream model ${modelName} failed, checking fallbacks...`, err.message || err);
+      }
+    }
+
+    if (!streamResult) {
+      throw lastAnalyzeErr || new Error("Empty stream received from Gemini analysis model.");
+    }
+
+    const encoder = new TextEncoder();
+    let accumulatedText = "";
+
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of streamResult) {
+            const text = chunk.text || "";
+            if (text) {
+              accumulatedText += text;
+              controller.enqueue(encoder.encode(text));
+            }
+          }
+          controller.close();
+
+          // Persist analysis output
+          try {
+            const debugDir = path.join(process.cwd(), "scratch", "last_run");
+            if (fs.existsSync(debugDir)) {
+              fs.writeFileSync(path.join(debugDir, "5_analysis_output.md"), accumulatedText, "utf-8");
+            }
+          } catch (debugErr) {
+            console.warn("Failed to persist debug output:", debugErr);
+          }
+        } catch (err) {
+          console.error("Error during streaming response:", err);
+          controller.error(err);
+        }
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+        "X-Content-Type-Options": "nosniff",
+      },
+    });
   } catch (error: any) {
     console.error("Error in /api/analyze handler:", error);
     const rawMsg = error?.message || String(error);
