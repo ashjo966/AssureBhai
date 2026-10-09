@@ -67,8 +67,15 @@ export async function fetchWithRetry(
     }
 
     try {
+      const existingHeaders = (fetchOptions.headers as Record<string, string>) || {};
+      const requestHeaders: Record<string, string> = {
+        "bypass-tunnel-reminder": "true",
+        ...existingHeaders,
+      };
+
       const response = await fetch(input, {
         ...fetchOptions,
+        headers: requestHeaders,
         signal,
       });
 

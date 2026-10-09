@@ -198,8 +198,18 @@ export default function Home() {
   // File Upload Handlers
   const validateAndSetFile = (selectedFile: File) => {
     setError(null);
-    if (selectedFile.type !== "application/pdf" && !selectedFile.name.toLowerCase().endsWith(".pdf")) {
-      setError("Please upload a PDF file only.");
+    const fileName = (selectedFile.name || "").toLowerCase();
+    const fileType = (selectedFile.type || "").toLowerCase();
+
+    const isValidExtension = /\.(pdf|png|jpe?g|webp|heic|heif)$/i.test(fileName);
+    const isValidMime =
+      fileType === "application/pdf" ||
+      fileType === "application/x-pdf" ||
+      fileType.startsWith("image/") ||
+      fileType === ""; // On some mobile browsers fileType can be empty string
+
+    if (!isValidExtension && !isValidMime) {
+      setError("Please upload a PDF or image of your insurance policy document.");
       return;
     }
     if (selectedFile.size > 50 * 1024 * 1024) {
@@ -563,13 +573,11 @@ export default function Home() {
             )}
 
             {/* Upload Zone */}
-            <div
+            <label
+              htmlFor="file-input"
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
-              onClick={() => {
-                if (!isProcessing) fileInputRef.current?.click();
-              }}
               className={`w-full max-w-full p-6 sm:p-10 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center transition-all duration-200 box-border ${
                 isProcessing
                   ? "opacity-60 cursor-not-allowed pointer-events-none"
@@ -587,9 +595,9 @@ export default function Home() {
                 type="file"
                 ref={fileInputRef}
                 onChange={handleFileChange}
-                accept="application/pdf"
+                accept="application/pdf,image/png,image/jpeg,image/webp,.pdf,.png,.jpg,.jpeg,.webp"
                 disabled={isProcessing}
-                className="hidden"
+                className="sr-only"
               />
               
               <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-4 ${
@@ -609,11 +617,12 @@ export default function Home() {
               {file ? (
                 <div className="text-center w-full max-w-full px-2">
                   <p className="font-semibold text-slate-800 max-w-full truncate">{file.name}</p>
-                  <p className="text-xs text-slate-400 mt-1">{(file.size / (1024 * 1024)).toFixed(2)} MB • PDF Document</p>
+                  <p className="text-xs text-slate-400 mt-1">{(file.size / (1024 * 1024)).toFixed(2)} MB • {file.name.toLowerCase().endsWith(".pdf") || file.type === "application/pdf" ? "PDF Document" : "Policy Document"}</p>
                   <button
                     type="button"
                     disabled={isProcessing}
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
                       if (!isProcessing) setFile(null);
                     }}
@@ -624,12 +633,12 @@ export default function Home() {
                 </div>
               ) : (
                 <div className="text-center">
-                  <p className="font-semibold text-slate-800 text-sm sm:text-base">Drag & drop your policy PDF here</p>
-                  <p className="text-xs sm:text-sm text-slate-400 mt-1">or click to browse files</p>
-                  <p className="text-[11px] sm:text-xs text-slate-400 mt-2 font-medium">Single file (.pdf only, max 50MB)</p>
+                  <p className="font-semibold text-slate-800 text-sm sm:text-base">Upload your policy document</p>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-1">Tap to browse or take a photo</p>
+                  <p className="text-[11px] sm:text-xs text-slate-400 mt-2 font-medium">Supported: PDF, JPG, PNG (max 50MB)</p>
                 </div>
               )}
-            </div>
+            </label>
 
             {/* Optional PDF Password Field (for locked files) */}
             <div className={`w-full max-w-full mt-4 bg-white border rounded-2xl p-4 sm:p-5 shadow-sm transition-all box-border ${

@@ -163,80 +163,92 @@ export async function POST(req: NextRequest) {
       expected_insurance_zone: pincodeResolution.expected_insurance_zone,
     };
 
-    // 2. Extract text directly from the uploaded PDF using MarkItDown
+    // 2. Determine file format and extract text or prepare multimodal payload
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+    const fileName = (file.name || "").toLowerCase();
+    const rawMime = (file.type || "").toLowerCase();
+    const isImage =
+      rawMime.startsWith("image/") ||
+      /\.(jpg|jpeg|png|webp|heic|heif)$/i.test(fileName);
+    const resolvedMimeType = isImage
+      ? rawMime || (fileName.endsWith(".png") ? "image/png" : fileName.endsWith(".webp") ? "image/webp" : "image/jpeg")
+      : "application/pdf";
+
     let extractedText = "";
 
-    try {
-      extractedText = await convertPdfToMarkdown(buffer, password);
-    } catch (markitdownErr: any) {
-      if (
-        markitdownErr instanceof PdfPasswordError ||
-        markitdownErr?.code === "PDF_PASSWORD_REQUIRED" ||
-        markitdownErr?.message?.includes("PDF_PASSWORD_REQUIRED")
-      ) {
-        return NextResponse.json(
-          {
-            error: "PDF_PASSWORD_REQUIRED",
-            message: "This policy document is password-protected. Please enter your policy password.",
-          },
-          { status: 400 }
-        );
-      }
-      if (
-        markitdownErr instanceof PdfPasswordError ||
-        markitdownErr?.code === "INVALID_PDF_PASSWORD" ||
-        markitdownErr?.message?.includes("INVALID_PDF_PASSWORD")
-      ) {
-        return NextResponse.json(
-          {
-            error: "INVALID_PDF_PASSWORD",
-            message: "Incorrect password. Most insurers use your Date of Birth (DDMMYYYY) or PAN.",
-          },
-          { status: 400 }
-        );
-      }
-      console.warn("MarkItDown extraction failed, attempting fallback:", markitdownErr);
-    }
-
-    // Secondary fallback: Extract text with pdf-parse if MarkItDown failed or returned insufficient text
-    if (!extractedText || extractedText.trim().length < 50) {
+    // If it is a PDF, attempt local text extraction first (MarkItDown -> pdf-parse)
+    if (!isImage) {
       try {
-        const { PDFParse } = require("pdf-parse");
-        const pdfInstance = new PDFParse({ data: buffer });
-        const pdfData = await pdfInstance.getText();
-        if (pdfData?.text && pdfData.text.trim().length > 0) {
-          extractedText = pdfData.text;
+        extractedText = await convertPdfToMarkdown(buffer, password);
+      } catch (markitdownErr: any) {
+        if (
+          markitdownErr instanceof PdfPasswordError ||
+          markitdownErr?.code === "PDF_PASSWORD_REQUIRED" ||
+          markitdownErr?.message?.includes("PDF_PASSWORD_REQUIRED")
+        ) {
+          return NextResponse.json(
+            {
+              error: "PDF_PASSWORD_REQUIRED",
+              message: "This policy document is password-protected. Please enter your policy password.",
+            },
+            { status: 400 }
+          );
         }
-        await pdfInstance.destroy();
-      } catch (pdfErr) {
-        console.warn("pdf-parse extraction fallback failed:", pdfErr);
+        if (
+          markitdownErr instanceof PdfPasswordError ||
+          markitdownErr?.code === "INVALID_PDF_PASSWORD" ||
+          markitdownErr?.message?.includes("INVALID_PDF_PASSWORD")
+        ) {
+          return NextResponse.json(
+            {
+              error: "INVALID_PDF_PASSWORD",
+              message: "Incorrect password. Most insurers use your Date of Birth (DDMMYYYY) or PAN.",
+            },
+            { status: 400 }
+          );
+        }
+        console.warn("MarkItDown extraction failed, attempting fallback:", markitdownErr);
       }
-    }
 
-    // 3. OCR Fallback if text is empty or image-scanned
-    if (extractedText.trim().length < 50 && process.env.OCR_SPACE_API_KEY) {
-      try {
-        const ocrFormData = new FormData();
-        ocrFormData.append("file", file);
-        ocrFormData.append("apikey", process.env.OCR_SPACE_API_KEY);
-        ocrFormData.append("isTable", "true");
-        ocrFormData.append("OCREngine", "2");
-
-        const ocrResponse = await fetch("https://api.ocr.space/parse/image", {
-          method: "POST",
-          body: ocrFormData,
-        });
-
-        const ocrResult = await ocrResponse.json();
-        if (ocrResult?.ParsedResults?.length > 0) {
-          extractedText = ocrResult.ParsedResults.map(
-            (r: { ParsedText: string }) => r.ParsedText
-          ).join("\n");
+      // Secondary fallback: Extract text with pdf-parse if MarkItDown failed or returned insufficient text
+      if (!extractedText || extractedText.trim().length < 50) {
+        try {
+          const { PDFParse } = require("pdf-parse");
+          const pdfInstance = new PDFParse({ data: buffer });
+          const pdfData = await pdfInstance.getText();
+          if (pdfData?.text && pdfData.text.trim().length > 0) {
+            extractedText = pdfData.text;
+          }
+          await pdfInstance.destroy();
+        } catch (pdfErr) {
+          console.warn("pdf-parse extraction fallback failed:", pdfErr);
         }
-      } catch (ocrErr) {
-        console.error("OCR Fallback failed:", ocrErr);
+      }
+
+      // Tertiary OCR Space Fallback if available
+      if (extractedText.trim().length < 50 && process.env.OCR_SPACE_API_KEY) {
+        try {
+          const ocrFormData = new FormData();
+          ocrFormData.append("file", file);
+          ocrFormData.append("apikey", process.env.OCR_SPACE_API_KEY);
+          ocrFormData.append("isTable", "true");
+          ocrFormData.append("OCREngine", "2");
+
+          const ocrResponse = await fetch("https://api.ocr.space/parse/image", {
+            method: "POST",
+            body: ocrFormData,
+          });
+
+          const ocrResult = await ocrResponse.json();
+          if (ocrResult?.ParsedResults?.length > 0) {
+            extractedText = ocrResult.ParsedResults.map(
+              (r: { ParsedText: string }) => r.ParsedText
+            ).join("\n");
+          }
+        } catch (ocrErr) {
+          console.error("OCR Fallback failed:", ocrErr);
+        }
       }
     }
 
@@ -247,8 +259,14 @@ export async function POST(req: NextRequest) {
     // 5. Load IRDAI statistical benchmarks from src/data for deterministic post-enrichment
     const { healthStats, lifeStats } = loadIRDAIStats();
 
-    // 6. Assemble User Prompt with Extracted Document & Injected User Context
-    const userMessageContent = `
+    // 6. Assemble User Prompt (Text or Multimodal Payload for scanned mobile PDFs/photos)
+    const hasSufficientExtractedText = extractedText && extractedText.trim().length >= 50;
+
+    let contentsPayload: any;
+    let userMessageContentForLog = "";
+
+    if (hasSufficientExtractedText) {
+      const userMessageContent = `
 <USER_CONTEXT>
 ${JSON.stringify(userContext)}
 </USER_CONTEXT>
@@ -257,6 +275,33 @@ ${JSON.stringify(userContext)}
 ${extractedText.slice(0, 150000)}
 </UNTRUSTED_DOCUMENT>
 `;
+      contentsPayload = userMessageContent;
+      userMessageContentForLog = userMessageContent;
+    } else {
+      // Multimodal direct document ingestion for image-based PDFs, mobile phone scans, or camera photos
+      const userMessageText = `
+<USER_CONTEXT>
+${JSON.stringify(userContext)}
+</USER_CONTEXT>
+
+Please inspect the attached insurance policy document and extract all factual parameters into the target JSON structure strictly adhering to your system directives.
+`;
+      contentsPayload = [
+        {
+          role: "user",
+          parts: [
+            { text: userMessageText },
+            {
+              inlineData: {
+                mimeType: resolvedMimeType,
+                data: buffer.toString("base64"),
+              },
+            },
+          ],
+        },
+      ];
+      userMessageContentForLog = `${userMessageText}\n[Attached Multimodal Document: ${resolvedMimeType}, ${buffer.length} bytes]`;
+    }
 
     // 7. Call Google GenAI SDK (Gemini) in JSON mode
     const ai = getGenAIClient();
@@ -270,7 +315,7 @@ ${extractedText.slice(0, 150000)}
         const response = await withRetry(() =>
           ai.models.generateContent({
             model: modelName,
-            contents: userMessageContent,
+            contents: contentsPayload,
             config: {
               systemInstruction: fullSystemPrompt,
               responseMimeType: "application/json",
@@ -326,9 +371,9 @@ ${extractedText.slice(0, 150000)}
       if (!fs.existsSync(debugDir)) {
         fs.mkdirSync(debugDir, { recursive: true });
       }
-      fs.writeFileSync(path.join(debugDir, "1_extracted_markitdown.md"), extractedText, "utf-8");
+      fs.writeFileSync(path.join(debugDir, "1_extracted_markitdown.md"), extractedText || "(Multimodal direct extraction used)", "utf-8");
       fs.writeFileSync(path.join(debugDir, "2_parser_system_prompt.txt"), fullSystemPrompt, "utf-8");
-      fs.writeFileSync(path.join(debugDir, "2_parser_user_prompt.txt"), userMessageContent, "utf-8");
+      fs.writeFileSync(path.join(debugDir, "2_parser_user_prompt.txt"), userMessageContentForLog, "utf-8");
       fs.writeFileSync(path.join(debugDir, "3_parser_response.json"), JSON.stringify(parsedPayload, null, 2), "utf-8");
     } catch (debugErr) {
       console.warn("Failed to persist debug artifacts:", debugErr);
