@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { MessageSquare, Loader2, Eye, EyeOff, Lock, KeyRound } from "lucide-react";
+import { MessageSquare, Loader2, Eye, EyeOff, Lock, KeyRound, WifiOff } from "lucide-react";
 import { AnalysisReport } from "@/components/analysis-report";
 import { FeedbackWidget } from "@/components/FeedbackModal";
 import { resolvePincode, MospiStats } from "@/lib/resolvePincode";
+import { fetchWithRetry } from "@/lib/fetchWithRetry";
 
 interface Dependent {
   id: string;
@@ -45,8 +46,15 @@ function formatFriendlyErrorMessage(err: unknown, fallback: string): string {
     return "This website is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.";
   }
 
-  if (lower.includes("failed to fetch") || lower.includes("networkerror") || lower.includes("load failed")) {
-    return "Upload connection timed out or was interrupted. Please check your network and try again.";
+  if (
+    lower.includes("failed to fetch") ||
+    lower.includes("networkerror") ||
+    lower.includes("load failed") ||
+    lower.includes("connection reset") ||
+    lower.includes("connection timed out") ||
+    lower.includes("econnreset")
+  ) {
+    return "Network connection was interrupted or timed out after multiple retry attempts. Please check your internet connection and try again.";
   }
 
   return rawMsg || fallback;
@@ -86,6 +94,7 @@ export default function Home() {
 
   // Errors and Results
   const [error, setError] = useState<string | null>(null);
+  const [retryStatus, setRetryStatus] = useState<string | null>(null);
   const [parsedData, setParsedData] = useState<Record<string, unknown> | null>(null);
   const [analysisResult, setAnalysisResult] = useState<string>("");
 
@@ -254,6 +263,7 @@ export default function Home() {
     latestParsedDataRef.current = null;
     latestAnalysisResultRef.current = "";
     setAnalysisResult("");
+    setRetryStatus(null);
 
     // Lock UI and show disclaimer popup while background analysis starts immediately
     setIsProcessing(true);
@@ -286,12 +296,19 @@ export default function Home() {
           formData.append("password", pdfPassword.trim());
         }
 
-        // Step 1: Parse Document
-        const parseResponse = await fetch("/api/parse", {
+        // Step 1: Parse Document (with exponential backoff retry on transient cellular drops)
+        const parseResponse = await fetchWithRetry("/api/parse", {
           method: "POST",
           body: formData,
           signal: controller.signal,
+          maxRetries: 3,
+          initialDelayMs: 1200,
+          onRetry: (attempt) => {
+            setRetryStatus(`Slow network detected. Retrying parsing (attempt ${attempt} of 3)...`);
+          },
         });
+
+        setRetryStatus(null);
 
         if (!parseResponse.ok) {
           const errorData = await parseResponse.json().catch(() => ({}));
@@ -323,8 +340,8 @@ export default function Home() {
         setAnalysisStage("analyzing");
         setIsStreaming(true);
 
-        // Step 2: Stream Analyze Document immediately (does NOT wait for disclaimer agree click)
-        const analyzeResponse = await fetch("/api/analyze", {
+        // Step 2: Stream Analyze Document immediately (with exponential backoff retry)
+        const analyzeResponse = await fetchWithRetry("/api/analyze", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -334,7 +351,14 @@ export default function Home() {
             mospi_grounding: resolvedPincode.mospi_stats,
           }),
           signal: controller.signal,
+          maxRetries: 3,
+          initialDelayMs: 1200,
+          onRetry: (attempt) => {
+            setRetryStatus(`Network hiccup. Reconnecting analysis stream (attempt ${attempt} of 3)...`);
+          },
         });
+
+        setRetryStatus(null);
 
         if (!analyzeResponse.ok) {
           const errorText = await analyzeResponse.text().catch(() => "");
@@ -389,6 +413,7 @@ export default function Home() {
           setPageState("analysis");
         }
       } catch (err: unknown) {
+        setRetryStatus(null);
         // If aborted by user action, silently return to homepage
         if (controller.signal.aborted || (err as { name?: string })?.name === "AbortError") {
           return;
@@ -423,6 +448,7 @@ export default function Home() {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
     }
+    setRetryStatus(null);
     disclaimerAgreedRef.current = false;
     setIsStreaming(false);
     setIsProcessing(false);
@@ -435,6 +461,7 @@ export default function Home() {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
     }
+    setRetryStatus(null);
     disclaimerAgreedRef.current = false;
     setIsStreaming(false);
     setIsProcessing(false);
@@ -884,11 +911,18 @@ export default function Home() {
             </div>
 
             <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2">Reading your policy...</h3>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
               {analysisStage === "analyzing"
                 ? "Evaluating policy clauses, room rent limitations, waiting periods, and statutory IRDAI benchmarks."
                 : "Securely parsing document clauses, endorsements, and demographic context."}
             </p>
+
+            {retryStatus && (
+              <div className="mb-4 px-3.5 py-2 bg-amber-50 border border-amber-200/80 rounded-xl text-amber-800 text-xs font-medium flex items-center justify-center gap-2 animate-pulse">
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-600 shrink-0" />
+                <span>{retryStatus}</span>
+              </div>
+            )}
 
             <button
               id="cancel-analysis-button"

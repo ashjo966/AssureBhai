@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { X, CheckCircle2, Loader2, MessageSquare } from "lucide-react";
+import { fetchWithRetry } from "@/lib/fetchWithRetry";
 
 interface FeedbackWidgetProps {
   isOpen: boolean;
@@ -47,7 +48,7 @@ export function FeedbackWidget({ isOpen, onClose }: FeedbackWidgetProps) {
     setErrorMessage(null);
 
     try {
-      const response = await fetch("/api/feedback", {
+      const response = await fetchWithRetry("/api/feedback", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,6 +57,8 @@ export function FeedbackWidget({ isOpen, onClose }: FeedbackWidgetProps) {
           name: trimmedName,
           feedback: trimmedFeedback,
         }),
+        maxRetries: 2,
+        initialDelayMs: 1000,
       });
 
       const data = await response.json();
