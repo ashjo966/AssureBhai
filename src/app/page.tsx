@@ -550,12 +550,16 @@ export default function Home() {
             {/* Dynamic Hero Section */}
             <div className="text-center mt-2 sm:mt-4 mb-6 sm:mb-8 w-full max-w-full">
               <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight break-words">
-                Your{" "}
-                <span className="text-indigo-600 relative inline-block">
-                  {currentText}
-                  <span className="absolute right-[-2px] top-[10%] h-[80%] w-0.5 bg-indigo-600 animate-pulse" />
-                </span>{" "}
-                policy, simplified.
+                <span className="inline-block sm:inline">
+                  Your{" "}
+                  <span className="text-indigo-600 relative inline-block">
+                    {currentText}
+                    <span className="absolute right-[-2px] top-[10%] h-[80%] w-0.5 bg-indigo-600 animate-pulse" />
+                  </span>{" "}
+                  policy,
+                </span>
+                <br className="sm:hidden" />{" "}
+                <span className="italic">simplified</span>.
               </h1>
               <p className="mt-3 sm:mt-6 text-sm sm:text-lg text-slate-500 max-w-lg mx-auto leading-relaxed">
                 Upload your policy PDF to analyze terms, uncover hidden clauses, and verify statutory IRDAI benchmarks instantly.
