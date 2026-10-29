@@ -8,12 +8,38 @@ declare global {
 }
 
 /**
+ * Resolves the PostgreSQL connection string across standard cloud environment variables:
+ * - DATABASE_URL (Railway, standard)
+ * - POSTGRES_URL (Vercel, Supabase, Railway)
+ * - DATABASE_PRIVATE_URL / DATABASE_PUBLIC_URL (Railway PostgreSQL)
+ * - PGDATABASE_URL
+ */
+export function getConnectionString(): string | undefined {
+  return (
+    process.env.DATABASE_URL ||
+    process.env.POSTGRES_URL ||
+    process.env.DATABASE_PRIVATE_URL ||
+    process.env.DATABASE_PUBLIC_URL ||
+    process.env.PGDATABASE_URL
+  );
+}
+
+/**
+ * Returns true if a PostgreSQL connection string is configured in the environment.
+ */
+export function isDbConfigured(): boolean {
+  return !!getConnectionString();
+}
+
+/**
  * Returns or initializes a shared singleton PostgreSQL connection pool.
  */
 export function getPool(): Pool {
-  const connectionString = process.env.DATABASE_URL;
+  const connectionString = getConnectionString();
   if (!connectionString) {
-    throw new Error("DATABASE_URL environment variable is not defined");
+    throw new Error(
+      "Database connection string is missing. Please set DATABASE_URL in your Railway project variables."
+    );
   }
 
   if (!global._pgPool) {
@@ -72,4 +98,3 @@ export async function queryDb<T extends QueryResultRow = any>(
   const pool = getPool();
   return pool.query<T>(text, params);
 }
-

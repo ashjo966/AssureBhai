@@ -3,7 +3,7 @@ import crypto from "crypto";
 import path from "path";
 import fs from "fs";
 import * as XLSX from "xlsx";
-import { queryDb } from "@/lib/db";
+import { queryDb, isDbConfigured } from "@/lib/db";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -132,7 +132,7 @@ async function syncToGitHub(name: string, feedback: string, githubToken: string)
 }
 
 /**
- * POST /api/feedback: Ingests user feedback into PostgreSQL database.
+ * POST /api/feedback: Ingests user feedback into PostgreSQL database and backup stores.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -152,8 +152,8 @@ export async function POST(request: NextRequest) {
 
     let dbSaved = false;
 
-    // 1. Primary storage: PostgreSQL feedback table
-    if (process.env.DATABASE_URL) {
+    // 1. Primary storage: PostgreSQL feedback table (if DATABASE_URL is set)
+    if (isDbConfigured()) {
       try {
         await queryDb(
           "INSERT INTO feedback (name, feedback) VALUES ($1, $2) RETURNING id, created_at;",
@@ -163,8 +163,6 @@ export async function POST(request: NextRequest) {
       } catch (dbErr) {
         console.error("Error inserting feedback into PostgreSQL database:", dbErr);
       }
-    } else {
-      console.warn("DATABASE_URL not set; skipping PostgreSQL insert.");
     }
 
     // 2. Secondary local backup: assurebhai_feedback.xlsx
@@ -195,7 +193,7 @@ export async function POST(request: NextRequest) {
 
     if (!dbSaved && !localSaved) {
       return NextResponse.json(
-        { error: "Failed to persist feedback to database." },
+        { error: "Failed to persist feedback to storage." },
         { status: 500 }
       );
     }
@@ -225,18 +223,60 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (!process.env.DATABASE_URL) {
-      return NextResponse.json(
-        { error: "Database connection not configured (DATABASE_URL missing)." },
-        { status: 500 }
-      );
+    // 1. If database is configured, fetch directly from PostgreSQL
+    if (isDbConfigured()) {
+      try {
+        const result = await queryDb(
+          "SELECT id, name, feedback, created_at FROM feedback ORDER BY created_at DESC;"
+        );
+
+        return NextResponse.json({
+          rows: result.rows,
+          isDbConfigured: true,
+        });
+      } catch (dbErr) {
+        console.error("PostgreSQL query failed, falling back to local file:", dbErr);
+      }
     }
 
-    const result = await queryDb(
-      "SELECT id, name, feedback, created_at FROM feedback ORDER BY created_at DESC;"
-    );
+    // 2. Graceful fallback if DATABASE_URL is not yet linked or PostgreSQL is starting up
+    const localFilePath = path.join(process.cwd(), FILE_PATH);
+    const fallbackRows: Array<{ id: number; name: string; feedback: string; created_at: string }> = [];
 
-    return NextResponse.json(result.rows);
+    if (fs.existsSync(localFilePath)) {
+      try {
+        const buffer = fs.readFileSync(localFilePath);
+        const wb = XLSX.read(buffer, { type: "buffer" });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        if (sheet) {
+          const rawRows = XLSX.utils.sheet_to_json<string[]>(sheet, { header: 1 });
+          const startIndex = rawRows.length > 0 && rawRows[0]?.[0]?.toLowerCase() === "name" ? 1 : 0;
+          const fileStat = fs.statSync(localFilePath);
+          const fallbackTime = fileStat.mtime.toISOString();
+
+          for (let i = startIndex; i < rawRows.length; i++) {
+            const r = rawRows[i];
+            if (r && r[0] && r[1]) {
+              fallbackRows.push({
+                id: i,
+                name: String(r[0]),
+                feedback: String(r[1]),
+                created_at: fallbackTime,
+              });
+            }
+          }
+        }
+      } catch (readErr) {
+        console.warn("Could not parse local fallback xlsx:", readErr);
+      }
+    }
+
+    return NextResponse.json({
+      rows: fallbackRows.reverse(),
+      isDbConfigured: false,
+      warning:
+        "PostgreSQL connection (DATABASE_URL) is not yet configured in Railway project variables. Displaying local backup records. Once you add a PostgreSQL database in Railway and link DATABASE_URL, submissions will automatically be stored in PostgreSQL.",
+    });
   } catch (error: unknown) {
     console.error("Error retrieving feedback rows:", error);
     const errorMessage = error instanceof Error ? error.message : "Internal Server Error";

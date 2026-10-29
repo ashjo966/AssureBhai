@@ -26,6 +26,7 @@ function FeedbackTableContent() {
   const [feedbackList, setFeedbackList] = useState<FeedbackItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [warning, setWarning] = useState<string | null>(null);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -67,6 +68,7 @@ function FeedbackTableContent() {
         ? data
         : data?.feedback || data?.rows || [];
       setFeedbackList(rows);
+      setWarning(data?.warning || null);
       setIsUnauthorized(false);
     } catch (err) {
       console.error("Failed to load feedback:", err);
@@ -192,6 +194,16 @@ function FeedbackTableContent() {
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {warning && (
+          <div className="mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm flex items-start gap-3 shadow-xs">
+            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold text-amber-950">PostgreSQL Notice</p>
+              <p className="text-amber-800 mt-0.5 leading-relaxed">{warning}</p>
+            </div>
+          </div>
+        )}
+
         {error && (
           <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm flex items-start gap-3 shadow-xs">
             <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
@@ -310,4 +322,3 @@ export default function FeedbackAdminPage() {
     </Suspense>
   );
 }
-
