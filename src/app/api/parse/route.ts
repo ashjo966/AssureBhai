@@ -391,16 +391,21 @@ Please inspect the attached insurance policy document and extract all factual pa
       rawMsg.toLowerCase().includes("unavailable") ||
       rawMsg.toLowerCase().includes("overloaded");
 
+    const isProd = process.env.NODE_ENV === "production";
     const friendlyMessage = is503
       ? "This website is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."
+      : isProd
+      ? "Failed to process the document. Please try again or ensure the file is a valid policy."
       : rawMsg || "Failed to parse document.";
 
-    return NextResponse.json(
-      {
-        error: friendlyMessage,
-        details: error?.message || String(error),
-      },
-      { status: is503 ? 503 : 500 }
-    );
+    const errorPayload: Record<string, string> = {
+      error: friendlyMessage,
+    };
+
+    if (!isProd) {
+      errorPayload.details = error?.message || String(error);
+    }
+
+    return NextResponse.json(errorPayload, { status: is503 ? 503 : 500 });
   }
 }

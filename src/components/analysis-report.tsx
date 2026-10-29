@@ -11,6 +11,7 @@ import {
   CheckCircle,
   AlertTriangle,
   Loader2,
+  Calculator,
 } from "lucide-react";
 import { Markdown } from "@/components/markdown";
 
@@ -79,11 +80,16 @@ function InsurerLogoBadge({ issuer }: { issuer: string }) {
 
 // Animated Score Card Component
 function AnimatedScoreCard({ scoreText }: { scoreText: string }) {
-  const match = scoreText.match(/(\d+(?:\.\d+)?)\s*(?:\/\s*10)?/);
-  const targetScore = match ? parseFloat(match[1]) : null;
+  // Robust regex parser for extracting <OVERALL_RATING> score
+  const match =
+    scoreText.match(/(?:overall\s*rating|rating|score)?[:\s*]*(\d+(?:\.\d+)?)\s*(?:\/\s*10|\s*out of\s*10)?/i) ||
+    scoreText.match(/(\d+(?:\.\d+)?)\s*(?:\/\s*10)?/);
+  const rawScore = match ? parseFloat(match[1]) : null;
+  const targetScore = rawScore !== null && !isNaN(rawScore) ? Math.min(Math.max(rawScore, 1.0), 10.0) : null;
   const [displayScore, setDisplayScore] = useState<number>(0);
 
-  const rationale = scoreText
+  const firstLine = scoreText.split("\n")[0] || scoreText;
+  const rationale = firstLine
     .replace(/^.*?(\d+(?:\.\d+)?\s*(?:\/\s*10)?\s*[-–:]?\s*)/i, "")
     .replace(/\*\*/g, "")
     .trim();
@@ -118,15 +124,19 @@ function AnimatedScoreCard({ scoreText }: { scoreText: string }) {
     );
   }
 
+  // Dynamic Tier & Color Badges:
+  // >= 8.0: Green (High Quality Tier)
+  // 6.0 - 7.9: Amber (Moderate Coverage)
+  // < 6.0: Red (High Risk / Restrictive)
   let scoreColorStyles = "text-emerald-600 bg-emerald-50 border-emerald-300";
   let badgeLabel = "High Quality Tier";
   let badgeBg = "bg-emerald-100 text-emerald-800";
 
-  if (targetScore < 5) {
+  if (targetScore < 6.0) {
     scoreColorStyles = "text-rose-600 bg-rose-50 border-rose-300";
     badgeLabel = "High Risk / Restrictive";
     badgeBg = "bg-rose-100 text-rose-800";
-  } else if (targetScore < 8) {
+  } else if (targetScore < 8.0) {
     scoreColorStyles = "text-amber-600 bg-amber-50 border-amber-300";
     badgeLabel = "Moderate Coverage";
     badgeBg = "bg-amber-100 text-amber-800";
@@ -187,16 +197,27 @@ function extractTagContent(content: string, tagName: string): string | null {
   return content.slice(contentStart).replace(/<\/?[a-zA-Z0-9_]*$/, "").trim();
 }
 
-// Section 4 Highlights Parser (Score, Strengths, Improvement Areas)
+// Section 4 Highlights Parser (Score, Mathematical Deductions, Strengths, Improvement Areas)
 function Section4Scorecard({ content }: { content: string }) {
   let overallRatingText = extractTagContent(content, "OVERALL_RATING") || "";
+  let deductionBreakdown = extractTagContent(content, "DEDUCTION_BREAKDOWN") || "";
   let coreStrengthsContent = extractTagContent(content, "CORE_STRENGTHS") || "";
   let improvementAreasContent = extractTagContent(content, "IMPROVEMENT_AREAS") || "";
+
+  // Support case where deduction breakdown is included inside OVERALL_RATING tag
+  if (!deductionBreakdown && overallRatingText.includes("\n")) {
+    const lines = overallRatingText.split("\n");
+    if (lines.length > 1) {
+      overallRatingText = lines[0];
+      deductionBreakdown = lines.slice(1).join("\n").trim();
+    }
+  }
 
   // Fallback if boundary tags were missing in older / unformatted outputs
   if (!overallRatingText && !coreStrengthsContent && !improvementAreasContent) {
     const lines = content.split("\n");
-    let currentMode: "none" | "strengths" | "weaknesses" = "none";
+    let currentMode: "none" | "deductions" | "strengths" | "weaknesses" = "none";
+    const fallbackDeductions: string[] = [];
     const fallbackStrengths: string[] = [];
     const fallbackWeaknesses: string[] = [];
 
@@ -211,6 +232,14 @@ function Section4Scorecard({ content }: { content: string }) {
       ) {
         overallRatingText = line;
         currentMode = "none";
+        continue;
+      }
+
+      if (
+        /\*\*(?:Scoring Mathematical Breakdown|Deduction Breakdown|Deductions Applied)\*\*/i.test(line) ||
+        /^-\s*\*\*(?:Scoring Mathematical Breakdown|Deduction Breakdown|Deductions Applied)\*\*/i.test(line)
+      ) {
+        currentMode = "deductions";
         continue;
       }
 
@@ -240,13 +269,18 @@ function Section4Scorecard({ content }: { content: string }) {
         continue;
       }
 
-      if (currentMode === "strengths") {
+      if (currentMode === "deductions") {
+        fallbackDeductions.push(line);
+      } else if (currentMode === "strengths") {
         fallbackStrengths.push(line);
       } else if (currentMode === "weaknesses") {
         fallbackWeaknesses.push(line);
       }
     }
 
+    if (!deductionBreakdown && fallbackDeductions.length > 0) {
+      deductionBreakdown = fallbackDeductions.join("\n");
+    }
     if (!coreStrengthsContent && fallbackStrengths.length > 0) {
       coreStrengthsContent = fallbackStrengths.join("\n");
     }
@@ -268,6 +302,21 @@ function Section4Scorecard({ content }: { content: string }) {
     <div className="space-y-6">
       {/* Animated Rating Card */}
       {overallRatingText && <AnimatedScoreCard scoreText={overallRatingText} />}
+
+      {/* Scoring Mathematical Breakdown Card */}
+      {deductionBreakdown && (
+        <div className="bg-slate-50/80 border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-xs">
+          <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-slate-200/80">
+            <Calculator className="w-4 h-4 text-slate-600 shrink-0" />
+            <h4 className="font-bold text-sm text-slate-900 tracking-tight">
+              Scoring Mathematical Breakdown (Base Score: 10.0)
+            </h4>
+          </div>
+          <div className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+            <Markdown variant="inherit" content={deductionBreakdown} />
+          </div>
+        </div>
+      )}
 
       {/* Dual Cards for Strengths vs Improvement Areas */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

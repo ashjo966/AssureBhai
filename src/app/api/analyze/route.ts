@@ -126,7 +126,8 @@ ${JSON.stringify(policy_data)}
             contents: userPrompt,
             config: {
               systemInstruction: analysisPrompt,
-              temperature: 0.2,
+              temperature: 0.1,
+              topP: 0.8,
               thinkingConfig: {
                 thinkingBudget: 1024,
               },
@@ -193,8 +194,11 @@ ${JSON.stringify(policy_data)}
       rawMsg.toLowerCase().includes("unavailable") ||
       rawMsg.toLowerCase().includes("overloaded");
 
+    const isProd = process.env.NODE_ENV === "production";
     const friendlyMessage = is503
       ? "This website is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."
+      : isProd
+      ? "An unexpected error occurred during policy analysis. Please try again."
       : rawMsg || "Internal Server Error";
 
     return NextResponse.json({ error: friendlyMessage }, { status: is503 ? 503 : 500 });
