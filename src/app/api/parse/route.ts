@@ -163,25 +163,30 @@ export async function POST(req: NextRequest) {
       expected_insurance_zone: pincodeResolution.expected_insurance_zone,
     };
 
-    // 2. Determine file format and extract text or prepare multimodal payload
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    // 2. Strict PDF validation: Only PDF documents are supported
     const fileName = (file.name || "").toLowerCase();
     const rawMime = (file.type || "").toLowerCase();
+
     const isImage =
       rawMime.startsWith("image/") ||
-      /\.(jpg|jpeg|png|webp|heic|heif)$/i.test(fileName);
-    const resolvedMimeType = isImage
-      ? rawMime || (fileName.endsWith(".png") ? "image/png" : fileName.endsWith(".webp") ? "image/webp" : "image/jpeg")
-      : "application/pdf";
+      /\.(jpg|jpeg|png|webp|heic|heif|gif|bmp|tiff)$/i.test(fileName);
+
+    if (isImage || (!fileName.endsWith(".pdf") && rawMime && rawMime !== "application/pdf" && rawMime !== "application/x-pdf")) {
+      return NextResponse.json(
+        { error: "Only PDF documents are supported. Images are not allowed." },
+        { status: 400 }
+      );
+    }
+
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
 
     let extractedText = "";
 
-    // If it is a PDF, attempt local text extraction first (MarkItDown -> pdf-parse)
-    if (!isImage) {
-      try {
-        extractedText = await convertPdfToMarkdown(buffer, password);
-      } catch (markitdownErr: any) {
+    // Attempt local text extraction (MarkItDown -> pdf-parse)
+    try {
+      extractedText = await convertPdfToMarkdown(buffer, password);
+    } catch (markitdownErr: any) {
         if (
           markitdownErr instanceof PdfPasswordError ||
           markitdownErr?.code === "PDF_PASSWORD_REQUIRED" ||
@@ -250,7 +255,6 @@ export async function POST(req: NextRequest) {
           console.error("OCR Fallback failed:", ocrErr);
         }
       }
-    }
 
     // 4. Load parser prompt directly from prompts/ directory
     const promptFilePath = path.join(process.cwd(), "prompts", "parser_prompt.txt");
@@ -278,13 +282,13 @@ ${extractedText.slice(0, 150000)}
       contentsPayload = userMessageContent;
       userMessageContentForLog = userMessageContent;
     } else {
-      // Multimodal direct document ingestion for image-based PDFs, mobile phone scans, or camera photos
+      // Multimodal direct document ingestion for scanned/image-based PDFs
       const userMessageText = `
 <USER_CONTEXT>
 ${JSON.stringify(userContext)}
 </USER_CONTEXT>
 
-Please inspect the attached insurance policy document and extract all factual parameters into the target JSON structure strictly adhering to your system directives.
+Please inspect the attached insurance policy PDF document and extract all factual parameters into the target JSON structure strictly adhering to your system directives.
 `;
       contentsPayload = [
         {
@@ -293,14 +297,14 @@ Please inspect the attached insurance policy document and extract all factual pa
             { text: userMessageText },
             {
               inlineData: {
-                mimeType: resolvedMimeType,
+                mimeType: "application/pdf",
                 data: buffer.toString("base64"),
               },
             },
           ],
         },
       ];
-      userMessageContentForLog = `${userMessageText}\n[Attached Multimodal Document: ${resolvedMimeType}, ${buffer.length} bytes]`;
+      userMessageContentForLog = `${userMessageText}\n[Attached Scanned PDF Document: application/pdf, ${buffer.length} bytes]`;
     }
 
     // 7. Call Google GenAI SDK (Gemini) in JSON mode
