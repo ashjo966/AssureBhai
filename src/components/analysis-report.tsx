@@ -621,7 +621,7 @@ function ScoreBreakdownCard({ content }: { content: string }) {
             return (
               <div
                 key={idx}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3.5 px-4 bg-rose-50/60 border-l-4 border-rose-500 transition-colors"
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3.5 px-4 bg-rose-50/50 transition-colors"
               >
                 {/* Left Column (Icon + Text) */}
                 <div className="flex items-start gap-3 flex-1 min-w-0">
@@ -677,29 +677,16 @@ function ScoreBreakdownCard({ content }: { content: string }) {
       </div>
 
       {/* Summary Footer Bar */}
-      {(totalDeductions || finalRating) && (
-        <div className="bg-slate-50 border-t border-slate-200 px-4 py-3 rounded-b-xl flex flex-wrap justify-between items-center text-sm font-semibold gap-3">
-          {totalDeductions && (
-            <div className="flex items-center gap-1.5">
-              <span className="text-slate-600 font-medium">
-                {totalDeductions.label || "Total Deductions Applied"}:
-              </span>
-              <span className="text-rose-700 font-bold bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
-                {totalDeductions.val}
-              </span>
-            </div>
-          )}
-
-          {finalRating && (
-            <div className="flex items-center gap-1.5">
-              <span className="text-slate-600 font-medium">
-                {finalRating.label || "Final Computed Rating"}:
-              </span>
-              <span className="text-indigo-700 font-extrabold bg-indigo-50 px-3 py-0.5 rounded-full border border-indigo-200">
-                {finalRating.val}
-              </span>
-            </div>
-          )}
+      {finalRating && (
+        <div className="bg-slate-50 border-t border-slate-200 px-4 py-3 rounded-b-xl flex justify-center items-center text-sm font-semibold">
+          <div className="flex items-center gap-1.5 flex-wrap justify-center">
+            <span className="text-slate-600 font-medium">
+              {finalRating.label || "Final Computed Rating"}:
+            </span>
+            <span className="text-indigo-700 font-extrabold bg-indigo-50 px-3 py-0.5 rounded-full border border-indigo-200">
+              {finalRating.val}
+            </span>
+          </div>
         </div>
       )}
     </div>
