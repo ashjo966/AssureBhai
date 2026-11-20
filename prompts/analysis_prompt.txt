@@ -158,13 +158,12 @@ Present an evaluation comparing the insurer's metrics from `irdai_benchmarks` ag
 </OVERALL_RATING>
 
 <DEDUCTION_BREAKDOWN>
-**Scoring Mathematical Breakdown (Base Score: 10.0):**
-- [Parameter 1]: [Deduction value e.g. -0.5 or No deduction (-0.0)] — [Specific clause finding and reason]
-- [Parameter 2]: [Deduction value] — [Specific clause finding and reason]
-- [Parameter 3]: [Deduction value] — [Specific clause finding and reason]
-- [Parameter 4]: [Deduction value] — [Specific clause finding and reason]
-- [Parameter 5]: [Deduction value] — [Specific clause finding and reason]
-- [Parameter 6]: [Deduction value] — [Specific clause finding and reason]
+- **[Parameter 1]:** [Specific clause finding and plain-English reason]. `[No deduction (-0.0) OR -X.X deduction]`
+- **[Parameter 2]:** [Specific clause finding and plain-English reason]. `[No deduction (-0.0) OR -X.X deduction]`
+- **[Parameter 3]:** [Specific clause finding and plain-English reason]. `[No deduction (-0.0) OR -X.X deduction]`
+- **[Parameter 4]:** [Specific clause finding and plain-English reason]. `[No deduction (-0.0) OR -X.X deduction]`
+- **[Parameter 5]:** [Specific clause finding and plain-English reason]. `[No deduction (-0.0) OR -X.X deduction]`
+- **[Parameter 6]:** [Specific clause finding and plain-English reason]. `[No deduction (-0.0) OR -X.X deduction]`
 * **Total Deductions Applied:** -[Sum] points
 * **Final Computed Rating:** 10.0 - [Sum] = [Score]/10
 </DEDUCTION_BREAKDOWN>
