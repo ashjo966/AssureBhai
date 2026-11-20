@@ -600,7 +600,7 @@ export default function Home() {
         {pageState === "home" ? (
           /* HOMEPAGE VIEW */
           <div className="max-w-3xl mx-auto w-full flex flex-col items-center">
-            
+
             {/* Dynamic Hero Section */}
             <div className="text-center mt-2 sm:mt-4 mb-4 sm:mb-8 w-full max-w-full">
               <h1 className="text-2xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight break-words">
@@ -638,7 +638,7 @@ export default function Home() {
 
             {/* ACTION WRAPPER: Unified Compact Card on Mobile, Separate Classic Cards on Desktop */}
             <div className="w-full bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs sm:bg-transparent sm:border-0 sm:p-0 sm:shadow-none box-border">
-              
+
               {/* Mobile Step 1 Header */}
               <div className="sm:hidden flex items-center justify-between mb-2">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
@@ -659,21 +659,19 @@ export default function Home() {
                     fileInputRef.current?.click();
                   }
                 }}
-                className={`w-full max-w-full p-4 sm:p-10 border-2 border-dashed rounded-xl sm:rounded-2xl flex flex-col items-center justify-center transition-all duration-200 box-border ${
-                  isProcessing
-                    ? "opacity-60 cursor-not-allowed pointer-events-none"
-                    : !file
+                className={`w-full max-w-full p-4 sm:p-10 border-2 border-dashed rounded-xl sm:rounded-2xl flex flex-col items-center justify-center transition-all duration-200 box-border ${isProcessing
+                  ? "opacity-60 cursor-not-allowed pointer-events-none"
+                  : !file
                     ? "cursor-pointer"
                     : ""
-                } ${
-                  isDragOver
+                  } ${isDragOver
                     ? "border-indigo-500 bg-indigo-50/60"
                     : fileError
-                    ? "border-rose-400 bg-rose-50/20"
-                    : file
-                    ? "border-emerald-400 bg-emerald-50/30 shadow-xs sm:shadow-sm"
-                    : "border-slate-200 bg-slate-50/50 sm:bg-white hover:border-indigo-400 hover:shadow-md hover:shadow-indigo-50"
-                }`}
+                      ? "border-rose-400 bg-rose-50/20"
+                      : file
+                        ? "border-emerald-400 bg-emerald-50/30 shadow-xs sm:shadow-sm"
+                        : "border-slate-200 bg-slate-50/50 sm:bg-white hover:border-indigo-400 hover:shadow-md hover:shadow-indigo-50"
+                  }`}
               >
                 {/* File input strictly accepting PDF documents */}
                 <input
@@ -687,13 +685,12 @@ export default function Home() {
                 />
 
                 <div
-                  className={`w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center mb-2.5 sm:mb-4 ${
-                    file
-                      ? "bg-emerald-100 text-emerald-600"
-                      : fileError
+                  className={`w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center mb-2.5 sm:mb-4 ${file
+                    ? "bg-emerald-100 text-emerald-600"
+                    : fileError
                       ? "bg-rose-100 text-rose-600"
                       : "bg-indigo-50 text-indigo-600"
-                  }`}
+                    }`}
                 >
                   {file ? (
                     <CheckCircle2 className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-600" />
@@ -768,11 +765,10 @@ export default function Home() {
 
               {/* Optional PDF Password Field */}
               <div
-                className={`w-full max-w-full mt-3 sm:mt-4 rounded-xl sm:rounded-2xl p-3 sm:p-6 transition-all box-border bg-slate-50 sm:bg-white border ${
-                  passwordError
-                    ? "border-amber-400 bg-amber-50/40 ring-2 ring-amber-400/20"
-                    : "border-slate-200 sm:border-slate-200/80 sm:shadow-sm"
-                }`}
+                className={`w-full max-w-full mt-3 sm:mt-4 rounded-xl sm:rounded-2xl p-3 sm:p-6 transition-all box-border bg-slate-50 sm:bg-white border ${passwordError
+                  ? "border-amber-400 bg-amber-50/40 ring-2 ring-amber-400/20"
+                  : "border-slate-200 sm:border-slate-200/80 sm:shadow-sm"
+                  }`}
               >
                 <div className="flex items-center justify-between mb-1.5 sm:mb-2">
                   <div className="flex items-center gap-1.5 sm:gap-2">
@@ -830,7 +826,7 @@ export default function Home() {
 
               {/* Profile Fields Card */}
               <div className="w-full max-w-full mt-3.5 sm:mt-4 pt-3.5 sm:pt-6 border-t border-slate-100 sm:border-t-0 sm:bg-white sm:border sm:border-slate-200/80 sm:rounded-2xl sm:p-6 sm:shadow-sm box-border">
-                
+
                 {/* Desktop Header */}
                 <div className="hidden sm:block mb-5">
                   <h2 className="text-base sm:text-lg font-bold text-slate-900">Policyholder details</h2>
@@ -866,11 +862,10 @@ export default function Home() {
                       placeholder="e.g. 560001"
                       maxLength={6}
                       disabled={isProcessing}
-                      className={`w-full px-3 sm:px-4 py-2 sm:py-2.5 min-h-[44px] rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-xs sm:text-base transition-colors disabled:bg-slate-100 disabled:cursor-not-allowed ${
-                        pincodeError
-                          ? "border-rose-400 focus:border-rose-500 bg-rose-50/20"
-                          : "border-slate-200 focus:border-indigo-500"
-                      }`}
+                      className={`w-full px-3 sm:px-4 py-2 sm:py-2.5 min-h-[44px] rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-xs sm:text-base transition-colors disabled:bg-slate-100 disabled:cursor-not-allowed ${pincodeError
+                        ? "border-rose-400 focus:border-rose-500 bg-rose-50/20"
+                        : "border-slate-200 focus:border-indigo-500"
+                        }`}
                     />
                     {pincodeError ? (
                       <p className="text-[11px] text-rose-600 font-medium mt-1">
@@ -898,11 +893,10 @@ export default function Home() {
                       placeholder="e.g. 32"
                       maxLength={2}
                       disabled={isProcessing}
-                      className={`w-full px-3 sm:px-4 py-2 sm:py-2.5 min-h-[44px] rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-xs sm:text-base transition-colors disabled:bg-slate-100 disabled:cursor-not-allowed ${
-                        ageError
-                          ? "border-rose-400 focus:border-rose-500 bg-rose-50/20"
-                          : "border-slate-200 focus:border-indigo-500"
-                      }`}
+                      className={`w-full px-3 sm:px-4 py-2 sm:py-2.5 min-h-[44px] rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-xs sm:text-base transition-colors disabled:bg-slate-100 disabled:cursor-not-allowed ${ageError
+                        ? "border-rose-400 focus:border-rose-500 bg-rose-50/20"
+                        : "border-slate-200 focus:border-indigo-500"
+                        }`}
                     />
                     {ageError ? (
                       <p className="text-[11px] text-rose-600 font-medium mt-1">
@@ -1060,29 +1054,52 @@ export default function Home() {
           /* ANALYSIS VIEW - STREAMING VERDICT REPORT */
           <div className="w-full max-w-full flex flex-col gap-6 overflow-x-hidden">
             {/* Top Toolbar */}
-            <div className="flex items-center justify-between pb-4 border-b border-slate-200">
-              <div>
+            <div className="flex items-center justify-between gap-3 pb-4 border-b border-slate-200">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-3">
-                  <h1 className="text-xl sm:text-3xl font-black text-slate-900">
+                  <h1 className="text-[17px] min-[375px]:text-lg sm:text-3xl font-black text-slate-900 leading-tight whitespace-nowrap">
                     Policy Evaluation Report
                   </h1>
                   {isStreaming && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold animate-pulse border border-indigo-200/60">
+                    <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold animate-pulse border border-indigo-200/60 shrink-0">
                       <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-600" />
                       <span>Streaming sections...</span>
                     </span>
                   )}
                 </div>
-                <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                <p className="text-xs sm:text-sm text-slate-500 mt-1 line-clamp-2 sm:line-clamp-none">
                   Evaluated against official IRDAI regulatory baselines and underwriting guidelines.
                 </p>
               </div>
-              <button
-                onClick={handleReset}
-                className="inline-flex items-center px-4 py-2 text-xs sm:text-sm font-semibold text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors cursor-pointer"
-              >
-                ← Analyze new policy
-              </button>
+
+              {/* Right Action Slot */}
+              <div className="shrink-0 flex items-center">
+                {isStreaming ? (
+                  <>
+                    {/* On mobile while streaming: Streaming sections pill replaces the Analyze new policy button */}
+                    <span className="sm:hidden inline-flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold animate-pulse border border-indigo-200/60 whitespace-nowrap">
+                      <Loader2 className="w-3 h-3 animate-spin text-indigo-600" />
+                      <span>Streaming sections...</span>
+                    </span>
+
+                    {/* On desktop while streaming: Analyze new policy button */}
+                    <button
+                      onClick={handleReset}
+                      className="hidden sm:inline-flex items-center px-4 py-2 text-xs sm:text-sm font-semibold text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors cursor-pointer"
+                    >
+                      ← Analyze new policy
+                    </button>
+                  </>
+                ) : (
+                  /* When not streaming (both mobile and desktop): Analyze new policy button */
+                  <button
+                    onClick={handleReset}
+                    className="inline-flex items-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors cursor-pointer whitespace-nowrap"
+                  >
+                    ← Analyze new policy
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Error in Analysis View */}
@@ -1115,7 +1132,7 @@ export default function Home() {
       {isProcessing && !showDisclaimer && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
           <div className="bg-white rounded-2xl max-w-md w-full max-w-[calc(100vw-1.5rem)] p-5 sm:p-7 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200 text-left box-border">
-            
+
             {/* Header with Title & Badge */}
             <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
               <div className="flex items-center gap-2">
@@ -1137,13 +1154,12 @@ export default function Home() {
               <div className="flex items-start gap-3">
                 <div className="flex flex-col items-center">
                   <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                      loadingStep > 1
-                        ? "bg-emerald-500 text-white"
-                        : loadingStep === 1
+                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${loadingStep > 1
+                      ? "bg-emerald-500 text-white"
+                      : loadingStep === 1
                         ? "bg-indigo-600 text-white ring-4 ring-indigo-100"
                         : "bg-slate-100 text-slate-400"
-                    }`}
+                      }`}
                   >
                     {loadingStep > 1 ? (
                       <CheckCircle2 className="w-4 h-4" />
@@ -1154,20 +1170,18 @@ export default function Home() {
                     )}
                   </div>
                   <div
-                    className={`w-0.5 h-6 transition-colors ${
-                      loadingStep > 1 ? "bg-emerald-400" : "bg-slate-200"
-                    }`}
+                    className={`w-0.5 h-6 transition-colors ${loadingStep > 1 ? "bg-emerald-400" : "bg-slate-200"
+                      }`}
                   />
                 </div>
                 <div className="pt-0.5">
                   <p
-                    className={`text-xs sm:text-sm font-semibold ${
-                      loadingStep === 1
-                        ? "text-indigo-900"
-                        : loadingStep > 1
+                    className={`text-xs sm:text-sm font-semibold ${loadingStep === 1
+                      ? "text-indigo-900"
+                      : loadingStep > 1
                         ? "text-slate-800"
                         : "text-slate-400"
-                    }`}
+                      }`}
                   >
                     Reading &amp; decrypting policy PDF...
                   </p>
@@ -1181,13 +1195,12 @@ export default function Home() {
               <div className="flex items-start gap-3">
                 <div className="flex flex-col items-center">
                   <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                      loadingStep > 2
-                        ? "bg-emerald-500 text-white"
-                        : loadingStep === 2
+                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${loadingStep > 2
+                      ? "bg-emerald-500 text-white"
+                      : loadingStep === 2
                         ? "bg-indigo-600 text-white ring-4 ring-indigo-100"
                         : "bg-slate-100 text-slate-400"
-                    }`}
+                      }`}
                   >
                     {loadingStep > 2 ? (
                       <CheckCircle2 className="w-4 h-4" />
@@ -1198,20 +1211,18 @@ export default function Home() {
                     )}
                   </div>
                   <div
-                    className={`w-0.5 h-6 transition-colors ${
-                      loadingStep > 2 ? "bg-emerald-400" : "bg-slate-200"
-                    }`}
+                    className={`w-0.5 h-6 transition-colors ${loadingStep > 2 ? "bg-emerald-400" : "bg-slate-200"
+                      }`}
                   />
                 </div>
                 <div className="pt-0.5">
                   <p
-                    className={`text-xs sm:text-sm font-semibold ${
-                      loadingStep === 2
-                        ? "text-indigo-900"
-                        : loadingStep > 2
+                    className={`text-xs sm:text-sm font-semibold ${loadingStep === 2
+                      ? "text-indigo-900"
+                      : loadingStep > 2
                         ? "text-slate-800"
                         : "text-slate-400"
-                    }`}
+                      }`}
                   >
                     Extracting key clauses &amp; mapping MoSPI benchmarks...
                   </p>
@@ -1225,13 +1236,12 @@ export default function Home() {
               <div className="flex items-start gap-3">
                 <div className="flex flex-col items-center">
                   <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                      analysisStage === "completed"
-                        ? "bg-emerald-500 text-white"
-                        : loadingStep === 3
+                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${analysisStage === "completed"
+                      ? "bg-emerald-500 text-white"
+                      : loadingStep === 3
                         ? "bg-indigo-600 text-white ring-4 ring-indigo-100"
                         : "bg-slate-100 text-slate-400"
-                    }`}
+                      }`}
                   >
                     {analysisStage === "completed" ? (
                       <CheckCircle2 className="w-4 h-4" />
@@ -1244,13 +1254,12 @@ export default function Home() {
                 </div>
                 <div className="pt-0.5">
                   <p
-                    className={`text-xs sm:text-sm font-semibold ${
-                      loadingStep === 3
-                        ? "text-indigo-900"
-                        : analysisStage === "completed"
+                    className={`text-xs sm:text-sm font-semibold ${loadingStep === 3
+                      ? "text-indigo-900"
+                      : analysisStage === "completed"
                         ? "text-slate-800"
                         : "text-slate-400"
-                    }`}
+                      }`}
                   >
                     Generating your personalized AssureBhai verdict...
                   </p>
