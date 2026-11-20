@@ -158,12 +158,12 @@ Present an evaluation comparing the insurer's metrics from `irdai_benchmarks` ag
 </OVERALL_RATING>
 
 <DEDUCTION_BREAKDOWN>
-- **[Parameter 1]:** [Specific clause finding and plain-English reason]. `[No deduction (-0.0) OR -X.X deduction]`
-- **[Parameter 2]:** [Specific clause finding and plain-English reason]. `[No deduction (-0.0) OR -X.X deduction]`
-- **[Parameter 3]:** [Specific clause finding and plain-English reason]. `[No deduction (-0.0) OR -X.X deduction]`
-- **[Parameter 4]:** [Specific clause finding and plain-English reason]. `[No deduction (-0.0) OR -X.X deduction]`
-- **[Parameter 5]:** [Specific clause finding and plain-English reason]. `[No deduction (-0.0) OR -X.X deduction]`
-- **[Parameter 6]:** [Specific clause finding and plain-English reason]. `[No deduction (-0.0) OR -X.X deduction]`
+- **[Parameter 1]:** [Specific clause finding and plain-English reason]. `No deduction (-0.0) OR -X.X deduction`
+- **[Parameter 2]:** [Specific clause finding and plain-English reason]. `No deduction (-0.0) OR -X.X deduction`
+- **[Parameter 3]:** [Specific clause finding and plain-English reason]. `No deduction (-0.0) OR -X.X deduction`
+- **[Parameter 4]:** [Specific clause finding and plain-English reason]. `No deduction (-0.0) OR -X.X deduction`
+- **[Parameter 5]:** [Specific clause finding and plain-English reason]. `No deduction (-0.0) OR -X.X deduction`
+- **[Parameter 6]:** [Specific clause finding and plain-English reason]. `No deduction (-0.0) OR -X.X deduction`
 * **Total Deductions Applied:** -[Sum] points
 * **Final Computed Rating:** 10.0 - [Sum] = [Score]/10
 </DEDUCTION_BREAKDOWN>

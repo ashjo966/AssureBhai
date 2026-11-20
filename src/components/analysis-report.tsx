@@ -9,6 +9,7 @@ import {
   FileText,
   Gavel,
   CheckCircle,
+  CheckCircle2,
   AlertTriangle,
   Loader2,
   Calculator,
@@ -174,134 +175,159 @@ function AnimatedScoreCard({ scoreText }: { scoreText: string }) {
   );
 }
 
-// Tag extractor helper (supports both complete and streaming partial tags)
+// Tag extractor helper (supports case-insensitivity, whitespace, complete and streaming partial tags)
 function extractTagContent(content: string, tagName: string): string | null {
-  const startTag = `<${tagName}>`;
-  const endTag = `</${tagName}>`;
-  const startIdx = content.indexOf(startTag);
-  if (startIdx === -1) return null;
+  if (!content) return null;
 
-  const contentStart = startIdx + startTag.length;
-  const endIdx = content.indexOf(endTag, contentStart);
+  const startRegex = new RegExp(`<${tagName}\\s*>`, "i");
+  const startMatch = content.match(startRegex);
+  if (!startMatch || startMatch.index === undefined) return null;
 
-  if (endIdx !== -1) {
-    return content.slice(contentStart, endIdx).trim();
+  const contentStart = startMatch.index + startMatch[0].length;
+  const rest = content.slice(contentStart);
+
+  const endRegex = new RegExp(`<\\/${tagName}\\s*>`, "i");
+  const endMatch = rest.match(endRegex);
+  if (endMatch && endMatch.index !== undefined) {
+    return rest.slice(0, endMatch.index).trim();
   }
 
-  // If end tag not found yet, slice to next tag or end of string
-  const nextTagMatch = content.slice(contentStart).search(/<[a-zA-Z0-9_]+>/);
+  // If end tag not found yet (streaming/partial), slice to next tag or end of string
+  const nextTagMatch = rest.search(/<[a-zA-Z0-9_]+/);
   if (nextTagMatch !== -1) {
-    return content.slice(contentStart, contentStart + nextTagMatch).replace(/<\/?[^>]+>$/, "").trim();
+    return rest.slice(0, nextTagMatch).replace(/<\/?[^>]+>$/, "").trim();
   }
 
-  return content.slice(contentStart).replace(/<\/?[a-zA-Z0-9_]*$/, "").trim();
+  return rest.replace(/<\/?[a-zA-Z0-9_]*$/, "").trim();
 }
 
-// Score Breakdown Card with Urgency Highlighting & Summary Footer Bar
+interface CriterionItem {
+  title: string;
+  explanation: string;
+  isActiveDeduction: boolean;
+  badgeText: string;
+}
+
+function parseCriterionLine(line: string): CriterionItem | null {
+  // Strip bullet markers (-, *, •, 1., etc.)
+  const clean = line.replace(/^[-*•\d.\s]+/, "").trim();
+  if (!clean) return null;
+
+  let title = "";
+  let remainder = clean;
+
+  // 1. Extract Criterion Title
+  const boldMatch = clean.match(/^\*\*([^*]+)\*\*[:\s-—]*\s*/);
+  if (boldMatch) {
+    title = boldMatch[1].replace(/[:\s-—]+$/, "").trim();
+    remainder = clean.slice(boldMatch[0].length).trim();
+  } else {
+    const colonIdx = clean.indexOf(":");
+    if (colonIdx > 0 && colonIdx < 50) {
+      title = clean.slice(0, colonIdx).replace(/\*+/g, "").trim();
+      remainder = clean.slice(colonIdx + 1).trim();
+    }
+  }
+
+  // 2. Extract Trailing Deduction Tag (e.g., `[No deduction (-0.0)]`, `[-0.5 deduction]`, [-1.0 deduction], -0.5 pts, etc.)
+  const cleanRemainder = remainder.replace(/[.\s]+$/, "").trim();
+  const trailingMatch = cleanRemainder.match(
+    /([`\[\(]*\s*(No deduction(?:\s*\(-?0(?:\.0+)?\))?|-?\d+(?:\.\d+)?\s*(?:pts?|points?)?\s*(?:deductions?)?)\s*[`\]\)]*)$/i
+  );
+
+  let explanation = cleanRemainder;
+  let rawTag = "";
+
+  if (trailingMatch && trailingMatch.index !== undefined) {
+    rawTag = trailingMatch[2] || trailingMatch[1];
+    explanation = cleanRemainder.slice(0, trailingMatch.index).trim().replace(/[-—:,]+$/, "").trim();
+  } else {
+    // Check if tag was placed at start (older prompt format: -0.5 deduction — reason)
+    const leadingMatch = cleanRemainder.match(
+      /^([`\[\(]*\s*(No deduction(?:\s*\(-?0(?:\.0+)?\))?|-?\d+(?:\.\d+)?\s*(?:pts?|points?)?\s*(?:deductions?)?)\s*[`\]\)]*)\s*[-—:]\s*/i
+    );
+    if (leadingMatch) {
+      rawTag = leadingMatch[2] || leadingMatch[1];
+      explanation = cleanRemainder.slice(leadingMatch[0].length).trim();
+    }
+  }
+
+  // Sanitize explanation: remove any inline code backticks or brackets around tags
+  explanation = explanation.replace(/`([^`]+)`/g, "$1").trim();
+
+  // Clean rawTag: strip any leftover backticks, brackets, parentheses
+  const sanitizedTag = rawTag.replace(/[`\[\]\(\)]/g, "").trim();
+
+  const isZero =
+    !sanitizedTag ||
+    /no deduction/i.test(sanitizedTag) ||
+    /^-?0(?:\.0+)?\b/i.test(sanitizedTag);
+
+  let isActiveDeduction = false;
+  let badgeText = "No deduction (0.0)";
+
+  if (!isZero) {
+    const numMatch = sanitizedTag.match(/-?\d+(?:\.\d+)?/);
+    if (numMatch) {
+      const num = Math.abs(parseFloat(numMatch[0]));
+      badgeText = `-${num.toFixed(1)} pts`;
+      isActiveDeduction = num > 0;
+    } else {
+      badgeText = sanitizedTag.startsWith("-") ? sanitizedTag : `-${sanitizedTag}`;
+      isActiveDeduction = true;
+    }
+  }
+
+  if (explanation && !/[.!?]$/.test(explanation)) {
+    explanation += ".";
+  }
+
+  if (!title && explanation) {
+    title = "Policy Evaluation";
+  }
+
+  return {
+    title,
+    explanation,
+    isActiveDeduction,
+    badgeText: isActiveDeduction ? badgeText : "No deduction (0.0)",
+  };
+}
+
+// Dedicated React UI Renderer for <DEDUCTION_BREAKDOWN>
 function ScoreBreakdownCard({ content }: { content: string }) {
   const lines = content.split("\n");
   let totalDeductionsLine = "";
   let finalRatingLine = "";
-  const paramLines: string[] = [];
+  const criteria: CriterionItem[] = [];
 
   for (const rawLine of lines) {
     const line = rawLine.trim();
     if (!line) continue;
 
-    // Skip redundant title lines inside the content
-    if (/^\*?\*?(?:Scoring Mathematical Breakdown|Score Breakdown|Mathematical Breakdown)/i.test(line)) {
+    // Skip redundant title/header lines inside the block
+    if (/^\*?\*?#*\s*(?:Scoring Mathematical Breakdown|Score Breakdown|Mathematical Breakdown|Deduction Breakdown)/i.test(line)) {
       continue;
     }
 
-    // Check for Summary Lines
+    // Detect Total Deductions Applied
     if (/Total Deductions?(?:\s+Applied)?/i.test(line)) {
       totalDeductionsLine = line;
       continue;
     }
 
+    // Detect Final Computed Rating
     if (/Final Computed (?:Rating|Score)|Final (?:Rating|Score)/i.test(line)) {
       finalRatingLine = line;
       continue;
     }
 
-    paramLines.push(line);
+    // Parse criterion line into structured title, explanation, and deduction
+    const parsed = parseCriterionLine(line);
+    if (parsed) {
+      criteria.push(parsed);
+    }
   }
-
-  // Parse each parameter bullet line
-  const parsedItems = paramLines.map((line) => {
-    const clean = line.replace(/^[-*•\s]+/, "").trim();
-    let title = "";
-    let body = clean;
-    let tag = "";
-    let isNoDeduction = false;
-    let isDeduction = false;
-
-    // Extract title: **Title:** or **Title**: or Title:
-    const boldMatch = clean.match(/^\*\*([^*]+)\*\*:?\s*/);
-    if (boldMatch) {
-      title = boldMatch[1].replace(/:$/, "").trim();
-      body = clean.slice(boldMatch[0].length).trim();
-    } else {
-      const colonIdx = clean.indexOf(":");
-      if (colonIdx > 0 && colonIdx < 50) {
-        title = clean.slice(0, colonIdx).replace(/\*+/g, "").trim();
-        body = clean.slice(colonIdx + 1).trim();
-      }
-    }
-
-    // Extract deduction tag at the end (with optional backticks, brackets, parentheses)
-    const endTagMatch = body.match(
-      /([`\[\(]?\s*(No deduction(?:\s*\(-?0(?:\.0+)?\))?|-?\d+(?:\.\d+)?\s*(?:point|points)?\s*deductions?)\s*[`\]\)]?)[.,\s]*$/i
-    );
-
-    if (endTagMatch && endTagMatch.index !== undefined) {
-      const rawTag = endTagMatch[2].trim();
-      body = body.slice(0, endTagMatch.index).trim().replace(/[-—:,]+$/, "").trim();
-
-      if (/no deduction/i.test(rawTag) || /0(?:\.0+)?\s*deduction/i.test(rawTag)) {
-        isNoDeduction = true;
-        tag = "No deduction (-0.0)";
-      } else {
-        isDeduction = true;
-        const numMatch = rawTag.match(/-?\d+(?:\.\d+)?/);
-        if (numMatch) {
-          const num = Math.abs(parseFloat(numMatch[0]));
-          tag = `-${num.toFixed(1)} deduction`;
-        } else {
-          tag = rawTag.startsWith("-") ? rawTag : `-${rawTag}`;
-        }
-      }
-    } else {
-      // Check start tag for older prompt format: [Parameter]: -0.5 deduction — reason
-      const startTagMatch = body.match(
-        /^([`\[\(]?\s*(No deduction(?:\s*\(-?0(?:\.0+)?\))?|-?\d+(?:\.\d+)?\s*(?:point|points)?\s*deductions?)\s*[`\]\)]?)\s*[-—:]\s*/i
-      );
-      if (startTagMatch) {
-        const rawTag = startTagMatch[2].trim();
-        body = body.slice(startTagMatch[0].length).trim();
-
-        if (/no deduction/i.test(rawTag) || /0(?:\.0+)?\s*deduction/i.test(rawTag)) {
-          isNoDeduction = true;
-          tag = "No deduction (-0.0)";
-        } else {
-          isDeduction = true;
-          const numMatch = rawTag.match(/-?\d+(?:\.\d+)?/);
-          if (numMatch) {
-            const num = Math.abs(parseFloat(numMatch[0]));
-            tag = `-${num.toFixed(1)} deduction`;
-          } else {
-            tag = rawTag.startsWith("-") ? rawTag : `-${rawTag}`;
-          }
-        }
-      }
-    }
-
-    if (body && !/[.!?]$/.test(body)) {
-      body += ".";
-    }
-
-    return { title, body, tag, isNoDeduction, isDeduction, raw: line };
-  });
 
   const parseSummaryPart = (line: string) => {
     const clean = line.replace(/^[-*•\s]+/, "").trim();
@@ -319,89 +345,81 @@ function ScoreBreakdownCard({ content }: { content: string }) {
 
   return (
     <div className="bg-white border border-slate-200/90 rounded-2xl shadow-xs overflow-hidden">
-      <div className="p-5 sm:p-6 pb-2">
-        {/* Card Header Title */}
-        <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-slate-200/80">
-          <Calculator className="w-4 h-4 text-slate-600 shrink-0" />
-          <h4 className="font-bold text-sm sm:text-base text-slate-900 tracking-tight">
-            Score Breakdown (Base Score: 10.0)
-          </h4>
+      {/* Card Header Title */}
+      <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center gap-2.5">
+        <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+          <Calculator className="w-4 h-4" />
         </div>
+        <h4 className="font-bold text-sm sm:text-base text-slate-900 tracking-tight">
+          Score Breakdown (Base Score: 10.0)
+        </h4>
+      </div>
 
-        {/* Row-Level Items */}
-        <div className="space-y-1">
-          {parsedItems.map((item, idx) => {
-            if (item.isDeduction) {
-              return (
-                <div
-                  key={idx}
-                  className="bg-amber-50/70 border-l-4 border-amber-500 rounded-r-lg p-3 my-1.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 transition-all"
-                >
-                  <div className="flex items-start gap-2.5 flex-1 min-w-0">
-                    <span className="text-sm shrink-0 mt-0.5" role="img" aria-label="Warning">
-                      ⚠️
-                    </span>
-                    <div className="text-xs sm:text-sm text-slate-800 leading-relaxed">
-                      {item.title && (
-                        <span className="font-bold text-slate-900 mr-1.5">{item.title}:</span>
-                      )}
-                      <span>{item.body}</span>
-                    </div>
-                  </div>
-
-                  {item.tag && (
-                    <div className="shrink-0 self-start sm:self-center ml-6 sm:ml-0">
-                      <span className="bg-rose-100 text-rose-800 border border-rose-200 px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap shadow-2xs">
-                        {item.tag}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              );
-            }
-
-            if (item.isNoDeduction) {
-              return (
-                <div
-                  key={idx}
-                  className="p-2.5 my-1 rounded-lg border border-transparent hover:border-slate-200/60 hover:bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 transition-all"
-                >
-                  <div className="flex items-start gap-2.5 flex-1 min-w-0">
-                    <span className="text-emerald-600 font-bold text-sm shrink-0 mt-0.5" role="img" aria-label="Check">
-                      ✓
-                    </span>
-                    <div className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-                      {item.title && (
-                        <span className="font-bold text-slate-900 mr-1.5">{item.title}:</span>
-                      )}
-                      <span>{item.body}</span>
-                    </div>
-                  </div>
-
-                  {item.tag && (
-                    <div className="shrink-0 self-start sm:self-center ml-6 sm:ml-0">
-                      <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap">
-                        {item.tag}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              );
-            }
-
-            // Fallback for unformatted lines or during streaming
+      {/* Clean, Scannable Rows (divide-y divide-slate-100, NO bullet dots) */}
+      <div className="divide-y divide-slate-100">
+        {criteria.map((item, idx) => {
+          if (item.isActiveDeduction) {
             return (
-              <div key={idx} className="p-2 text-xs sm:text-sm text-slate-700">
-                <Markdown variant="inherit" content={item.raw} />
+              <div
+                key={idx}
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3.5 px-4 bg-rose-50/60 border-l-4 border-rose-500 transition-colors"
+              >
+                {/* Left Column (Icon + Text) */}
+                <div className="flex items-start gap-3 flex-1 min-w-0">
+                  <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <h5 className="text-slate-900 font-semibold text-sm">
+                      {item.title}
+                    </h5>
+                    <p className="text-slate-700 text-sm mt-0.5 leading-relaxed">
+                      {item.explanation}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right Column (Aligned Status Pill Badge) */}
+                <div className="shrink-0 self-start sm:self-center ml-8 sm:ml-0">
+                  <span className="inline-flex items-center bg-rose-100 text-rose-800 border border-rose-300 px-3 py-1 rounded-full text-xs font-bold shadow-xs whitespace-nowrap">
+                    {item.badgeText}
+                  </span>
+                </div>
               </div>
             );
-          })}
-        </div>
+          }
+
+          // Zero deduction item
+          return (
+            <div
+              key={idx}
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3.5 px-4 hover:bg-slate-50/70 transition-colors"
+            >
+              {/* Left Column (Icon + Text) */}
+              <div className="flex items-start gap-3 flex-1 min-w-0">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <h5 className="text-slate-900 font-semibold text-sm">
+                    {item.title}
+                  </h5>
+                  <p className="text-slate-600 text-sm mt-0.5 leading-relaxed">
+                    {item.explanation}
+                  </p>
+                </div>
+              </div>
+
+              {/* Right Column (Aligned Status Pill Badge) */}
+              <div className="shrink-0 self-start sm:self-center ml-8 sm:ml-0">
+                <span className="inline-flex items-center bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
+                  No deduction (0.0)
+                </span>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Summary Footer Bar */}
       {(totalDeductions || finalRating) && (
-        <div className="bg-slate-50 border-t border-slate-200 px-4 py-3 mt-4 rounded-b-xl flex flex-wrap justify-between items-center text-sm font-semibold gap-3">
+        <div className="bg-slate-50 border-t border-slate-200 px-4 py-3 rounded-b-xl flex flex-wrap justify-between items-center text-sm font-semibold gap-3">
           {totalDeductions && (
             <div className="flex items-center gap-1.5">
               <span className="text-slate-600 font-medium">
@@ -446,7 +464,7 @@ function Section4Scorecard({ content }: { content: string }) {
   }
 
   // Fallback if boundary tags were missing in older / unformatted outputs
-  if (!overallRatingText && !coreStrengthsContent && !improvementAreasContent) {
+  if (!overallRatingText && !deductionBreakdown && !coreStrengthsContent && !improvementAreasContent) {
     const lines = content.split("\n");
     let currentMode: "none" | "deductions" | "strengths" | "weaknesses" = "none";
     const fallbackDeductions: string[] = [];
@@ -522,7 +540,7 @@ function Section4Scorecard({ content }: { content: string }) {
   }
 
   // If none extracted yet and raw content exists, render raw markdown
-  if (!overallRatingText && !coreStrengthsContent && !improvementAreasContent && content.trim()) {
+  if (!overallRatingText && !deductionBreakdown && !coreStrengthsContent && !improvementAreasContent && content.trim()) {
     return (
       <div className="text-sm text-slate-700 leading-relaxed">
         <Markdown content={content} />
