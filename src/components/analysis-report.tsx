@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Shield,
   Users,
@@ -79,15 +79,179 @@ function InsurerLogoBadge({ issuer }: { issuer: string }) {
   );
 }
 
-// Animated Score Card Component
-function AnimatedScoreCard({ scoreText }: { scoreText: string }) {
+// Score visual color constants and CSS variables
+export const SCORE_COLORS = {
+  red: {
+    fill: "#D63B3B",
+    tint: "#FBE3E3",
+    text: "#A32D2D",
+    label: "Needs work",
+  },
+  amber: {
+    fill: "#E08A00",
+    tint: "#FCEFD2",
+    text: "#854F0B",
+    label: "Average",
+  },
+  green: {
+    fill: "#0E8A5F",
+    tint: "#D8F1E6",
+    text: "#0B6B4A",
+    label: "Exceptional",
+  },
+  card: {
+    bg: "#FFFFFF",
+    border: "#E3E3E0",
+  },
+  subtext: "#6B6B68",
+} as const;
+
+export const SCORE_CSS_VARS: React.CSSProperties = {
+  ["--score-red" as string]: SCORE_COLORS.red.fill,
+  ["--score-red-tint" as string]: SCORE_COLORS.red.tint,
+  ["--score-red-text" as string]: SCORE_COLORS.red.text,
+  ["--score-amber" as string]: SCORE_COLORS.amber.fill,
+  ["--score-amber-tint" as string]: SCORE_COLORS.amber.tint,
+  ["--score-amber-text" as string]: SCORE_COLORS.amber.text,
+  ["--score-green" as string]: SCORE_COLORS.green.fill,
+  ["--score-green-tint" as string]: SCORE_COLORS.green.tint,
+  ["--score-green-text" as string]: SCORE_COLORS.green.text,
+};
+
+export type ZoneType = "red" | "amber" | "green";
+
+export interface SegmentZoneConfig {
+  zone: ZoneType;
+  fillColor: string;
+  tintColor: string;
+}
+
+export function getSegmentZone(segmentIndex: number): SegmentZoneConfig {
+  if (segmentIndex < 3) {
+    return {
+      zone: "red",
+      fillColor: SCORE_COLORS.red.fill,
+      tintColor: SCORE_COLORS.red.tint,
+    };
+  }
+  if (segmentIndex < 8) {
+    return {
+      zone: "amber",
+      fillColor: SCORE_COLORS.amber.fill,
+      tintColor: SCORE_COLORS.amber.tint,
+    };
+  }
+  return {
+    zone: "green",
+    fillColor: SCORE_COLORS.green.fill,
+    tintColor: SCORE_COLORS.green.tint,
+  };
+}
+
+export function calculateSegmentFillFraction(score: number, segmentIndex: number): number {
+  return Math.min(Math.max(score - segmentIndex, 0), 1);
+}
+
+export interface ScoreStatusInfo {
+  zone: ZoneType;
+  textColor: string;
+  label: string;
+}
+
+export function getScoreStatus(score: number, customLabel?: string): ScoreStatusInfo {
+  const clamped = Math.min(Math.max(score, 0), 10);
+  const endSegment = Math.max(1, Math.ceil(clamped));
+  if (endSegment <= 3) {
+    return {
+      zone: "red",
+      textColor: SCORE_COLORS.red.text,
+      label: customLabel || SCORE_COLORS.red.label,
+    };
+  }
+  if (endSegment <= 8) {
+    return {
+      zone: "amber",
+      textColor: SCORE_COLORS.amber.text,
+      label: customLabel || SCORE_COLORS.amber.label,
+    };
+  }
+  return {
+    zone: "green",
+    textColor: SCORE_COLORS.green.text,
+    label: customLabel || SCORE_COLORS.green.label,
+  };
+}
+
+export interface ZonedSegmentedScoreBarProps {
+  score: number;
+  hasAnimated?: boolean;
+  prefersReducedMotion?: boolean;
+  className?: string;
+}
+
+export function ZonedSegmentedScoreBar({
+  score,
+  hasAnimated = true,
+  prefersReducedMotion = false,
+  className = "",
+}: ZonedSegmentedScoreBarProps) {
+  const targetScore = Math.min(Math.max(score, 0), 10);
+
+  return (
+    <div
+      className={`flex flex-row items-center gap-[3px] sm:gap-[4px] w-full min-w-0 sm:min-w-[220px] ${className}`}
+      aria-hidden="true"
+    >
+      {Array.from({ length: 10 }).map((_, i) => {
+        const zoneConfig = getSegmentZone(i);
+        const fillFraction = calculateSegmentFillFraction(targetScore, i);
+        const delayMs = i * 80;
+
+        return (
+          <div
+            key={i}
+            className="flex-1 h-[10px] sm:h-[12px] rounded-[3px] overflow-hidden"
+            style={{ backgroundColor: zoneConfig.tintColor }}
+          >
+            <div
+              className="w-full h-full"
+              style={{
+                backgroundColor: zoneConfig.fillColor,
+                transform: hasAnimated ? `scaleX(${fillFraction})` : "scaleX(0)",
+                transformOrigin: "left",
+                transition: prefersReducedMotion
+                  ? "none"
+                  : `transform 350ms cubic-bezier(0, 0, 0.2, 1) ${delayMs}ms`,
+                willChange: "transform",
+              }}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// Animated Score Card Component with Zoned Segmented Score Bar
+function AnimatedScoreCard({
+  scoreText,
+  score,
+}: {
+  scoreText: string;
+  score?: number;
+}) {
   // Robust regex parser for extracting <OVERALL_RATING> score
   const match =
     scoreText.match(/(?:overall\s*rating|rating|score)?[:\s*]*(\d+(?:\.\d+)?)\s*(?:\/\s*10|\s*out of\s*10)?/i) ||
     scoreText.match(/(\d+(?:\.\d+)?)\s*(?:\/\s*10)?/);
-  const rawScore = match ? parseFloat(match[1]) : null;
-  const targetScore = rawScore !== null && !isNaN(rawScore) ? Math.min(Math.max(rawScore, 1.0), 10.0) : null;
+  const rawScore = score !== undefined ? score : (match ? parseFloat(match[1]) : null);
+  const targetScore = rawScore !== null && !isNaN(rawScore) ? Math.min(Math.max(rawScore, 0.0), 10.0) : null;
+
+  const [hasAnimated, setHasAnimated] = useState(false);
   const [displayScore, setDisplayScore] = useState<number>(0);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const hasTriggeredRef = useRef(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const firstLine = scoreText.split("\n")[0] || scoreText;
   const rationale = firstLine
@@ -96,25 +260,70 @@ function AnimatedScoreCard({ scoreText }: { scoreText: string }) {
     .trim();
 
   useEffect(() => {
-    if (targetScore === null) return;
-    const duration = 1000; // ms
-    const startTime = performance.now();
+    if (targetScore === null || hasTriggeredRef.current) return;
 
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      const current = easeOut * targetScore;
-      setDisplayScore(current);
+    // Respect prefers-reduced-motion: skip animation and render final state immediately
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      hasTriggeredRef.current = true;
+      setPrefersReducedMotion(true);
+      setHasAnimated(true);
+      setDisplayScore(targetScore);
+      return;
+    }
 
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        setDisplayScore(targetScore);
-      }
+    if (typeof IntersectionObserver === "undefined") {
+      hasTriggeredRef.current = true;
+      setHasAnimated(true);
+      setDisplayScore(targetScore);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry && entry.isIntersecting && !hasTriggeredRef.current) {
+          hasTriggeredRef.current = true;
+          observer.disconnect();
+          setHasAnimated(true);
+
+          // Total sweep is about 1.2s; simultaneously count number up with ease-out
+          const totalDuration = 1200;
+          const startTime = performance.now();
+          let frameId: number;
+
+          const animateNumber = (now: number) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / totalDuration, 1);
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            setDisplayScore(easeOut * targetScore);
+
+            if (progress < 1) {
+              frameId = requestAnimationFrame(animateNumber);
+            } else {
+              setDisplayScore(targetScore);
+            }
+          };
+
+          frameId = requestAnimationFrame(animateNumber);
+        }
+      },
+      { threshold: 0.35 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
     };
+  }, [targetScore]);
 
-    requestAnimationFrame(animate);
+  // Keep displayScore synced if targetScore updates after animation has finished
+  useEffect(() => {
+    if (hasTriggeredRef.current && targetScore !== null) {
+      setDisplayScore(targetScore);
+    }
   }, [targetScore]);
 
   if (targetScore === null) {
@@ -125,50 +334,81 @@ function AnimatedScoreCard({ scoreText }: { scoreText: string }) {
     );
   }
 
-  // Dynamic Tier & Color Badges:
-  // >= 8.0: Green (High Quality Tier)
-  // 6.0 - 7.9: Amber (Moderate Coverage)
-  // < 6.0: Red (High Risk / Restrictive)
-  let scoreColorStyles = "text-emerald-600 bg-emerald-50 border-emerald-300";
+  // Dynamic Tier & Color Badges (preserved as instructed)
   let badgeLabel = "High Quality Tier";
   let badgeBg = "bg-emerald-100 text-emerald-800";
 
   if (targetScore < 6.0) {
-    scoreColorStyles = "text-rose-600 bg-rose-50 border-rose-300";
     badgeLabel = "High Risk / Restrictive";
     badgeBg = "bg-rose-100 text-rose-800";
   } else if (targetScore < 8.0) {
-    scoreColorStyles = "text-amber-600 bg-amber-50 border-amber-300";
     badgeLabel = "Moderate Coverage";
     badgeBg = "bg-amber-100 text-amber-800";
   }
 
-  return (
-    <div className="mb-6 bg-slate-50/80 border border-slate-200/80 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5 justify-between shadow-xs">
-      <div className="flex items-center gap-4">
-        <div
-          className={`w-18 h-18 sm:w-20 sm:h-20 rounded-2xl border-2 flex flex-col items-center justify-center shadow-sm shrink-0 ${scoreColorStyles}`}
-        >
-          <span className="text-2xl sm:text-3xl font-black tracking-tight leading-none">
-            {displayScore.toFixed(1)}
-          </span>
-          <span className="text-[10px] font-bold uppercase tracking-wider opacity-75 mt-0.5">
-            / 10 Score
-          </span>
-        </div>
+  // Status info derived from the zone where the filled portion ends
+  const statusInfo = getScoreStatus(targetScore);
 
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h4 className="text-base font-bold text-slate-900">Overall Policy Evaluation</h4>
+  return (
+    <div
+      ref={containerRef}
+      style={SCORE_CSS_VARS}
+      className="mb-6 bg-white border border-[#E3E3E0] rounded-[12px] p-[16px_20px] sm:p-6 shadow-xs transition-all duration-300"
+    >
+      <div
+        className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-3 sm:gap-x-6 sm:gap-y-2.5 items-start"
+        role="img"
+        aria-label={`Overall policy score: ${targetScore.toFixed(1)} out of 10`}
+      >
+        {/* Title Row: Mobile Order 1, Desktop Column 2 Row 1 */}
+        <div className="order-1 sm:order-none sm:col-start-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h4 className="text-base font-bold text-slate-900 leading-snug">
+              Overall Policy Evaluation
+            </h4>
             <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${badgeBg}`}>
               {badgeLabel}
             </span>
           </div>
-          {rationale && (
+        </div>
+
+        {/* Score Number: Mobile Order 2, Desktop Column 1 (spans rows on desktop) */}
+        <div className="order-2 sm:order-none sm:col-start-1 sm:row-start-1 sm:row-span-3 sm:self-start sm:pt-0.5">
+          <div className="flex items-baseline gap-1.5 shrink-0">
+            <span
+              style={{ color: statusInfo.textColor }}
+              className="text-[32px] sm:text-[36px] font-medium leading-none tracking-tight"
+            >
+              {displayScore.toFixed(1)}
+            </span>
+            <span className="text-[14px] text-[#6B6B68] font-normal leading-none">
+              / 10
+            </span>
+          </div>
+        </div>
+
+        {/* Description: Mobile Order 5, Desktop Column 2 Row 2 (if present) */}
+        {rationale && (
+          <div className="order-5 sm:order-none sm:col-start-2">
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl">
               {rationale}
             </p>
-          )}
+          </div>
+        )}
+
+        {/* Segmented Bar & Status Label: Mobile Order 3 & 4, Desktop Column 2 Row 3 */}
+        <div className="order-3 sm:order-none sm:col-start-2 min-w-0 w-full sm:min-w-[220px]">
+          <ZonedSegmentedScoreBar
+            score={targetScore}
+            hasAnimated={hasAnimated}
+            prefersReducedMotion={prefersReducedMotion}
+          />
+          <div
+            style={{ color: statusInfo.textColor }}
+            className="text-[13px] font-medium leading-normal mt-1.5"
+          >
+            {statusInfo.label}
+          </div>
         </div>
       </div>
     </div>
