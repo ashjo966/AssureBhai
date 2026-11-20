@@ -768,7 +768,7 @@ export default function Home() {
 
               {/* Optional PDF Password Field */}
               <div
-                className={`w-full max-w-full mt-3 sm:mt-4 rounded-xl sm:rounded-2xl p-3 sm:p-5 transition-all box-border bg-slate-50 sm:bg-white border ${
+                className={`w-full max-w-full mt-3 sm:mt-4 rounded-xl sm:rounded-2xl p-3 sm:p-6 transition-all box-border bg-slate-50 sm:bg-white border ${
                   passwordError
                     ? "border-amber-400 bg-amber-50/40 ring-2 ring-amber-400/20"
                     : "border-slate-200 sm:border-slate-200/80 sm:shadow-sm"
@@ -829,7 +829,7 @@ export default function Home() {
               </div>
 
               {/* Profile Fields Card */}
-              <div className="w-full max-w-full mt-3.5 sm:mt-6 pt-3.5 sm:pt-0 border-t border-slate-100 sm:border-t-0 sm:bg-white sm:border sm:border-slate-200/80 sm:rounded-2xl sm:p-8 sm:shadow-sm box-border">
+              <div className="w-full max-w-full mt-3.5 sm:mt-4 pt-3.5 sm:pt-6 border-t border-slate-100 sm:border-t-0 sm:bg-white sm:border sm:border-slate-200/80 sm:rounded-2xl sm:p-6 sm:shadow-sm box-border">
                 
                 {/* Desktop Header */}
                 <div className="hidden sm:block mb-5">
