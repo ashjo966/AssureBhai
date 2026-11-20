@@ -36,6 +36,9 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["pdf-parse"],
   allowedDevOrigins: ["*.loca.lt", "localhost:3000", "192.168.1.16:3000"],
   poweredByHeader: false,
+  experimental: {
+    agentUpgrade: "security",
+  },
   async headers() {
     return [
       {
