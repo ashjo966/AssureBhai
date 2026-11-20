@@ -208,76 +208,95 @@ interface CriterionItem {
   badgeText: string;
 }
 
+function cleanMarkdownText(str: string): string {
+  if (!str) return "";
+  return str
+    .replace(/^\*+|\*+$/g, "")
+    .replace(/^[:\s—-]+|[:\s—-]+$/g, "")
+    .replace(/^\*+|\*+$/g, "")
+    .trim();
+}
+
 function parseCriterionLine(line: string): CriterionItem | null {
-  // Strip bullet markers (-, *, •, 1., etc.)
-  const clean = line.replace(/^[-*•\d.\s]+/, "").trim();
+  // Strip bullet markers (-, *, •, 1., etc.) without consuming bold markdown markers
+  const clean = line.replace(/^[\s\t]*(?:[-*•]|\d+[.)])\s+/, "").trim();
   if (!clean) return null;
 
   let title = "";
   let remainder = clean;
 
   // 1. Extract Criterion Title
-  const boldMatch = clean.match(/^\*\*([^*]+)\*\*[:\s-—]*\s*/);
+  const boldMatch = clean.match(/^\*\*([^*]+)\*\*[:\s—\-]*\s*/);
   if (boldMatch) {
-    title = boldMatch[1].replace(/[:\s-—]+$/, "").trim();
+    title = boldMatch[1];
     remainder = clean.slice(boldMatch[0].length).trim();
   } else {
     const colonIdx = clean.indexOf(":");
-    if (colonIdx > 0 && colonIdx < 50) {
-      title = clean.slice(0, colonIdx).replace(/\*+/g, "").trim();
+    if (colonIdx > 0 && colonIdx < 60) {
+      title = clean.slice(0, colonIdx);
       remainder = clean.slice(colonIdx + 1).trim();
     }
   }
 
-  // 2. Extract Trailing Deduction Tag (e.g., `[No deduction (-0.0)]`, `[-0.5 deduction]`, [-1.0 deduction], -0.5 pts, etc.)
-  const cleanRemainder = remainder.replace(/[.\s]+$/, "").trim();
-  const trailingMatch = cleanRemainder.match(
-    /([`\[\(]*\s*(No deduction(?:\s*\(-?0(?:\.0+)?\))?|-?\d+(?:\.\d+)?\s*(?:pts?|points?)?\s*(?:deductions?)?)\s*[`\]\)]*)$/i
-  );
+  // Strip all leading/trailing bold markers, colons, and whitespace from title
+  title = cleanMarkdownText(title);
 
-  let explanation = cleanRemainder;
-  let rawTag = "";
+  // 2. Extract Trailing Deduction Tag
+  // Check for trailing "No deduction" first (e.g., `No deduction (-0.0)`, `No deduction`, [No deduction (-0.0)], No deduction.)
+  const trailingNoDeductionRegex = /(?:`|\(|\[)*\s*(no\s+deduction(?:\s*\(-?0(?:\.0+)?\))?)\.?\s*(?:`|\)|\])*\.?$/i;
 
-  if (trailingMatch && trailingMatch.index !== undefined) {
-    rawTag = trailingMatch[2] || trailingMatch[1];
-    explanation = cleanRemainder.slice(0, trailingMatch.index).trim().replace(/[-—:,]+$/, "").trim();
-  } else {
-    // Check if tag was placed at start (older prompt format: -0.5 deduction — reason)
-    const leadingMatch = cleanRemainder.match(
-      /^([`\[\(]*\s*(No deduction(?:\s*\(-?0(?:\.0+)?\))?|-?\d+(?:\.\d+)?\s*(?:pts?|points?)?\s*(?:deductions?)?)\s*[`\]\)]*)\s*[-—:]\s*/i
-    );
-    if (leadingMatch) {
-      rawTag = leadingMatch[2] || leadingMatch[1];
-      explanation = cleanRemainder.slice(leadingMatch[0].length).trim();
-    }
-  }
+  // Check for trailing numeric deduction (e.g., `-0.5 deduction`, `[-1.0 deduction]`, `(-0.5 pts)`, `-0.5 deduction.`, `-0.5 points`)
+  const trailingDeductionRegex = /(?:`|\(|\[)*\s*(-?\d+(?:\.\d+)?)\s*(?:deductions?|pts?|points?)\.?\s*(?:`|\)|\])*\.?$/i;
+  const trailingBracketedNumRegex = /(?:`|\[|\()\s*(-[0-9]+(?:\.[0-9]+)?)\.?\s*(?:`|\]|\))\.?$/i;
 
-  // Sanitize explanation: remove any inline code backticks or brackets around tags
-  explanation = explanation.replace(/`([^`]+)`/g, "$1").trim();
-
-  // Clean rawTag: strip any leftover backticks, brackets, parentheses
-  const sanitizedTag = rawTag.replace(/[`\[\]\(\)]/g, "").trim();
-
-  const isZero =
-    !sanitizedTag ||
-    /no deduction/i.test(sanitizedTag) ||
-    /^-?0(?:\.0+)?\b/i.test(sanitizedTag);
-
+  let explanation = remainder.trim();
   let isActiveDeduction = false;
   let badgeText = "No deduction (0.0)";
 
-  if (!isZero) {
-    const numMatch = sanitizedTag.match(/-?\d+(?:\.\d+)?/);
-    if (numMatch) {
-      const num = Math.abs(parseFloat(numMatch[0]));
-      badgeText = `-${num.toFixed(1)} pts`;
-      isActiveDeduction = num > 0;
-    } else {
-      badgeText = sanitizedTag.startsWith("-") ? sanitizedTag : `-${sanitizedTag}`;
+  const zeroMatch = explanation.match(trailingNoDeductionRegex);
+  const numMatch = explanation.match(trailingDeductionRegex) || explanation.match(trailingBracketedNumRegex);
+
+  if (zeroMatch && zeroMatch.index !== undefined) {
+    isActiveDeduction = false;
+    badgeText = "No deduction (0.0)";
+    explanation = explanation.slice(0, zeroMatch.index).trim();
+  } else if (numMatch && numMatch.index !== undefined) {
+    const parsedVal = parseFloat(numMatch[1]);
+    if (!isNaN(parsedVal) && Math.abs(parsedVal) > 0) {
       isActiveDeduction = true;
+      const formatted = parsedVal < 0 ? parsedVal.toFixed(1) : `-${parsedVal.toFixed(1)}`;
+      badgeText = `${formatted} pts`;
+      explanation = explanation.slice(0, numMatch.index).trim();
+    } else {
+      isActiveDeduction = false;
+      badgeText = "No deduction (0.0)";
+      explanation = explanation.slice(0, numMatch.index).trim();
+    }
+  } else {
+    // Check if deduction token is embedded anywhere in the line
+    const generalZeroMatch = explanation.match(/(?:`|\(|\[)?\bno\s+deduction(?:\s*\(-?0(?:\.0+)?\))?(?:`|\)|\])?/i);
+    const generalNumMatch = explanation.match(/(?:`|\(|\[)\s*(-?\d+(?:\.\d+)?)\s*(?:deductions?|pts?|points?)\.?\s*(?:`|\)|\])/i) ||
+                            explanation.match(/\b(-[0-9]+(?:\.[0-9]+)?)\s*(?:deductions?|pts?|points?)\b/i);
+
+    if (generalZeroMatch && generalZeroMatch.index !== undefined) {
+      isActiveDeduction = false;
+      badgeText = "No deduction (0.0)";
+      explanation = (explanation.slice(0, generalZeroMatch.index) + " " + explanation.slice(generalZeroMatch.index + generalZeroMatch[0].length)).trim();
+    } else if (generalNumMatch && generalNumMatch.index !== undefined) {
+      const parsedVal = parseFloat(generalNumMatch[1]);
+      if (!isNaN(parsedVal) && Math.abs(parsedVal) > 0) {
+        isActiveDeduction = true;
+        const formatted = parsedVal < 0 ? parsedVal.toFixed(1) : `-${parsedVal.toFixed(1)}`;
+        badgeText = `${formatted} pts`;
+        explanation = (explanation.slice(0, generalNumMatch.index) + " " + explanation.slice(generalNumMatch.index + generalNumMatch[0].length)).trim();
+      }
     }
   }
 
+  // Strip all leading/trailing bold markers, colons, and whitespace from explanation
+  explanation = cleanMarkdownText(explanation);
+  explanation = explanation.replace(/`([^`]+)`/g, "$1").trim();
+  explanation = explanation.replace(/[-—:,]+$/, "").trim();
   if (explanation && !/[.!?]$/.test(explanation)) {
     explanation += ".";
   }
@@ -290,7 +309,7 @@ function parseCriterionLine(line: string): CriterionItem | null {
     title,
     explanation,
     isActiveDeduction,
-    badgeText: isActiveDeduction ? badgeText : "No deduction (0.0)",
+    badgeText,
   };
 }
 
