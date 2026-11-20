@@ -1,7 +1,22 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { MessageSquare, Loader2, Eye, EyeOff, Lock, KeyRound, WifiOff, FileText } from "lucide-react";
+import Link from "next/link";
+import {
+  MessageSquare,
+  Loader2,
+  Eye,
+  EyeOff,
+  Lock,
+  FileText,
+  CheckCircle2,
+  AlertTriangle,
+  ShieldCheck,
+  ChevronRight,
+  X,
+  Shield,
+  Sparkles,
+} from "lucide-react";
 import { AnalysisReport } from "@/components/analysis-report";
 import { FeedbackWidget } from "@/components/FeedbackModal";
 import { resolvePincode, MospiStats } from "@/lib/resolvePincode";
@@ -17,7 +32,6 @@ function formatFriendlyErrorMessage(err: unknown, fallback: string): string {
   if (!err) return fallback;
   const rawMsg = err instanceof Error ? err.message : typeof err === "string" ? err : String(err);
 
-  // If message itself is stringified JSON containing error code 503 or message
   if (rawMsg.startsWith("{") && (rawMsg.includes("503") || rawMsg.includes("high demand") || rawMsg.includes("UNAVAILABLE"))) {
     try {
       const parsed = JSON.parse(rawMsg);
@@ -89,16 +103,21 @@ export default function Home() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [analysisStage, setAnalysisStage] = useState<"idle" | "parsing" | "analyzing" | "completed">("idle");
+  const [loadingStep, setLoadingStep] = useState<1 | 2 | 3>(1);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
-  // Errors and Results
+  // Granular Field Validation Errors
   const [error, setError] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [pincodeError, setPincodeError] = useState<string | null>(null);
+  const [ageError, setAgeError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [retryStatus, setRetryStatus] = useState<string | null>(null);
   const [parsedData, setParsedData] = useState<Record<string, unknown> | null>(null);
   const [analysisResult, setAnalysisResult] = useState<string>("");
 
-  // Refs for aborting background execution and tracking disclaimer confirmation
+  // Refs
   const abortControllerRef = useRef<AbortController | null>(null);
   const disclaimerAgreedRef = useRef<boolean>(false);
   const latestParsedDataRef = useRef<Record<string, unknown> | null>(null);
@@ -147,6 +166,8 @@ export default function Home() {
     const val = e.target.value.replace(/\D/g, ""); // digits only
     if (val.length <= 6) {
       setPincode(val);
+      if (pincodeError) setPincodeError(null);
+      if (error) setError(null);
     }
   };
 
@@ -154,6 +175,8 @@ export default function Home() {
     const val = e.target.value.replace(/\D/g, ""); // digits only
     if (val.length <= 2) {
       setAge(val);
+      if (ageError) setAgeError(null);
+      if (error) setError(null);
     }
   };
 
@@ -179,7 +202,6 @@ export default function Home() {
     setDependents(updated);
     setTempAge("");
 
-    // If max 5 dependents reached, close form; otherwise keep form open for next dependent
     if (updated.length >= 5) {
       setShowAddDependentForm(false);
     } else {
@@ -198,6 +220,9 @@ export default function Home() {
   // File Upload Handlers (strictly PDF only)
   const validateAndSetFile = (selectedFile: File) => {
     setError(null);
+    setFileError(null);
+    setPasswordError(null);
+
     const fileName = (selectedFile.name || "").toLowerCase();
     const fileType = (selectedFile.type || "").toLowerCase();
 
@@ -207,11 +232,15 @@ export default function Home() {
       fileType === "application/x-pdf";
 
     if (!isPdf) {
-      setError("Only PDF documents are supported. Please upload a valid policy PDF.");
+      const msg = "Only PDF documents are supported (.pdf). Please select a valid policy PDF.";
+      setFileError(msg);
+      setError(msg);
       return;
     }
     if (selectedFile.size > 50 * 1024 * 1024) {
-      setError("File size exceeds the 50MB limit.");
+      const msg = "File size exceeds the 50MB limit. Please upload a smaller PDF.";
+      setFileError(msg);
+      setError(msg);
       return;
     }
     setFile(selectedFile);
@@ -221,7 +250,6 @@ export default function Home() {
     if (e.target.files && e.target.files.length > 0) {
       validateAndSetFile(e.target.files[0]);
     }
-    // Reset value so re-selecting the same file triggers onChange cleanly
     e.target.value = "";
   };
 
@@ -247,18 +275,31 @@ export default function Home() {
   // Main Unified Analysis Flow with Streaming Response Ingestion
   const handleStartAnalysis = async () => {
     setError(null);
+    setFileError(null);
+    setPincodeError(null);
+    setAgeError(null);
+    setPasswordError(null);
 
-    // Form Validations
+    // Form Validations with granular inline error states
+    let hasValidationError = false;
+
     if (!file) {
-      setError("Please upload your policy PDF file.");
-      return;
+      setFileError("Please upload your policy PDF document.");
+      hasValidationError = true;
     }
-    if (!pincode || pincode.length !== 6) {
-      setError("Please enter a valid 6-digit residence pincode.");
-      return;
+
+    if (!pincode || !/^[1-9][0-9]{5}$/.test(pincode)) {
+      setPincodeError("Valid 6-digit Indian PIN code required (e.g. 560001).");
+      hasValidationError = true;
     }
-    if (!age || Number(age) <= 0) {
-      setError("Please enter a valid age.");
+
+    if (!age || Number(age) <= 0 || Number(age) > 120) {
+      setAgeError("Please enter a valid age (1-120).");
+      hasValidationError = true;
+    }
+
+    if (hasValidationError) {
+      setError("Please fix the highlighted fields to analyze your policy.");
       return;
     }
 
@@ -275,15 +316,16 @@ export default function Home() {
     setAnalysisResult("");
     setRetryStatus(null);
 
-    // Lock UI and show disclaimer popup while background analysis starts immediately
+    // Stage 1: Reading & decrypting policy PDF
     setIsProcessing(true);
     setShowDisclaimer(true);
     setAnalysisStage("parsing");
+    setLoadingStep(1);
 
     (async () => {
       try {
         const formData = new FormData();
-        formData.append("file", file);
+        if (file) formData.append("file", file);
 
         // Local zero-token PIN code lookup
         const resolvedPincode = resolvePincode(pincode);
@@ -326,15 +368,19 @@ export default function Home() {
           const errMsg = errorData.message || errorData.error;
 
           if (errCode === "PDF_PASSWORD_REQUIRED" || errCode === "INVALID_PDF_PASSWORD") {
+            const passMsg =
+              errCode === "PDF_PASSWORD_REQUIRED"
+                ? "This policy document is password-protected. Please enter your policy password."
+                : "Incorrect password. Most insurers use your Date of Birth (DDMMYYYY) or PAN.";
+            setPasswordError(passMsg);
+
+            // Auto-focus the password input without clearing the uploaded file
             setTimeout(() => {
+              passwordInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
               passwordInputRef.current?.focus();
             }, 150);
-            throw new Error(
-              errMsg ||
-                (errCode === "PDF_PASSWORD_REQUIRED"
-                  ? "This policy document is password-protected. Please enter your policy password."
-                  : "Incorrect password. Most insurers use your Date of Birth (DDMMYYYY) or PAN.")
-            );
+
+            throw new Error(passMsg);
           }
           throw new Error(errMsg || `Failed to parse the insurance document (Status ${parseResponse.status}).`);
         }
@@ -347,8 +393,10 @@ export default function Home() {
 
         setParsedData(parseResult);
         latestParsedDataRef.current = parseResult;
+
+        // Stage 2: Extracting key clauses & mapping MoSPI benchmarks
+        setLoadingStep(2);
         setAnalysisStage("analyzing");
-        setIsStreaming(true);
 
         // Step 2: Stream Analyze Document immediately (with exponential backoff retry)
         const analyzeResponse = await fetchWithRetry("/api/analyze", {
@@ -386,6 +434,10 @@ export default function Home() {
           throw new Error("No response body received from analyze stream.");
         }
 
+        // Stage 3: Generating your personalized AssureBhai verdict
+        setLoadingStep(3);
+        setIsStreaming(true);
+
         let accumulatedText = "";
         const reader = analyzeResponse.body.getReader();
         const decoder = new TextDecoder();
@@ -416,7 +468,6 @@ export default function Home() {
         setIsStreaming(false);
         setAnalysisStage("completed");
 
-        // If user agreed to disclaimer, ensure pageState is analysis
         if (disclaimerAgreedRef.current) {
           setShowDisclaimer(false);
           setIsProcessing(false);
@@ -424,7 +475,6 @@ export default function Home() {
         }
       } catch (err: unknown) {
         setRetryStatus(null);
-        // If aborted by user action, silently return to homepage
         if (controller.signal.aborted || (err as { name?: string })?.name === "AbortError") {
           return;
         }
@@ -439,7 +489,6 @@ export default function Home() {
     })();
   };
 
-  // User confirms Disclaimer: Show "Reading your policy..." popup until Section 1 & 2 are ready, then navigate
   const handleAgreeDisclaimer = () => {
     disclaimerAgreedRef.current = true;
     setShowDisclaimer(false);
@@ -452,7 +501,6 @@ export default function Home() {
     }
   };
 
-  // User cancels or disagrees: Abort background process immediately, unfreeze page, retain document & fields intact
   const handleTerminateAnalysis = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -477,6 +525,7 @@ export default function Home() {
     setIsProcessing(false);
     setShowDisclaimer(false);
     setAnalysisStage("idle");
+    setLoadingStep(1);
     setPageState("home");
     setFile(null);
     setPdfPassword("");
@@ -488,31 +537,38 @@ export default function Home() {
     setParsedData(null);
     setAnalysisResult("");
     setError(null);
+    setFileError(null);
+    setPincodeError(null);
+    setAgeError(null);
+    setPasswordError(null);
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 font-sans antialiased text-slate-800 selection:bg-indigo-100 w-full max-w-full overflow-x-hidden">
-      
       {/* Top Navigation Banner */}
-      <header className="sticky top-0 z-40 w-full max-w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm overflow-x-hidden">
-        <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-[50px] sm:h-[52px] flex items-center justify-between">
+      <header className="sticky top-0 z-40 w-full max-w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs overflow-x-hidden">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[52px] sm:h-[56px] flex items-center justify-between">
           {/* Logo */}
-          <div id="logo-brand" className="flex items-center cursor-pointer shrink-0" onClick={handleReset}>
+          <div
+            id="logo-brand"
+            className="flex items-center cursor-pointer shrink-0"
+            onClick={handleReset}
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/logo.png"
               alt="AssureBhai Logo"
-              className="h-[24px] sm:h-[30px] w-auto object-contain"
+              className="h-[26px] sm:h-[32px] w-auto object-contain"
             />
           </div>
 
-          {/* Actions on same line: Feedback + 2-line About Creator + 2-line Contact Creator */}
+          {/* Actions: Feedback + Creator Links */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <button
               id="feedback-button"
               type="button"
               onClick={() => setIsFeedbackOpen(true)}
-              className="inline-flex items-center gap-1 px-2.5 sm:px-3.5 py-1 sm:py-1.5 text-xs sm:text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 active:bg-amber-800 rounded-lg shadow-sm transition-all whitespace-nowrap cursor-pointer shrink-0"
+              className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 min-h-[38px] sm:min-h-[40px] text-xs sm:text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 active:bg-amber-800 rounded-lg shadow-xs transition-all whitespace-nowrap cursor-pointer shrink-0"
             >
               <MessageSquare className="w-3.5 h-3.5" />
               <span>Feedback</span>
@@ -522,7 +578,7 @@ export default function Home() {
               href="https://ashjo966.github.io/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[10px] sm:text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors text-center leading-[1.1] sm:leading-normal flex flex-col sm:flex-row items-center sm:gap-1 px-1 sm:px-2 py-0.5 rounded hover:bg-slate-100 shrink-0"
+              className="text-[11px] sm:text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors text-center leading-[1.1] sm:leading-normal flex flex-col sm:flex-row items-center sm:gap-1 px-1.5 sm:px-2.5 py-1 rounded hover:bg-slate-100 shrink-0"
             >
               <span>About</span>
               <span>Creator</span>
@@ -532,7 +588,7 @@ export default function Home() {
               href="https://ashjo966.github.io/index.html#contact"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[10px] sm:text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors text-center leading-[1.1] sm:leading-normal flex flex-col sm:flex-row items-center sm:gap-1 px-1 sm:px-2 py-0.5 rounded hover:bg-slate-100 shrink-0"
+              className="text-[11px] sm:text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors text-center leading-[1.1] sm:leading-normal flex flex-col sm:flex-row items-center sm:gap-1 px-1.5 sm:px-2.5 py-1 rounded hover:bg-slate-100 shrink-0"
             >
               <span>Contact</span>
               <span>Creator</span>
@@ -542,14 +598,17 @@ export default function Home() {
       </header>
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-12 pb-28 sm:pb-12 flex flex-col justify-start overflow-x-hidden">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 pb-28 sm:pb-12 flex flex-col justify-start overflow-x-hidden">
         {pageState === "home" ? (
-          /* HOMEPAGE VIEW */
-          <div className="max-w-3xl mx-auto w-full flex flex-col items-center">
-            
-            {/* Dynamic Hero Section */}
-            <div className="text-center mt-2 sm:mt-4 mb-6 sm:mb-8 w-full max-w-full">
-              <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight break-words">
+          /* HOMEPAGE VIEW - ABOVE-THE-FOLD CORE ACTION FLOW */
+          <div className="max-w-4xl mx-auto w-full flex flex-col items-center">
+            {/* Dynamic Hero Section - Compact & Punchy */}
+            <div className="text-center pt-1 sm:pt-2 pb-3 sm:pb-5 w-full max-w-full">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100/80 text-indigo-700 text-xs font-semibold mb-2">
+                <ShieldCheck className="w-3.5 h-3.5 text-indigo-600" />
+                <span>Hyperlocal Indian Insurance Intelligence</span>
+              </div>
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight break-words">
                 <span className="inline-block sm:inline">
                   Your{" "}
                   <span className="text-indigo-600 relative inline-block">
@@ -557,347 +616,457 @@ export default function Home() {
                     <span className="absolute right-[-2px] top-[10%] h-[80%] w-0.5 bg-indigo-600 animate-pulse" />
                   </span>{" "}
                   policy,
-                </span>
-                <br className="sm:hidden" />{" "}
-                <span className="italic">simplified</span>.
+                </span>{" "}
+                <span className="italic text-indigo-950">simplified</span>.
               </h1>
-              <p className="mt-3 sm:mt-6 text-sm sm:text-lg text-slate-500 max-w-lg mx-auto leading-relaxed">
-                Upload your policy PDF to analyze terms, uncover hidden clauses, and verify statutory IRDAI benchmarks instantly.
+              <p className="mt-1.5 sm:mt-2 text-xs sm:text-base text-slate-600 max-w-lg mx-auto leading-relaxed">
+                Upload your policy PDF to uncover hidden clauses, room-rent caps, and verify statutory IRDAI benchmarks against official Indian statistics.
               </p>
             </div>
 
-            {/* Error Message */}
+            {/* Global Error Message Banner */}
             {error && (
-              <div className="w-full mb-6 p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-sm flex items-start gap-3 shadow-sm animate-in fade-in duration-200">
-                <svg className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-                <span className="font-medium break-words">{error}</span>
+              <div className="w-full mb-4 p-3.5 sm:p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs sm:text-sm flex items-start gap-3 shadow-xs animate-in fade-in duration-200">
+                <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="font-semibold">{error}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setError(null)}
+                  className="text-rose-400 hover:text-rose-700 p-0.5"
+                  title="Dismiss error"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
             )}
 
-            {/* Upload Zone */}
-            <div
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              onClick={() => {
-                if (!isProcessing && !file) {
-                  fileInputRef.current?.click();
-                }
-              }}
-              className={`w-full max-w-full p-6 sm:p-10 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center transition-all duration-200 box-border ${
-                isProcessing
-                  ? "opacity-60 cursor-not-allowed pointer-events-none"
-                  : !file
-                  ? "cursor-pointer"
-                  : ""
-              } ${
-                isDragOver
-                  ? "border-indigo-500 bg-indigo-50/60"
-                  : file
-                  ? "border-emerald-400 bg-emerald-50/30 shadow-sm"
-                  : "border-slate-200 bg-white hover:border-indigo-400 hover:shadow-md hover:shadow-indigo-50"
-              }`}
-            >
-              {/* File input strictly accepting PDF documents */}
-              <input
-                id="file-input"
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                accept="application/pdf,.pdf"
-                disabled={isProcessing}
-                className="sr-only"
-              />
-              
-              <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-4 ${
-                file ? "bg-emerald-100 text-emerald-600" : "bg-indigo-50 text-indigo-600"
-              }`}>
-                {file ? (
-                  <svg className="w-7 h-7 sm:w-8 sm:h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                ) : (
-                  <svg className="w-7 h-7 sm:w-8 sm:h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                )}
-              </div>
+            {/* CORE ACTION CARD - Compact, Unified & Above-The-Fold on Mobile & Desktop */}
+            <div className="w-full bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl shadow-sm sm:shadow-md p-4 sm:p-6 lg:p-8 box-border">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-5 lg:gap-8 items-start">
+                
+                {/* Left Column: Upload Dropzone & Password Field */}
+                <div className="md:col-span-6 flex flex-col gap-3.5 w-full">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-500">
+                      Step 1 • Policy Document
+                    </span>
+                    <span className="text-[11px] font-medium text-slate-400">
+                      PDF only (max 50MB)
+                    </span>
+                  </div>
 
-              {file ? (
-                <div className="text-center w-full max-w-full px-2">
-                  <p className="font-semibold text-slate-800 max-w-full truncate">{file.name}</p>
-                  <p className="text-xs text-slate-400 mt-1">{(file.size / (1024 * 1024)).toFixed(2)} MB • PDF Document</p>
-                  <button
-                    type="button"
-                    disabled={isProcessing}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      if (!isProcessing) setFile(null);
-                    }}
-                    className="mt-3 text-xs text-rose-500 hover:underline font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                  >
-                    Remove file
-                  </button>
-                </div>
-              ) : (
-                <div className="text-center w-full max-w-md px-2">
-                  <p className="font-semibold text-slate-800 text-sm sm:text-base">Upload your policy document</p>
-                  <p className="text-xs sm:text-sm text-slate-500 mt-1">Tap to browse your policy PDF</p>
-
-                  <div className="mt-4 flex items-center justify-center w-full">
-                    <button
-                      type="button"
-                      disabled={isProcessing}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
+                  {/* Dropzone Area */}
+                  <div
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => {
+                      if (!isProcessing && !file) {
                         fileInputRef.current?.click();
-                      }}
-                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs sm:text-sm font-semibold shadow-xs hover:shadow-sm transition-all cursor-pointer disabled:opacity-50"
-                    >
-                      <FileText className="w-4 h-4 shrink-0" />
-                      <span>Choose Policy PDF</span>
-                    </button>
-                  </div>
-
-                  <p className="text-[11px] sm:text-xs text-slate-400 mt-3 font-medium">Supported: PDF only (max 50MB)</p>
-                </div>
-              )}
-            </div>
-
-            {/* Optional PDF Password Field (for locked files) */}
-            <div className={`w-full max-w-full mt-4 bg-white border rounded-2xl p-4 sm:p-5 shadow-sm transition-all box-border ${
-              error && (error.toLowerCase().includes("password") || error.toLowerCase().includes("locked"))
-                ? "border-amber-400 bg-amber-50/20 ring-2 ring-amber-400/20"
-                : "border-slate-200/80"
-            }`}>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-slate-500" />
-                  <label htmlFor="pdf-password" className="block text-sm font-semibold text-slate-700">
-                    PDF Password <span className="text-xs font-normal text-slate-400">(if locked)</span>
-                  </label>
-                </div>
-                {pdfPassword && (
-                  <span className="text-[11px] font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
-                    Password set
-                  </span>
-                )}
-              </div>
-              <div className="relative">
-                <input
-                  ref={passwordInputRef}
-                  id="pdf-password"
-                  type={showPassword ? "text" : "password"}
-                  value={pdfPassword}
-                  onChange={(e) => setPdfPassword(e.target.value)}
-                  placeholder="e.g., DDMMYYYY or PAN"
-                  disabled={isProcessing}
-                  className="w-full pr-10 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors disabled:bg-slate-100 disabled:cursor-not-allowed text-sm sm:text-base font-mono"
-                />
-                <button
-                  type="button"
-                  tabIndex={-1}
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={isProcessing}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
-                  title={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-              <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-                Insurers usually lock downloads with your Date of Birth or PAN.
-              </p>
-            </div>
-
-            {/* Profile Fields Card */}
-            <div className="w-full max-w-full mt-6 bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-8 shadow-sm box-border">
-              <div className="mb-5">
-                <h2 className="text-base sm:text-lg font-bold text-slate-900">Policyholder details</h2>
-                <p className="text-xs sm:text-sm text-slate-500 mt-1 leading-relaxed">
-                  To accurately evaluate zone-based copayments, city medical tiering, and family coverage limits. Your data is used only for analysis and is never stored.
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-                {/* Pincode with strict iOS + Android numpad */}
-                <div>
-                  <label htmlFor="pincode" className="block text-sm font-semibold text-slate-700 mb-1.5">
-                    Primary Residence Pincode <span className="text-rose-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    autoComplete="postal-code"
-                    id="pincode"
-                    value={pincode}
-                    onChange={handlePincodeChange}
-                    placeholder="e.g. 560001"
-                    maxLength={6}
-                    disabled={isProcessing}
-                    className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors disabled:bg-slate-100 disabled:cursor-not-allowed text-sm sm:text-base"
-                  />
-                  <p className="text-xs text-slate-400 mt-1">Mandatory, exact 6 digits</p>
-                </div>
-
-                {/* Age with strict iOS + Android numpad */}
-                <div>
-                  <label htmlFor="age" className="block text-sm font-semibold text-slate-700 mb-1.5">
-                    Policyholder Age <span className="text-rose-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    id="age"
-                    value={age}
-                    onChange={handleAgeChange}
-                    placeholder="e.g. 32"
-                    maxLength={2}
-                    disabled={isProcessing}
-                    className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors disabled:bg-slate-100 disabled:cursor-not-allowed text-sm sm:text-base"
-                  />
-                  <p className="text-xs text-slate-400 mt-1">Mandatory, max 2 digits</p>
-                </div>
-              </div>
-
-              {/* Dependents Section */}
-              <div className="mt-6 pt-6 border-t border-slate-100">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <label className="text-sm font-semibold text-slate-700">Covered Dependents</label>
-                    <p className="text-xs text-slate-400">Add upto 5 family members</p>
-                  </div>
-
-                  <button
-                    type="button"
-                    disabled={isProcessing || dependents.length >= 5}
-                    onClick={() => setShowAddDependentForm(true)}
-                    className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0"
+                      }
+                    }}
+                    className={`w-full p-4 sm:p-6 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center transition-all duration-200 box-border ${
+                      isProcessing
+                        ? "opacity-60 cursor-not-allowed pointer-events-none"
+                        : !file
+                        ? "cursor-pointer"
+                        : ""
+                    } ${
+                      isDragOver
+                        ? "border-indigo-500 bg-indigo-50/60"
+                        : fileError
+                        ? "border-rose-400 bg-rose-50/20"
+                        : file
+                        ? "border-emerald-400 bg-emerald-50/30 shadow-xs"
+                        : "border-slate-200 bg-slate-50/50 hover:border-indigo-400 hover:bg-indigo-50/30"
+                    }`}
                   >
-                    + Add Dependent ({dependents.length}/5)
-                  </button>
-                </div>
+                    <input
+                      id="file-input"
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      accept="application/pdf,.pdf"
+                      disabled={isProcessing}
+                      className="sr-only"
+                    />
 
-                {/* Inline Add Form */}
-                {showAddDependentForm && (
-                  <div className="mb-4 p-3 sm:p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full max-w-full box-border">
-                    <div className="w-full sm:w-44">
-                      <select
-                        value={tempRelation}
-                        onChange={(e) => setTempRelation(e.target.value)}
-                        disabled={isProcessing}
-                        className="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                      >
-                        <option value="Spouse">Spouse</option>
-                        <option value="Son">Son</option>
-                        <option value="Daughter">Daughter</option>
-                        <option value="Father">Father</option>
-                        <option value="Mother">Mother</option>
-                        <option value="Sister">Sister</option>
-                        <option value="Brother">Brother</option>
-                      </select>
+                    <div
+                      className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-2.5 ${
+                        file
+                          ? "bg-emerald-100 text-emerald-600"
+                          : fileError
+                          ? "bg-rose-100 text-rose-600"
+                          : "bg-indigo-50 text-indigo-600"
+                      }`}
+                    >
+                      {file ? (
+                        <CheckCircle2 className="w-6 h-6 sm:w-7 sm:h-7 text-emerald-600" />
+                      ) : (
+                        <FileText className="w-6 h-6 sm:w-7 sm:h-7" />
+                      )}
                     </div>
 
-                    {/* Dependent Age with strict iOS + Android numpad */}
-                    <div className="w-full sm:w-28">
+                    {file ? (
+                      <div className="text-center w-full max-w-full px-2">
+                        <p className="font-semibold text-slate-900 text-xs sm:text-sm truncate">
+                          {file.name}
+                        </p>
+                        <p className="text-[11px] text-slate-500 mt-0.5">
+                          {(file.size / (1024 * 1024)).toFixed(2)} MB • PDF Document
+                        </p>
+                        <button
+                          type="button"
+                          disabled={isProcessing}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (!isProcessing) {
+                              setFile(null);
+                              setFileError(null);
+                            }
+                          }}
+                          className="mt-2 text-xs text-rose-500 hover:underline font-medium disabled:opacity-50 cursor-pointer"
+                        >
+                          Remove &amp; choose another
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="text-center w-full px-2">
+                        <p className="font-semibold text-slate-800 text-xs sm:text-sm">
+                          Select or drop your policy PDF
+                        </p>
+                        <div className="mt-2.5 flex items-center justify-center">
+                          <button
+                            type="button"
+                            disabled={isProcessing}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              fileInputRef.current?.click();
+                            }}
+                            className="inline-flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs sm:text-sm font-semibold shadow-xs transition-all cursor-pointer disabled:opacity-50"
+                          >
+                            <FileText className="w-4 h-4 shrink-0" />
+                            <span>Choose Policy PDF</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Inline File Validation Error Banner */}
+                  {fileError && (
+                    <div className="p-2.5 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-xs flex items-center gap-2">
+                      <AlertTriangle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                      <span>{fileError}</span>
+                    </div>
+                  )}
+
+                  {/* Optional PDF Password Field */}
+                  <div
+                    className={`w-full bg-slate-50 border rounded-xl p-3 sm:p-3.5 transition-all box-border ${
+                      passwordError
+                        ? "border-amber-400 bg-amber-50/40 ring-2 ring-amber-400/20"
+                        : "border-slate-200"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <Lock className="w-3.5 h-3.5 text-slate-500" />
+                        <label
+                          htmlFor="pdf-password"
+                          className="text-xs font-semibold text-slate-700"
+                        >
+                          PDF Password <span className="font-normal text-slate-400">(if locked)</span>
+                        </label>
+                      </div>
+                      {pdfPassword && (
+                        <span className="text-[10px] font-semibold text-indigo-700 bg-indigo-100/70 px-2 py-0.5 rounded-full">
+                          Password set
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="relative">
+                      <input
+                        ref={passwordInputRef}
+                        id="pdf-password"
+                        type={showPassword ? "text" : "password"}
+                        value={pdfPassword}
+                        onChange={(e) => {
+                          setPdfPassword(e.target.value);
+                          if (passwordError) setPasswordError(null);
+                        }}
+                        placeholder="e.g., DDMMYYYY or PAN"
+                        disabled={isProcessing}
+                        className="w-full pr-10 px-3 py-2 min-h-[44px] rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors disabled:bg-slate-100 text-xs sm:text-sm font-mono"
+                      />
+                      <button
+                        type="button"
+                        tabIndex={-1}
+                        onClick={() => setShowPassword(!showPassword)}
+                        disabled={isProcessing}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer p-1"
+                        title={showPassword ? "Hide password" : "Show password"}
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+
+                    {/* Inline Password Error Message */}
+                    {passwordError ? (
+                      <p className="text-[11px] text-amber-700 font-medium mt-1.5 flex items-center gap-1">
+                        <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-amber-600" />
+                        <span>{passwordError}</span>
+                      </p>
+                    ) : (
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        Usually your Date of Birth (DDMMYYYY) or PAN. Processed in-memory only.
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Right Column: Demographic Details & CTA Button */}
+                <div className="md:col-span-6 flex flex-col gap-4 w-full">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-500">
+                      Step 2 • Hyperlocal Benchmarks
+                    </span>
+                    <span className="text-[11px] font-medium text-indigo-600">
+                      MoSPI Grounded
+                    </span>
+                  </div>
+
+                  {/* 2-Column Responsive Inputs for Pincode & Age */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    {/* Residence PIN Code */}
+                    <div>
+                      <label
+                        htmlFor="pincode"
+                        className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1"
+                      >
+                        Residence PIN Code <span className="text-rose-500">*</span>
+                      </label>
                       <input
                         type="text"
                         inputMode="numeric"
                         pattern="[0-9]*"
-                        id="dependent-age"
-                        placeholder="Age"
-                        value={tempAge}
-                        onChange={handleTempAgeChange}
+                        autoComplete="postal-code"
+                        id="pincode"
+                        value={pincode}
+                        onChange={handlePincodeChange}
+                        placeholder="e.g. 560001"
+                        maxLength={6}
+                        disabled={isProcessing}
+                        className={`w-full px-3 py-2 min-h-[44px] rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-xs sm:text-sm transition-colors disabled:bg-slate-100 ${
+                          pincodeError
+                            ? "border-rose-400 focus:border-rose-500 bg-rose-50/20"
+                            : "border-slate-200 focus:border-indigo-500"
+                        }`}
+                      />
+                      {pincodeError ? (
+                        <p className="text-[11px] text-rose-600 font-medium mt-1">
+                          {pincodeError}
+                        </p>
+                      ) : (
+                        <p className="text-[11px] text-slate-400 mt-1">
+                          6 digits • Maps zone copays
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Policyholder Age */}
+                    <div>
+                      <label
+                        htmlFor="age"
+                        className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1"
+                      >
+                        Policyholder Age <span className="text-rose-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        id="age"
+                        value={age}
+                        onChange={handleAgeChange}
+                        placeholder="e.g. 32"
                         maxLength={2}
                         disabled={isProcessing}
-                        className="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                        className={`w-full px-3 py-2 min-h-[44px] rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-xs sm:text-sm transition-colors disabled:bg-slate-100 ${
+                          ageError
+                            ? "border-rose-400 focus:border-rose-500 bg-rose-50/20"
+                            : "border-slate-200 focus:border-indigo-500"
+                        }`}
                       />
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={handleAddDependent}
-                        disabled={!tempAge || isProcessing}
-                        className="flex-1 sm:flex-none px-4 py-2 text-sm font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 cursor-pointer"
-                      >
-                        Add
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setShowAddDependentForm(false)}
-                        disabled={isProcessing}
-                        className="flex-1 sm:flex-none px-3 py-2 text-sm text-slate-500 hover:text-slate-700 cursor-pointer"
-                      >
-                        Cancel
-                      </button>
+                      {ageError ? (
+                        <p className="text-[11px] text-rose-600 font-medium mt-1">
+                          {ageError}
+                        </p>
+                      ) : (
+                        <p className="text-[11px] text-slate-400 mt-1">
+                          Underwriting baseline
+                        </p>
+                      )}
                     </div>
                   </div>
-                )}
 
-                {/* Dependents List */}
-                {dependents.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {dependents.map((dep) => (
-                      <div
-                        key={dep.id}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-lg border border-slate-200 text-xs sm:text-sm font-medium text-slate-700"
-                      >
-                        <span>{dep.relation} ({dep.age} yrs)</span>
-                        <button
-                          type="button"
-                          disabled={isProcessing}
-                          onClick={() => handleRemoveDependent(dep.id)}
-                          className="text-slate-400 hover:text-rose-500 disabled:opacity-40 cursor-pointer"
-                        >
-                          ✕
-                        </button>
+                  {/* Dependents Mini-Section */}
+                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-3.5">
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <span className="text-xs font-semibold text-slate-700">
+                          Covered Family Dependents
+                        </span>
+                        <p className="text-[11px] text-slate-400">
+                          Optional • Upto 5 members
+                        </p>
                       </div>
-                    ))}
+
+                      <button
+                        type="button"
+                        disabled={isProcessing || dependents.length >= 5}
+                        onClick={() => setShowAddDependentForm(true)}
+                        className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors disabled:opacity-40 cursor-pointer shrink-0"
+                      >
+                        + Add ({dependents.length}/5)
+                      </button>
+                    </div>
+
+                    {/* Inline Add Form */}
+                    {showAddDependentForm && (
+                      <div className="mb-2.5 p-2.5 bg-white rounded-lg border border-slate-200 flex flex-wrap items-center gap-2">
+                        <select
+                          value={tempRelation}
+                          onChange={(e) => setTempRelation(e.target.value)}
+                          disabled={isProcessing}
+                          className="px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 flex-1 min-w-[100px]"
+                        >
+                          <option value="Spouse">Spouse</option>
+                          <option value="Son">Son</option>
+                          <option value="Daughter">Daughter</option>
+                          <option value="Father">Father</option>
+                          <option value="Mother">Mother</option>
+                          <option value="Sister">Sister</option>
+                          <option value="Brother">Brother</option>
+                        </select>
+
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          placeholder="Age"
+                          value={tempAge}
+                          onChange={handleTempAgeChange}
+                          maxLength={2}
+                          disabled={isProcessing}
+                          className="w-16 px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        />
+
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={handleAddDependent}
+                            disabled={!tempAge || isProcessing}
+                            className="px-3 py-1.5 text-xs font-semibold bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 cursor-pointer"
+                          >
+                            Add
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setShowAddDependentForm(false)}
+                            disabled={isProcessing}
+                            className="px-2 py-1.5 text-xs text-slate-500 hover:text-slate-700 cursor-pointer"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Dependents List Chips */}
+                    {dependents.length > 0 ? (
+                      <div className="flex flex-wrap gap-1.5">
+                        {dependents.map((dep) => (
+                          <div
+                            key={dep.id}
+                            className="flex items-center gap-1.5 px-2 py-1 bg-white rounded-md border border-slate-200 text-xs font-medium text-slate-700 shadow-2xs"
+                          >
+                            <span>
+                              {dep.relation} ({dep.age}y)
+                            </span>
+                            <button
+                              type="button"
+                              disabled={isProcessing}
+                              onClick={() => handleRemoveDependent(dep.id)}
+                              className="text-slate-400 hover:text-rose-500 cursor-pointer"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-[11px] text-slate-400 italic">
+                        Individual coverage mode (no dependents).
+                      </p>
+                    )}
                   </div>
-                ) : (
-                  <p className="text-xs text-slate-400 italic">No dependents added (Individual coverage mode).</p>
-                )}
+
+                  {/* Primary "Analyze Policy" CTA Button */}
+                  <div className="mt-2">
+                    <button
+                      id="analyze-button"
+                      type="button"
+                      onClick={handleStartAnalysis}
+                      disabled={isProcessing}
+                      className="w-full min-h-[48px] px-6 py-3 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold rounded-xl shadow-md shadow-indigo-100 hover:shadow-lg hover:shadow-indigo-200 transition-all flex items-center justify-center gap-2.5 text-sm sm:text-base cursor-pointer disabled:opacity-50"
+                    >
+                      <Shield className="w-5 h-5 text-indigo-200 shrink-0" />
+                      <span>Analyze Policy</span>
+                      <ChevronRight className="w-4 h-4 text-indigo-200 shrink-0" />
+                    </button>
+                    <p className="text-center text-[11px] text-slate-400 mt-2">
+                      🔒 100% In-Memory Processing • No Files Stored • Zero Retention
+                    </p>
+                  </div>
+                </div>
+
               </div>
             </div>
 
-            {/* Pervasive Bottom Button on Mobile / Standard on Desktop (disappears once clicked/processing) */}
+            {/* Mobile Bottom Sticky Bar - Active only when user has scrolled past button */}
             {!isProcessing && (
-              <div className="fixed bottom-0 left-0 right-0 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] bg-white/95 backdrop-blur-md border-t border-slate-200/80 shadow-[0_-4px_16px_rgba(0,0,0,0.06)] z-30 sm:static sm:p-0 sm:bg-transparent sm:backdrop-blur-none sm:border-0 sm:shadow-none sm:mt-8 flex justify-center w-full max-w-full box-border">
+              <div className="sm:hidden fixed bottom-0 left-0 right-0 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-lg z-30 flex justify-center w-full max-w-full box-border">
                 <button
-                  id="analyze-button"
                   type="button"
                   onClick={handleStartAnalysis}
-                  className="w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:bg-indigo-800 transition-all flex items-center justify-center gap-3 text-base sm:text-lg cursor-pointer"
+                  className="w-full min-h-[44px] py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold rounded-xl shadow-sm flex items-center justify-center gap-2 text-sm cursor-pointer"
                 >
-                  <svg className="w-5 h-5 text-indigo-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  Analyze Document
+                  <Shield className="w-4 h-4 text-indigo-200" />
+                  <span>Analyze Policy</span>
                 </button>
               </div>
             )}
-
           </div>
         ) : (
-          /* ANALYSIS VIEW */
+          /* ANALYSIS VIEW - STREAMING VERDICT REPORT */
           <div className="w-full max-w-full flex flex-col gap-6 overflow-x-hidden">
-            
             {/* Top Toolbar */}
             <div className="flex items-center justify-between pb-4 border-b border-slate-200">
               <div>
                 <div className="flex items-center gap-3">
-                  <h1 className="text-xl sm:text-3xl font-black text-slate-900">Policy Evaluation Report</h1>
+                  <h1 className="text-xl sm:text-3xl font-black text-slate-900">
+                    Policy Evaluation Report
+                  </h1>
                   {isStreaming && (
-                    <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-semibold animate-pulse">
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      Streaming sections...
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold animate-pulse border border-indigo-200/60">
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-600" />
+                      <span>Streaming sections...</span>
                     </span>
                   )}
                 </div>
@@ -907,7 +1076,7 @@ export default function Home() {
               </div>
               <button
                 onClick={handleReset}
-                className="hidden sm:inline-flex items-center px-4 py-2 text-sm font-semibold text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors cursor-pointer"
+                className="inline-flex items-center px-4 py-2 text-xs sm:text-sm font-semibold text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors cursor-pointer"
               >
                 ← Analyze new policy
               </button>
@@ -917,88 +1086,225 @@ export default function Home() {
             {error ? (
               <div className="max-w-2xl mx-auto w-full py-16 text-center px-4">
                 <div className="w-16 h-16 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
+                  <AlertTriangle className="w-8 h-8 text-rose-600" />
                 </div>
                 <h2 className="text-xl font-bold text-slate-900 mb-2">Analysis Failed</h2>
                 <p className="text-slate-500 mb-6 text-sm break-words">{error}</p>
-                <button onClick={handleReset} className="px-6 py-2.5 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 cursor-pointer">
+                <button
+                  onClick={handleReset}
+                  className="px-6 py-2.5 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 cursor-pointer"
+                >
                   Try Again
                 </button>
               </div>
             ) : (
-              /* MODULAR 6-SECTION POLICY ANALYSIS REPORT WITH PROGRESSIVE STREAMING CARDS */
-              <AnalysisReport analysis={analysisResult} parsedData={parsedData} isStreaming={isStreaming || analysisStage !== "completed"} />
+              <AnalysisReport
+                analysis={analysisResult}
+                parsedData={parsedData}
+                isStreaming={isStreaming || analysisStage !== "completed"}
+              />
             )}
-
           </div>
         )}
       </main>
 
-      {/* Floating "Reading your policy..." Modal with Blurred Backdrop & Cancel Button */}
+      {/* MULTI-STEP LOADING PROGRESS MODAL */}
       {isProcessing && !showDisclaimer && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full max-w-[calc(100vw-1.5rem)] p-5 sm:p-8 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200 text-center box-border">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4 sm:mb-5 mx-auto relative shadow-inner">
-              <div className="absolute inset-0 rounded-2xl border-2 border-indigo-600/30 border-t-indigo-600 animate-spin" />
-              <svg className="w-7 h-7 sm:w-8 sm:h-8 text-indigo-600 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+          <div className="bg-white rounded-2xl max-w-md w-full max-w-[calc(100vw-1.5rem)] p-5 sm:p-7 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200 text-left box-border">
+            
+            {/* Header with Title & Badge */}
+            <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                  Analyzing Your Policy
+                </h3>
+              </div>
+              <span className="text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full">
+                Step {loadingStep} of 3
+              </span>
             </div>
 
-            <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2">Reading your policy...</h3>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
-              {analysisStage === "analyzing"
-                ? "Evaluating policy clauses, room rent limitations, waiting periods, and statutory IRDAI benchmarks."
-                : "Securely parsing document clauses, endorsements, and demographic context."}
-            </p>
+            {/* Stepper Progress Indicator */}
+            <div className="space-y-4 my-2">
+              {/* Step 1: Reading & decrypting policy PDF */}
+              <div className="flex items-start gap-3">
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                      loadingStep > 1
+                        ? "bg-emerald-500 text-white"
+                        : loadingStep === 1
+                        ? "bg-indigo-600 text-white ring-4 ring-indigo-100"
+                        : "bg-slate-100 text-slate-400"
+                    }`}
+                  >
+                    {loadingStep > 1 ? (
+                      <CheckCircle2 className="w-4 h-4" />
+                    ) : loadingStep === 1 ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      "1"
+                    )}
+                  </div>
+                  <div
+                    className={`w-0.5 h-6 transition-colors ${
+                      loadingStep > 1 ? "bg-emerald-400" : "bg-slate-200"
+                    }`}
+                  />
+                </div>
+                <div className="pt-0.5">
+                  <p
+                    className={`text-xs sm:text-sm font-semibold ${
+                      loadingStep === 1
+                        ? "text-indigo-900"
+                        : loadingStep > 1
+                        ? "text-slate-800"
+                        : "text-slate-400"
+                    }`}
+                  >
+                    Reading &amp; decrypting policy PDF...
+                  </p>
+                  <p className="text-[11px] text-slate-500">
+                    Secure in-memory decryption and clause boundary detection.
+                  </p>
+                </div>
+              </div>
 
+              {/* Step 2: Extracting key clauses & mapping MoSPI benchmarks */}
+              <div className="flex items-start gap-3">
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                      loadingStep > 2
+                        ? "bg-emerald-500 text-white"
+                        : loadingStep === 2
+                        ? "bg-indigo-600 text-white ring-4 ring-indigo-100"
+                        : "bg-slate-100 text-slate-400"
+                    }`}
+                  >
+                    {loadingStep > 2 ? (
+                      <CheckCircle2 className="w-4 h-4" />
+                    ) : loadingStep === 2 ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      "2"
+                    )}
+                  </div>
+                  <div
+                    className={`w-0.5 h-6 transition-colors ${
+                      loadingStep > 2 ? "bg-emerald-400" : "bg-slate-200"
+                    }`}
+                  />
+                </div>
+                <div className="pt-0.5">
+                  <p
+                    className={`text-xs sm:text-sm font-semibold ${
+                      loadingStep === 2
+                        ? "text-indigo-900"
+                        : loadingStep > 2
+                        ? "text-slate-800"
+                        : "text-slate-400"
+                    }`}
+                  >
+                    Extracting key clauses &amp; mapping MoSPI benchmarks...
+                  </p>
+                  <p className="text-[11px] text-slate-500">
+                    Room-rent caps, waiting periods &amp; state inflation index.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 3: Generating your personalized AssureBhai verdict */}
+              <div className="flex items-start gap-3">
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                      analysisStage === "completed"
+                        ? "bg-emerald-500 text-white"
+                        : loadingStep === 3
+                        ? "bg-indigo-600 text-white ring-4 ring-indigo-100"
+                        : "bg-slate-100 text-slate-400"
+                    }`}
+                  >
+                    {analysisStage === "completed" ? (
+                      <CheckCircle2 className="w-4 h-4" />
+                    ) : loadingStep === 3 ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      "3"
+                    )}
+                  </div>
+                </div>
+                <div className="pt-0.5">
+                  <p
+                    className={`text-xs sm:text-sm font-semibold ${
+                      loadingStep === 3
+                        ? "text-indigo-900"
+                        : analysisStage === "completed"
+                        ? "text-slate-800"
+                        : "text-slate-400"
+                    }`}
+                  >
+                    Generating your personalized AssureBhai verdict...
+                  </p>
+                  <p className="text-[11px] text-slate-500">
+                    Synthesizing coverage rating, solvency &amp; plain-English summary.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Network Retry Notification */}
             {retryStatus && (
-              <div className="mb-4 px-3.5 py-2 bg-amber-50 border border-amber-200/80 rounded-xl text-amber-800 text-xs font-medium flex items-center justify-center gap-2 animate-pulse">
+              <div className="mt-4 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs font-medium flex items-center gap-2 animate-pulse">
                 <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-600 shrink-0" />
                 <span>{retryStatus}</span>
               </div>
             )}
 
-            <button
-              id="cancel-analysis-button"
-              type="button"
-              onClick={handleTerminateAnalysis}
-              className="w-full px-4 py-2.5 text-sm font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 active:bg-rose-200 rounded-xl border border-rose-200 transition-colors cursor-pointer flex items-center justify-center gap-2"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              Cancel Analysis
-            </button>
+            {/* Cancel Button */}
+            <div className="mt-5 pt-3 border-t border-slate-100">
+              <button
+                id="cancel-analysis-button"
+                type="button"
+                onClick={handleTerminateAnalysis}
+                className="w-full min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 active:bg-rose-200 rounded-xl border border-rose-200 transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <X className="w-4 h-4" />
+                <span>Cancel Analysis</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* AI Disclaimer Modal with Concurrent Background Analysis & Blurred Backdrop */}
+      {/* AI DISCLAIMER MODAL */}
       {showDisclaimer && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full max-w-[calc(100vw-1.5rem)] p-5 sm:p-8 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200 text-center box-border">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4 mx-auto shadow-inner">
-              <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
+          <div className="bg-white rounded-2xl max-w-md w-full max-w-[calc(100vw-1.5rem)] p-5 sm:p-7 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200 text-center box-border">
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3 mx-auto shadow-inner">
+              <AlertTriangle className="w-6 h-6 text-amber-600" />
             </div>
-            
-            <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2">AI Analysis Disclaimer</h3>
-            
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6">
-              AssureBhai performs automated policy evaluations and extracts clause structures for informational and educational purposes. 
+
+            <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-1.5">
+              AI Analysis Disclaimer
+            </h3>
+
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-5">
+              AssureBhai performs automated evaluations and clause extractions for educational purposes.
               Always review your actual policy certificate and consult with an IRDAI-registered insurance advisor before making financial decisions.
             </p>
 
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2.5">
               <button
                 id="disagree-button"
                 type="button"
                 onClick={handleTerminateAnalysis}
-                className="flex-1 px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-100 rounded-xl hover:bg-slate-200 border border-slate-200 transition-colors cursor-pointer"
+                className="flex-1 min-h-[44px] px-3 py-2 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-100 rounded-xl hover:bg-slate-200 border border-slate-200 transition-colors cursor-pointer"
               >
                 Disagree
               </button>
@@ -1006,14 +1312,58 @@ export default function Home() {
                 id="agree-button"
                 type="button"
                 onClick={handleAgreeDisclaimer}
-                className="flex-1 px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-md shadow-indigo-100 transition-colors cursor-pointer"
+                className="flex-1 min-h-[44px] px-3 py-2 text-xs sm:text-sm font-semibold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-md shadow-indigo-100 transition-colors cursor-pointer"
               >
-                Agree & Continue
+                Agree &amp; Continue
               </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* FOOTER */}
+      <footer className="w-full border-t border-slate-200 bg-white py-6 sm:py-8 px-4 sm:px-6 mt-auto">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
+            <span className="font-semibold text-slate-700">
+              Assure<span className="text-amber-600">Bhai</span>
+            </span>
+            <span className="hidden sm:inline text-slate-300">•</span>
+            <span>Your Insurance Policy, Simplified.</span>
+            <span className="hidden sm:inline text-slate-300">•</span>
+            <span className="text-emerald-700 font-medium">100% In-Memory (Zero Storage)</span>
+          </div>
+
+          <div className="flex items-center gap-4 text-xs">
+            <Link
+              href="/privacy"
+              className="text-slate-600 hover:text-indigo-600 font-medium transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <span className="text-slate-300">•</span>
+            <button
+              type="button"
+              onClick={() => setIsFeedbackOpen(true)}
+              className="text-slate-600 hover:text-indigo-600 font-medium transition-colors cursor-pointer"
+            >
+              Feedback
+            </button>
+            <span className="text-slate-300">•</span>
+            <a
+              href="https://ashjo966.github.io/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-600 hover:text-indigo-600 font-medium transition-colors"
+            >
+              Creator
+            </a>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto text-center mt-3 text-[11px] text-slate-400">
+          © {new Date().getFullYear()} AssureBhai. Independent educational tool. Not affiliated with or endorsed by IRDAI.
+        </div>
+      </footer>
 
       {/* Feedback Floating Widget Modal */}
       <FeedbackWidget

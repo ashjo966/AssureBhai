@@ -21,35 +21,41 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://assurebhai.com"),
-  title: "AssureBhai | Professional AI Insurance Policy Analysis & Simplified Evaluations",
-  description: "Upload your health or term life insurance policy PDF to analyze clauses, check IRDAI claim settlement ratios, and verify solvency benchmarks with online search grounding.",
+  metadataBase: new URL("https://assurebhai-production.up.railway.app"),
+  title: "AssureBhai - Your Insurance Policy, Simplified",
+  description:
+    "Stress-test your Health and Life insurance policies against official and hyperlocal Indian government statistics.",
   icons: {
-    icon: "/favicon.png",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.png", type: "image/png" },
+    ],
     shortcut: "/favicon.png",
     apple: "/favicon.png",
   },
   openGraph: {
-    title: "AssureBhai | Professional AI Insurance Policy Analysis & Simplified Evaluations",
-    description: "Upload your policy PDF to analyze terms, uncover hidden clauses, and verify statutory IRDAI benchmarks instantly using AI.",
-    url: "https://assurebhai.com",
+    title: "AssureBhai - Your Insurance Policy, Simplified",
+    description:
+      "Stress-test your Health and Life insurance policies against official and hyperlocal Indian government statistics.",
+    url: "https://assurebhai-production.up.railway.app",
     siteName: "AssureBhai",
     locale: "en_IN",
     type: "website",
     images: [
       {
-        url: "https://assurebhai.com/OG_AssureBhai.jpg",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "AssureBhai - AI Insurance Policy Analysis",
+        alt: "AssureBhai - Your Insurance Policy, Simplified",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "AssureBhai | Professional AI Insurance Policy Analysis & Simplified Evaluations",
-    description: "Upload your policy PDF to analyze terms, uncover hidden clauses, and verify statutory IRDAI benchmarks instantly using AI.",
-    images: ["https://assurebhai.com/OG_AssureBhai.jpg"],
+    title: "AssureBhai - Your Insurance Policy, Simplified",
+    description:
+      "Stress-test your Health and Life insurance policies against official and hyperlocal Indian government statistics.",
+    images: ["/opengraph-image"],
   },
 };
 
@@ -59,7 +65,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased overflow-x-hidden`}
     >
-      <body className="min-h-full flex flex-col w-full max-w-full overflow-x-hidden">{children}</body>
+      <body className="min-h-full flex flex-col w-full max-w-full overflow-x-hidden">
+        {children}
+      </body>
     </html>
   );
 }
