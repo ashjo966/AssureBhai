@@ -130,6 +130,31 @@ export default function Home() {
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
+  const analysisContainerRef = useRef<HTMLDivElement>(null);
+
+  // Ensure viewport scrolls to the very top whenever pageState transitions (especially to analysis view on mobile)
+  useEffect(() => {
+    if (pageState === "analysis") {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      analysisContainerRef.current?.scrollIntoView({ behavior: "instant", block: "start" });
+
+      // Handle mobile browser keyboard dismissal and async layout shifts
+      const timer = setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        analysisContainerRef.current?.scrollIntoView({ behavior: "instant", block: "start" });
+      }, 100);
+
+      return () => clearTimeout(timer);
+    } else if (pageState === "home") {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, [pageState]);
 
   // Typewriter effect logic
   useEffect(() => {
@@ -494,6 +519,7 @@ export default function Home() {
     if (areInitialSectionsReady(latestAnalysisResultRef.current) || analysisStage === "completed") {
       setIsProcessing(false);
       setPageState("analysis");
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     } else {
       setIsProcessing(true);
     }
@@ -525,6 +551,7 @@ export default function Home() {
     setAnalysisStage("idle");
     setLoadingStep(1);
     setPageState("home");
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     setFile(null);
     setPdfPassword("");
     setShowPassword(false);
@@ -1052,7 +1079,7 @@ export default function Home() {
           </div>
         ) : (
           /* ANALYSIS VIEW - STREAMING VERDICT REPORT */
-          <div className="w-full max-w-full flex flex-col gap-6 overflow-x-hidden">
+          <div ref={analysisContainerRef} className="w-full max-w-full flex flex-col gap-6 overflow-x-hidden">
             {/* Top Toolbar */}
             <div className="flex items-center justify-between gap-3 pb-4 border-b border-slate-200">
               <div className="min-w-0 flex-1">
