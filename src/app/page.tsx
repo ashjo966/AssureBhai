@@ -640,7 +640,10 @@ export default function Home() {
                   policy,
                 </span>
                 <br className="sm:hidden" />{" "}
-                <span className="italic">simplified</span>.
+                <span className="font-[family-name:var(--font-satisfy)] font-normal text-[1.18em] tracking-normal inline-block">
+                  Simplified
+                </span>
+                .
               </h1>
               <p className="mt-2 sm:mt-6 text-xs sm:text-lg text-slate-500 max-w-lg mx-auto leading-relaxed">
                 Upload your policy PDF to analyze terms, uncover hidden clauses, and verify statutory IRDAI benchmarks instantly.
