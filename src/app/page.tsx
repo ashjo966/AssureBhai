@@ -640,7 +640,7 @@ export default function Home() {
                   policy,
                 </span>
                 <br className="sm:hidden" />{" "}
-                <span className="font-[family-name:var(--font-satisfy)] font-normal text-[1.18em] tracking-normal inline-block">
+                <span className="font-[family-name:var(--font-satisfy)] font-bold text-[1.22em] tracking-normal inline-block">
                   Simplified
                 </span>
                 .
