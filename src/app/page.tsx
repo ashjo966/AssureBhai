@@ -1049,6 +1049,7 @@ export default function Home() {
                 <button
                   id="analyze-button-desktop"
                   type="button"
+                  data-umami-event="analyze_policy_submitted"
                   onClick={handleStartAnalysis}
                   className="w-auto px-10 py-4 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold rounded-xl shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all flex items-center justify-center gap-3 text-lg cursor-pointer"
                 >
@@ -1067,6 +1068,7 @@ export default function Home() {
                 <button
                   id="analyze-button-mobile"
                   type="button"
+                  data-umami-event="analyze_policy_submitted"
                   onClick={handleStartAnalysis}
                   className="w-full min-h-[44px] py-3 px-4 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold rounded-xl shadow-md flex items-center justify-center gap-2 text-base cursor-pointer"
                 >
