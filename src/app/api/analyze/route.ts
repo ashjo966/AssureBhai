@@ -13,7 +13,7 @@ function getGenAIClient() {
   if (!apiKey) {
     throw new Error("Missing GEMINI_API_KEY environment variable");
   }
-  return new GoogleGenAI({ apiKey });
+  return new GoogleGenAI({ apiKey, vertexai: false });
 }
 
 // Exponential backoff retry helper
@@ -62,8 +62,10 @@ export async function POST(request: NextRequest) {
     const policy_data = payload.policy_data || payload;
     const mospi_grounding = payload.mospi_grounding || {
       cpi_health_inflation_pct: 6.2,
+      cpi_general_inflation_pct: 2.03,
       urban_mpce_salaried_monthly: 7606,
       health_spend_share_pct: 6.8,
+      non_food_spend_share_pct: 59.69,
     };
 
     // 1. Inspect document validity
@@ -84,7 +86,7 @@ export async function POST(request: NextRequest) {
 
     // 3. Initialize the GoogleGenAI client
     const ai = getGenAIClient();
-    const candidateAnalyzeModels = ["gemini-3.7-flash", "gemini-3.6-flash"];
+    const candidateAnalyzeModels = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.6-flash"];
 
     // 4. Construct the prompt with <POLICY_EXTRACT_JSON> and <MOSPI_ACTUARIAL_BENCHMARKS>
     const userPrompt = `
@@ -93,9 +95,11 @@ ${JSON.stringify(policy_data)}
 </POLICY_EXTRACT_JSON>
 
 <MOSPI_ACTUARIAL_BENCHMARKS>
-- State Urban Health CPI Inflation: ${mospi_grounding.cpi_health_inflation_pct}%
-- Urban Regular Salaried Monthly MPCE: ₹${mospi_grounding.urban_mpce_salaried_monthly}
-- Healthcare Expenditure Share: ${mospi_grounding.health_spend_share_pct}%
+- State Urban Health CPI Inflation: ${mospi_grounding.cpi_health_inflation_pct ?? 6.2}%
+- State Urban General CPI Inflation: ${mospi_grounding.cpi_general_inflation_pct ?? 2.03}%
+- Urban Regular Salaried Monthly MPCE: ₹${mospi_grounding.urban_mpce_salaried_monthly ?? 7606}
+- Healthcare Expenditure Share: ${mospi_grounding.health_spend_share_pct ?? 6.8}%
+- Non-Food Consumption Share: ${mospi_grounding.non_food_spend_share_pct ?? 59.69}%
 </MOSPI_ACTUARIAL_BENCHMARKS>
 `;
 

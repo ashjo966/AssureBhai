@@ -4,691 +4,691 @@
       "state": "Delhi",
       "city_tier": "Tier-1",
       "zone": "Zone 1",
-      "mospi_stats": { "cpi_health_inflation_pct": 1.34, "urban_mpce_salaried_monthly": 8585, "health_spend_share_pct": 3.41 }
+      "mospi_stats": { "cpi_health_inflation_pct": 1.34, "cpi_general_inflation_pct": 1.29, "urban_mpce_salaried_monthly": 8585, "health_spend_share_pct": 3.41, "non_food_spend_share_pct": 60.34 }
     },
     "121, 122": {
       "state": "Haryana",
       "city_tier": "Tier-1",
       "zone": "Zone 1",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.85, "urban_mpce_salaried_monthly": 8777, "health_spend_share_pct": 4.27 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.85, "cpi_general_inflation_pct": 0.75, "urban_mpce_salaried_monthly": 8777, "health_spend_share_pct": 4.27, "non_food_spend_share_pct": 58.47 }
     },
     "123-136": {
       "state": "Haryana",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.85, "urban_mpce_salaried_monthly": 8777, "health_spend_share_pct": 4.27 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.85, "cpi_general_inflation_pct": 0.75, "urban_mpce_salaried_monthly": 8777, "health_spend_share_pct": 4.27, "non_food_spend_share_pct": 58.47 }
     },
     "140": {
       "state": "Punjab",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.44, "urban_mpce_salaried_monthly": 7448, "health_spend_share_pct": 7.46 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.44, "cpi_general_inflation_pct": 1.38, "urban_mpce_salaried_monthly": 7448, "health_spend_share_pct": 7.46, "non_food_spend_share_pct": 58.54 }
     },
     "141": {
       "state": "Punjab",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.44, "urban_mpce_salaried_monthly": 7448, "health_spend_share_pct": 7.46 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.44, "cpi_general_inflation_pct": 1.38, "urban_mpce_salaried_monthly": 7448, "health_spend_share_pct": 7.46, "non_food_spend_share_pct": 58.54 }
     },
     "142": {
       "state": "Punjab",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.44, "urban_mpce_salaried_monthly": 7448, "health_spend_share_pct": 7.46 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.44, "cpi_general_inflation_pct": 1.38, "urban_mpce_salaried_monthly": 7448, "health_spend_share_pct": 7.46, "non_food_spend_share_pct": 58.54 }
     },
     "143, 144": {
       "state": "Punjab",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.44, "urban_mpce_salaried_monthly": 7448, "health_spend_share_pct": 7.46 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.44, "cpi_general_inflation_pct": 1.38, "urban_mpce_salaried_monthly": 7448, "health_spend_share_pct": 7.46, "non_food_spend_share_pct": 58.54 }
     },
     "145-159": {
       "state": "Punjab",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.44, "urban_mpce_salaried_monthly": 7448, "health_spend_share_pct": 7.46 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.44, "cpi_general_inflation_pct": 1.38, "urban_mpce_salaried_monthly": 7448, "health_spend_share_pct": 7.46, "non_food_spend_share_pct": 58.54 }
     },
     "160": {
       "state": "Chandigarh",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.44, "urban_mpce_salaried_monthly": 13703, "health_spend_share_pct": 4.40 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.44, "cpi_general_inflation_pct": 0.61, "urban_mpce_salaried_monthly": 13703, "health_spend_share_pct": 4.40, "non_food_spend_share_pct": 62.75 }
     },
     "171-177": {
       "state": "Himachal Pradesh",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.02, "urban_mpce_salaried_monthly": 9222, "health_spend_share_pct": 4.78 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.02, "cpi_general_inflation_pct": 0.37, "urban_mpce_salaried_monthly": 9222, "health_spend_share_pct": 4.78, "non_food_spend_share_pct": 62.11 }
     },
     "180-193": {
       "state": "Jammu & Kashmir",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.83, "urban_mpce_salaried_monthly": 6717, "health_spend_share_pct": 5.92 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.83, "cpi_general_inflation_pct": 1.85, "urban_mpce_salaried_monthly": 6717, "health_spend_share_pct": 5.92, "non_food_spend_share_pct": 57.07 }
     },
     "194": {
       "state": "Ladakh",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.83, "urban_mpce_salaried_monthly": 8362, "health_spend_share_pct": 4.57 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.83, "cpi_general_inflation_pct": 1.85, "urban_mpce_salaried_monthly": 8362, "health_spend_share_pct": 4.57, "non_food_spend_share_pct": 47.19 }
     },
     "201": {
       "state": "Uttar Pradesh",
       "city_tier": "Tier-1",
       "zone": "Zone 1",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.60, "urban_mpce_salaried_monthly": 6357, "health_spend_share_pct": 6.12 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.60, "cpi_general_inflation_pct": 0.83, "urban_mpce_salaried_monthly": 6357, "health_spend_share_pct": 6.12, "non_food_spend_share_pct": 57.80 }
     },
     "202-207": {
       "state": "Uttar Pradesh",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.60, "urban_mpce_salaried_monthly": 6357, "health_spend_share_pct": 6.12 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.60, "cpi_general_inflation_pct": 0.83, "urban_mpce_salaried_monthly": 6357, "health_spend_share_pct": 6.12, "non_food_spend_share_pct": 57.80 }
     },
     "208": {
       "state": "Uttar Pradesh",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.60, "urban_mpce_salaried_monthly": 6357, "health_spend_share_pct": 6.12 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.60, "cpi_general_inflation_pct": 0.83, "urban_mpce_salaried_monthly": 6357, "health_spend_share_pct": 6.12, "non_food_spend_share_pct": 57.80 }
     },
     "209-225": {
       "state": "Uttar Pradesh",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.60, "urban_mpce_salaried_monthly": 6357, "health_spend_share_pct": 6.12 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.60, "cpi_general_inflation_pct": 0.83, "urban_mpce_salaried_monthly": 6357, "health_spend_share_pct": 6.12, "non_food_spend_share_pct": 57.80 }
     },
     "226": {
       "state": "Uttar Pradesh",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.60, "urban_mpce_salaried_monthly": 6357, "health_spend_share_pct": 6.12 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.60, "cpi_general_inflation_pct": 0.83, "urban_mpce_salaried_monthly": 6357, "health_spend_share_pct": 6.12, "non_food_spend_share_pct": 57.80 }
     },
     "227-243": {
       "state": "Uttar Pradesh",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.60, "urban_mpce_salaried_monthly": 6357, "health_spend_share_pct": 6.12 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.60, "cpi_general_inflation_pct": 0.83, "urban_mpce_salaried_monthly": 6357, "health_spend_share_pct": 6.12, "non_food_spend_share_pct": 57.80 }
     },
     "244-247": {
       "state": "Uttarakhand",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.00, "urban_mpce_salaried_monthly": 7814, "health_spend_share_pct": 4.77 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.00, "cpi_general_inflation_pct": 1.53, "urban_mpce_salaried_monthly": 7814, "health_spend_share_pct": 4.77, "non_food_spend_share_pct": 61.44 }
     },
     "248": {
       "state": "Uttarakhand",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.00, "urban_mpce_salaried_monthly": 7814, "health_spend_share_pct": 4.77 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.00, "cpi_general_inflation_pct": 1.53, "urban_mpce_salaried_monthly": 7814, "health_spend_share_pct": 4.77, "non_food_spend_share_pct": 61.44 }
     },
     "249-263": {
       "state": "Uttarakhand",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.00, "urban_mpce_salaried_monthly": 7814, "health_spend_share_pct": 4.77 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.00, "cpi_general_inflation_pct": 1.53, "urban_mpce_salaried_monthly": 7814, "health_spend_share_pct": 4.77, "non_food_spend_share_pct": 61.44 }
     },
     "264-285": {
       "state": "Uttar Pradesh",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.60, "urban_mpce_salaried_monthly": 6357, "health_spend_share_pct": 6.12 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.60, "cpi_general_inflation_pct": 0.83, "urban_mpce_salaried_monthly": 6357, "health_spend_share_pct": 6.12, "non_food_spend_share_pct": 57.80 }
     },
-	"301": {
+    "301": {
       "state": "Rajasthan",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.09, "urban_mpce_salaried_monthly": 7064, "health_spend_share_pct": 5.04 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.09, "cpi_general_inflation_pct": 0.47, "urban_mpce_salaried_monthly": 7064, "health_spend_share_pct": 5.04, "non_food_spend_share_pct": 61.25 }
     },
     "302": {
       "state": "Rajasthan",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.09, "urban_mpce_salaried_monthly": 7064, "health_spend_share_pct": 5.04 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.09, "cpi_general_inflation_pct": 0.47, "urban_mpce_salaried_monthly": 7064, "health_spend_share_pct": 5.04, "non_food_spend_share_pct": 61.25 }
     },
     "303-345": {
       "state": "Rajasthan",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.09, "urban_mpce_salaried_monthly": 7064, "health_spend_share_pct": 5.04 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.09, "cpi_general_inflation_pct": 0.47, "urban_mpce_salaried_monthly": 7064, "health_spend_share_pct": 5.04, "non_food_spend_share_pct": 61.25 }
     },
     "360-379": {
       "state": "Gujarat",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "cpi_general_inflation_pct": 1.53, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24, "non_food_spend_share_pct": 56.46 }
     },
     "380": {
       "state": "Gujarat",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "cpi_general_inflation_pct": 1.53, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24, "non_food_spend_share_pct": 56.46 }
     },
     "381": {
       "state": "Gujarat",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "cpi_general_inflation_pct": 1.53, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24, "non_food_spend_share_pct": 56.46 }
     },
     "382": {
       "state": "Gujarat",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "cpi_general_inflation_pct": 1.53, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24, "non_food_spend_share_pct": 56.46 }
     },
     "383-389": {
       "state": "Gujarat",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "cpi_general_inflation_pct": 1.53, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24, "non_food_spend_share_pct": 56.46 }
     },
     "390": {
       "state": "Gujarat",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "cpi_general_inflation_pct": 1.53, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24, "non_food_spend_share_pct": 56.46 }
     },
     "391-394": {
       "state": "Gujarat",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "cpi_general_inflation_pct": 1.53, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24, "non_food_spend_share_pct": 56.46 }
     },
     "395": {
       "state": "Gujarat",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "cpi_general_inflation_pct": 1.53, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24, "non_food_spend_share_pct": 56.46 }
     },
     "396": {
       "state": "Gujarat",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.35, "cpi_general_inflation_pct": 1.53, "urban_mpce_salaried_monthly": 7315, "health_spend_share_pct": 5.24, "non_food_spend_share_pct": 56.46 }
     },
     "400, 401": {
       "state": "Maharashtra",
       "city_tier": "Tier-1",
       "zone": "Zone 1",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "cpi_general_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11, "non_food_spend_share_pct": 63.46 }
     },
     "402": {
       "state": "Maharashtra",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "cpi_general_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11, "non_food_spend_share_pct": 63.46 }
     },
     "403": {
       "state": "Goa",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "urban_mpce_salaried_monthly": 10079, "health_spend_share_pct": 5.29 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "cpi_general_inflation_pct": 1.81, "urban_mpce_salaried_monthly": 10079, "health_spend_share_pct": 5.29, "non_food_spend_share_pct": 51.77 }
     },
     "404-409": {
       "state": "Maharashtra",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "cpi_general_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11, "non_food_spend_share_pct": 63.46 }
     },
     "410": {
       "state": "Maharashtra",
       "city_tier": "Tier-1",
       "zone": "Zone 1",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "cpi_general_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11, "non_food_spend_share_pct": 63.46 }
     },
     "411": {
       "state": "Maharashtra",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "cpi_general_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11, "non_food_spend_share_pct": 63.46 }
     },
     "412-421": {
       "state": "Maharashtra",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "cpi_general_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11, "non_food_spend_share_pct": 63.46 }
     },
     "422": {
       "state": "Maharashtra",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "cpi_general_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11, "non_food_spend_share_pct": 63.46 }
     },
     "423-439": {
       "state": "Maharashtra",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "cpi_general_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11, "non_food_spend_share_pct": 63.46 }
     },
     "440": {
       "state": "Maharashtra",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "cpi_general_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11, "non_food_spend_share_pct": 63.46 }
     },
     "441-445": {
       "state": "Maharashtra",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.77, "cpi_general_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 7598, "health_spend_share_pct": 6.11, "non_food_spend_share_pct": 63.46 }
     },
     "450, 451": {
       "state": "Madhya Pradesh",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.58, "urban_mpce_salaried_monthly": 6112, "health_spend_share_pct": 5.77 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.58, "cpi_general_inflation_pct": 0.61, "urban_mpce_salaried_monthly": 6112, "health_spend_share_pct": 5.77, "non_food_spend_share_pct": 61.40 }
     },
     "452": {
       "state": "Madhya Pradesh",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.58, "urban_mpce_salaried_monthly": 6112, "health_spend_share_pct": 5.77 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.58, "cpi_general_inflation_pct": 0.61, "urban_mpce_salaried_monthly": 6112, "health_spend_share_pct": 5.77, "non_food_spend_share_pct": 61.40 }
     },
     "453-461": {
       "state": "Madhya Pradesh",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.58, "urban_mpce_salaried_monthly": 6112, "health_spend_share_pct": 5.77 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.58, "cpi_general_inflation_pct": 0.61, "urban_mpce_salaried_monthly": 6112, "health_spend_share_pct": 5.77, "non_food_spend_share_pct": 61.40 }
     },
     "462": {
       "state": "Madhya Pradesh",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.58, "urban_mpce_salaried_monthly": 6112, "health_spend_share_pct": 5.77 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.58, "cpi_general_inflation_pct": 0.61, "urban_mpce_salaried_monthly": 6112, "health_spend_share_pct": 5.77, "non_food_spend_share_pct": 61.40 }
     },
     "463-489": {
       "state": "Madhya Pradesh",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.58, "urban_mpce_salaried_monthly": 6112, "health_spend_share_pct": 5.77 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.58, "cpi_general_inflation_pct": 0.61, "urban_mpce_salaried_monthly": 6112, "health_spend_share_pct": 5.77, "non_food_spend_share_pct": 61.40 }
     },
     "490, 491": {
       "state": "Chhattisgarh",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.43, "urban_mpce_salaried_monthly": 5368, "health_spend_share_pct": 5.62 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.43, "cpi_general_inflation_pct": 0.75, "urban_mpce_salaried_monthly": 5368, "health_spend_share_pct": 5.62, "non_food_spend_share_pct": 57.33 }
     },
     "492": {
       "state": "Chhattisgarh",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.43, "urban_mpce_salaried_monthly": 5368, "health_spend_share_pct": 5.62 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.43, "cpi_general_inflation_pct": 0.75, "urban_mpce_salaried_monthly": 5368, "health_spend_share_pct": 5.62, "non_food_spend_share_pct": 57.33 }
     },
     "493-497": {
       "state": "Chhattisgarh",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.43, "urban_mpce_salaried_monthly": 5368, "health_spend_share_pct": 5.62 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.43, "cpi_general_inflation_pct": 0.75, "urban_mpce_salaried_monthly": 5368, "health_spend_share_pct": 5.62, "non_food_spend_share_pct": 57.33 }
     },
-	"500, 501": {
+    "500, 501": {
       "state": "Telangana",
       "city_tier": "Tier-1",
       "zone": "Zone 1",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.54, "urban_mpce_salaried_monthly": 9339, "health_spend_share_pct": 4.67 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.54, "cpi_general_inflation_pct": 1.55, "urban_mpce_salaried_monthly": 9339, "health_spend_share_pct": 4.67, "non_food_spend_share_pct": 61.23 }
     },
     "502-509": {
       "state": "Telangana",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.54, "urban_mpce_salaried_monthly": 9339, "health_spend_share_pct": 4.67 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.54, "cpi_general_inflation_pct": 1.55, "urban_mpce_salaried_monthly": 9339, "health_spend_share_pct": 4.67, "non_food_spend_share_pct": 61.23 }
     },
     "510-519": {
       "state": "Andhra Pradesh",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 5.70, "urban_mpce_salaried_monthly": 7815, "health_spend_share_pct": 6.17 }
+      "mospi_stats": { "cpi_health_inflation_pct": 5.70, "cpi_general_inflation_pct": 2.91, "urban_mpce_salaried_monthly": 7815, "health_spend_share_pct": 6.17, "non_food_spend_share_pct": 59.47 }
     },
     "520": {
       "state": "Andhra Pradesh",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 5.70, "urban_mpce_salaried_monthly": 7815, "health_spend_share_pct": 6.17 }
+      "mospi_stats": { "cpi_health_inflation_pct": 5.70, "cpi_general_inflation_pct": 2.91, "urban_mpce_salaried_monthly": 7815, "health_spend_share_pct": 6.17, "non_food_spend_share_pct": 59.47 }
     },
     "521-529": {
       "state": "Andhra Pradesh",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 5.70, "urban_mpce_salaried_monthly": 7815, "health_spend_share_pct": 6.17 }
+      "mospi_stats": { "cpi_health_inflation_pct": 5.70, "cpi_general_inflation_pct": 2.91, "urban_mpce_salaried_monthly": 7815, "health_spend_share_pct": 6.17, "non_food_spend_share_pct": 59.47 }
     },
     "530": {
       "state": "Andhra Pradesh",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 5.70, "urban_mpce_salaried_monthly": 7815, "health_spend_share_pct": 6.17 }
+      "mospi_stats": { "cpi_health_inflation_pct": 5.70, "cpi_general_inflation_pct": 2.91, "urban_mpce_salaried_monthly": 7815, "health_spend_share_pct": 6.17, "non_food_spend_share_pct": 59.47 }
     },
     "531-535": {
       "state": "Andhra Pradesh",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 5.70, "urban_mpce_salaried_monthly": 7815, "health_spend_share_pct": 6.17 }
+      "mospi_stats": { "cpi_health_inflation_pct": 5.70, "cpi_general_inflation_pct": 2.91, "urban_mpce_salaried_monthly": 7815, "health_spend_share_pct": 6.17, "non_food_spend_share_pct": 59.47 }
     },
     "560": {
       "state": "Karnataka",
       "city_tier": "Tier-1",
       "zone": "Zone 1",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "cpi_general_inflation_pct": 3.14, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93, "non_food_spend_share_pct": 61.66 }
     },
     "561": {
       "state": "Karnataka",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "cpi_general_inflation_pct": 3.14, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93, "non_food_spend_share_pct": 61.66 }
     },
     "562": {
       "state": "Karnataka",
       "city_tier": "Tier-1",
       "zone": "Zone 1",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "cpi_general_inflation_pct": 3.14, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93, "non_food_spend_share_pct": 61.66 }
     },
     "563-569": {
       "state": "Karnataka",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "cpi_general_inflation_pct": 3.14, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93, "non_food_spend_share_pct": 61.66 }
     },
     "570": {
       "state": "Karnataka",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "cpi_general_inflation_pct": 3.14, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93, "non_food_spend_share_pct": 61.66 }
     },
     "571-574": {
       "state": "Karnataka",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "cpi_general_inflation_pct": 3.14, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93, "non_food_spend_share_pct": 61.66 }
     },
     "575": {
       "state": "Karnataka",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "cpi_general_inflation_pct": 3.14, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93, "non_food_spend_share_pct": 61.66 }
     },
     "576-591": {
       "state": "Karnataka",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.89, "cpi_general_inflation_pct": 3.14, "urban_mpce_salaried_monthly": 9863, "health_spend_share_pct": 4.93, "non_food_spend_share_pct": 61.66 }
     },
     "600": {
       "state": "Tamil Nadu",
       "city_tier": "Tier-1",
       "zone": "Zone 1",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 8717, "health_spend_share_pct": 5.69 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "cpi_general_inflation_pct": 3.14, "urban_mpce_salaried_monthly": 8717, "health_spend_share_pct": 5.69, "non_food_spend_share_pct": 60.38 }
     },
     "601-604": {
       "state": "Tamil Nadu",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 8717, "health_spend_share_pct": 5.69 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "cpi_general_inflation_pct": 3.14, "urban_mpce_salaried_monthly": 8717, "health_spend_share_pct": 5.69, "non_food_spend_share_pct": 60.38 }
     },
     "605": {
       "state": "Puducherry",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 8817, "health_spend_share_pct": 5.09 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "cpi_general_inflation_pct": 2.56, "urban_mpce_salaried_monthly": 8817, "health_spend_share_pct": 5.09, "non_food_spend_share_pct": 61.00 }
     },
     "606-624": {
       "state": "Tamil Nadu",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 8717, "health_spend_share_pct": 5.69 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "cpi_general_inflation_pct": 3.14, "urban_mpce_salaried_monthly": 8717, "health_spend_share_pct": 5.69, "non_food_spend_share_pct": 60.38 }
     },
     "625": {
       "state": "Tamil Nadu",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 8717, "health_spend_share_pct": 5.69 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "cpi_general_inflation_pct": 3.14, "urban_mpce_salaried_monthly": 8717, "health_spend_share_pct": 5.69, "non_food_spend_share_pct": 60.38 }
     },
     "626-640": {
       "state": "Tamil Nadu",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 8717, "health_spend_share_pct": 5.69 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "cpi_general_inflation_pct": 3.14, "urban_mpce_salaried_monthly": 8717, "health_spend_share_pct": 5.69, "non_food_spend_share_pct": 60.38 }
     },
     "641": {
       "state": "Tamil Nadu",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 8717, "health_spend_share_pct": 5.69 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "cpi_general_inflation_pct": 3.14, "urban_mpce_salaried_monthly": 8717, "health_spend_share_pct": 5.69, "non_food_spend_share_pct": 60.38 }
     },
     "642, 643": {
       "state": "Tamil Nadu",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "urban_mpce_salaried_monthly": 8717, "health_spend_share_pct": 5.69 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.23, "cpi_general_inflation_pct": 3.14, "urban_mpce_salaried_monthly": 8717, "health_spend_share_pct": 5.69, "non_food_spend_share_pct": 60.38 }
     },
     "670-672": {
       "state": "Kerala",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.36, "urban_mpce_salaried_monthly": 8579, "health_spend_share_pct": 9.09 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.36, "cpi_general_inflation_pct": 7.13, "urban_mpce_salaried_monthly": 8579, "health_spend_share_pct": 9.09, "non_food_spend_share_pct": 63.09 }
     },
     "673": {
       "state": "Kerala",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.36, "urban_mpce_salaried_monthly": 8579, "health_spend_share_pct": 9.09 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.36, "cpi_general_inflation_pct": 7.13, "urban_mpce_salaried_monthly": 8579, "health_spend_share_pct": 9.09, "non_food_spend_share_pct": 63.09 }
     },
     "674-681": {
       "state": "Kerala",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.36, "urban_mpce_salaried_monthly": 8579, "health_spend_share_pct": 9.09 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.36, "cpi_general_inflation_pct": 7.13, "urban_mpce_salaried_monthly": 8579, "health_spend_share_pct": 9.09, "non_food_spend_share_pct": 63.09 }
     },
     "682": {
       "state": "Kerala",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.36, "urban_mpce_salaried_monthly": 8579, "health_spend_share_pct": 9.09 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.36, "cpi_general_inflation_pct": 7.13, "urban_mpce_salaried_monthly": 8579, "health_spend_share_pct": 9.09, "non_food_spend_share_pct": 63.09 }
     },
     "683-694": {
       "state": "Kerala",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.36, "urban_mpce_salaried_monthly": 8579, "health_spend_share_pct": 9.09 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.36, "cpi_general_inflation_pct": 7.13, "urban_mpce_salaried_monthly": 8579, "health_spend_share_pct": 9.09, "non_food_spend_share_pct": 63.09 }
     },
     "695": {
       "state": "Kerala",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 2.36, "urban_mpce_salaried_monthly": 8579, "health_spend_share_pct": 9.09 }
+      "mospi_stats": { "cpi_health_inflation_pct": 2.36, "cpi_general_inflation_pct": 7.13, "urban_mpce_salaried_monthly": 8579, "health_spend_share_pct": 9.09, "non_food_spend_share_pct": 63.09 }
     },
-	"700": {
+    "700": {
       "state": "West Bengal",
       "city_tier": "Tier-1",
       "zone": "Zone 1",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.68, "urban_mpce_salaried_monthly": 6450, "health_spend_share_pct": 8.10 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.68, "cpi_general_inflation_pct": 2.67, "urban_mpce_salaried_monthly": 6450, "health_spend_share_pct": 8.10, "non_food_spend_share_pct": 54.72 }
     },
     "701-710": {
       "state": "West Bengal",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.68, "urban_mpce_salaried_monthly": 6450, "health_spend_share_pct": 8.10 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.68, "cpi_general_inflation_pct": 2.67, "urban_mpce_salaried_monthly": 6450, "health_spend_share_pct": 8.10, "non_food_spend_share_pct": 54.72 }
     },
     "711": {
       "state": "West Bengal",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.68, "urban_mpce_salaried_monthly": 6450, "health_spend_share_pct": 8.10 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.68, "cpi_general_inflation_pct": 2.67, "urban_mpce_salaried_monthly": 6450, "health_spend_share_pct": 8.10, "non_food_spend_share_pct": 54.72 }
     },
     "712-733": {
       "state": "West Bengal",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.68, "urban_mpce_salaried_monthly": 6450, "health_spend_share_pct": 8.10 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.68, "cpi_general_inflation_pct": 2.67, "urban_mpce_salaried_monthly": 6450, "health_spend_share_pct": 8.10, "non_food_spend_share_pct": 54.72 }
     },
     "734": {
       "state": "West Bengal",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.68, "urban_mpce_salaried_monthly": 6450, "health_spend_share_pct": 8.10 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.68, "cpi_general_inflation_pct": 2.67, "urban_mpce_salaried_monthly": 6450, "health_spend_share_pct": 8.10, "non_food_spend_share_pct": 54.72 }
     },
     "735, 736": {
       "state": "West Bengal",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.68, "urban_mpce_salaried_monthly": 6450, "health_spend_share_pct": 8.10 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.68, "cpi_general_inflation_pct": 2.67, "urban_mpce_salaried_monthly": 6450, "health_spend_share_pct": 8.10, "non_food_spend_share_pct": 54.72 }
     },
     "737": {
       "state": "Sikkim",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "urban_mpce_salaried_monthly": 13834, "health_spend_share_pct": 2.18 }
+      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "cpi_general_inflation_pct": 1.16, "urban_mpce_salaried_monthly": 13834, "health_spend_share_pct": 2.18, "non_food_spend_share_pct": 53.62 }
     },
     "738-743": {
       "state": "West Bengal",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.68, "urban_mpce_salaried_monthly": 6450, "health_spend_share_pct": 8.10 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.68, "cpi_general_inflation_pct": 2.67, "urban_mpce_salaried_monthly": 6450, "health_spend_share_pct": 8.10, "non_food_spend_share_pct": 54.72 }
     },
     "751": {
       "state": "Odisha",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.84, "urban_mpce_salaried_monthly": 6629, "health_spend_share_pct": 4.66 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.84, "cpi_general_inflation_pct": 0.83, "urban_mpce_salaried_monthly": 6629, "health_spend_share_pct": 4.66, "non_food_spend_share_pct": 58.55 }
     },
     "752": {
       "state": "Odisha",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.84, "urban_mpce_salaried_monthly": 6629, "health_spend_share_pct": 4.66 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.84, "cpi_general_inflation_pct": 0.83, "urban_mpce_salaried_monthly": 6629, "health_spend_share_pct": 4.66, "non_food_spend_share_pct": 58.55 }
     },
     "753": {
       "state": "Odisha",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.84, "urban_mpce_salaried_monthly": 6629, "health_spend_share_pct": 4.66 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.84, "cpi_general_inflation_pct": 0.83, "urban_mpce_salaried_monthly": 6629, "health_spend_share_pct": 4.66, "non_food_spend_share_pct": 58.55 }
     },
     "754-770": {
       "state": "Odisha",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 4.84, "urban_mpce_salaried_monthly": 6629, "health_spend_share_pct": 4.66 }
+      "mospi_stats": { "cpi_health_inflation_pct": 4.84, "cpi_general_inflation_pct": 0.83, "urban_mpce_salaried_monthly": 6629, "health_spend_share_pct": 4.66, "non_food_spend_share_pct": 58.55 }
     },
     "781": {
       "state": "Assam",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "urban_mpce_salaried_monthly": 7555, "health_spend_share_pct": 4.03 }
+      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "cpi_general_inflation_pct": 0.46, "urban_mpce_salaried_monthly": 7555, "health_spend_share_pct": 4.03, "non_food_spend_share_pct": 51.85 }
     },
     "782-789": {
       "state": "Assam",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "urban_mpce_salaried_monthly": 7555, "health_spend_share_pct": 4.03 }
+      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "cpi_general_inflation_pct": 0.46, "urban_mpce_salaried_monthly": 7555, "health_spend_share_pct": 4.03, "non_food_spend_share_pct": 51.85 }
     },
     "790-792": {
       "state": "Arunachal Pradesh",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "urban_mpce_salaried_monthly": 10304, "health_spend_share_pct": 3.61 }
+      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "cpi_general_inflation_pct": 0.46, "urban_mpce_salaried_monthly": 10304, "health_spend_share_pct": 3.61, "non_food_spend_share_pct": 55.49 }
     },
     "793, 794": {
       "state": "Meghalaya",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "urban_mpce_salaried_monthly": 8559, "health_spend_share_pct": 3.33 }
+      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "cpi_general_inflation_pct": 0.32, "urban_mpce_salaried_monthly": 8559, "health_spend_share_pct": 3.33, "non_food_spend_share_pct": 60.49 }
     },
     "795": {
       "state": "Manipur",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "urban_mpce_salaried_monthly": 6426, "health_spend_share_pct": 3.79 }
+      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "cpi_general_inflation_pct": -1.40, "urban_mpce_salaried_monthly": 6426, "health_spend_share_pct": 3.79, "non_food_spend_share_pct": 55.81 }
     },
     "796": {
       "state": "Mizoram",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "urban_mpce_salaried_monthly": 8937, "health_spend_share_pct": 2.83 }
+      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "cpi_general_inflation_pct": 3.06, "urban_mpce_salaried_monthly": 8937, "health_spend_share_pct": 2.83, "non_food_spend_share_pct": 58.76 }
     },
     "797, 798": {
       "state": "Nagaland",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "urban_mpce_salaried_monthly": 8435, "health_spend_share_pct": 2.55 }
+      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "cpi_general_inflation_pct": 1.97, "urban_mpce_salaried_monthly": 8435, "health_spend_share_pct": 2.55, "non_food_spend_share_pct": 53.78 }
     },
     "799": {
       "state": "Tripura",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "urban_mpce_salaried_monthly": 8832, "health_spend_share_pct": 7.44 }
+      "mospi_stats": { "cpi_health_inflation_pct": 1.25, "cpi_general_inflation_pct": 0.82, "urban_mpce_salaried_monthly": 8832, "health_spend_share_pct": 7.44, "non_food_spend_share_pct": 55.96 }
     },
     "800": {
       "state": "Bihar",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.91, "urban_mpce_salaried_monthly": 5496, "health_spend_share_pct": 5.84 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.91, "cpi_general_inflation_pct": -0.30, "urban_mpce_salaried_monthly": 5496, "health_spend_share_pct": 5.84, "non_food_spend_share_pct": 50.37 }
     },
     "801-812": {
       "state": "Bihar",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.91, "urban_mpce_salaried_monthly": 5496, "health_spend_share_pct": 5.84 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.91, "cpi_general_inflation_pct": -0.30, "urban_mpce_salaried_monthly": 5496, "health_spend_share_pct": 5.84, "non_food_spend_share_pct": 50.37 }
     },
     "813-825": {
       "state": "Jharkhand",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.56, "urban_mpce_salaried_monthly": 5972, "health_spend_share_pct": 5.22 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.56, "cpi_general_inflation_pct": 2.74, "urban_mpce_salaried_monthly": 5972, "health_spend_share_pct": 5.22, "non_food_spend_share_pct": 58.51 }
     },
     "826": {
       "state": "Jharkhand",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.56, "urban_mpce_salaried_monthly": 5972, "health_spend_share_pct": 5.22 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.56, "cpi_general_inflation_pct": 2.74, "urban_mpce_salaried_monthly": 5972, "health_spend_share_pct": 5.22, "non_food_spend_share_pct": 58.51 }
     },
     "827-830": {
       "state": "Jharkhand",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.56, "urban_mpce_salaried_monthly": 5972, "health_spend_share_pct": 5.22 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.56, "cpi_general_inflation_pct": 2.74, "urban_mpce_salaried_monthly": 5972, "health_spend_share_pct": 5.22, "non_food_spend_share_pct": 58.51 }
     },
     "831": {
       "state": "Jharkhand",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.56, "urban_mpce_salaried_monthly": 5972, "health_spend_share_pct": 5.22 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.56, "cpi_general_inflation_pct": 2.74, "urban_mpce_salaried_monthly": 5972, "health_spend_share_pct": 5.22, "non_food_spend_share_pct": 58.51 }
     },
     "832, 833": {
       "state": "Jharkhand",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.56, "urban_mpce_salaried_monthly": 5972, "health_spend_share_pct": 5.22 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.56, "cpi_general_inflation_pct": 2.74, "urban_mpce_salaried_monthly": 5972, "health_spend_share_pct": 5.22, "non_food_spend_share_pct": 58.51 }
     },
     "834": {
       "state": "Jharkhand",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.56, "urban_mpce_salaried_monthly": 5972, "health_spend_share_pct": 5.22 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.56, "cpi_general_inflation_pct": 2.74, "urban_mpce_salaried_monthly": 5972, "health_spend_share_pct": 5.22, "non_food_spend_share_pct": 58.51 }
     },
     "835": {
       "state": "Jharkhand",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.56, "urban_mpce_salaried_monthly": 5972, "health_spend_share_pct": 5.22 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.56, "cpi_general_inflation_pct": 2.74, "urban_mpce_salaried_monthly": 5972, "health_spend_share_pct": 5.22, "non_food_spend_share_pct": 58.51 }
     },
     "836-855": {
       "state": "Bihar",
       "city_tier": "Tier-3",
       "zone": "Zone 3",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.91, "urban_mpce_salaried_monthly": 5496, "health_spend_share_pct": 5.84 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.91, "cpi_general_inflation_pct": -0.30, "urban_mpce_salaried_monthly": 5496, "health_spend_share_pct": 5.84, "non_food_spend_share_pct": 50.37 }
     },
-	"900-909": {
+    "900-909": {
       "state": "Armed Forces / Defence (Pan-India)",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.50, "urban_mpce_salaried_monthly": 7672, "health_spend_share_pct": 5.79 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.50, "cpi_general_inflation_pct": 2.03, "urban_mpce_salaried_monthly": 7672, "health_spend_share_pct": 5.79, "non_food_spend_share_pct": 59.69 }
     },
     "990-999": {
       "state": "Armed Forces / Defence (Pan-India)",
       "city_tier": "Tier-2",
       "zone": "Zone 2",
-      "mospi_stats": { "cpi_health_inflation_pct": 3.50, "urban_mpce_salaried_monthly": 7672, "health_spend_share_pct": 5.79 }
+      "mospi_stats": { "cpi_health_inflation_pct": 3.50, "cpi_general_inflation_pct": 2.03, "urban_mpce_salaried_monthly": 7672, "health_spend_share_pct": 5.79, "non_food_spend_share_pct": 59.69 }
     }
   },
   "default_fallback": {
     "state": "National Average",
     "city_tier": "Tier-3",
     "zone": "Zone 3",
-    "mospi_stats": { "cpi_health_inflation_pct": 6.2, "urban_mpce_salaried_monthly": 7606, "health_spend_share_pct": 6.8 }
+    "mospi_stats": { "cpi_health_inflation_pct": 6.2, "cpi_general_inflation_pct": 2.03, "urban_mpce_salaried_monthly": 7606, "health_spend_share_pct": 6.8, "non_food_spend_share_pct": 59.69 }
   }
 }

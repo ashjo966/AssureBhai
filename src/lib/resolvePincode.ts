@@ -2,8 +2,10 @@ import pincodeZoneMap from "@/data/pincode_zone_map.json";
 
 export interface MospiStats {
   cpi_health_inflation_pct: number;
+  cpi_general_inflation_pct: number;
   urban_mpce_salaried_monthly: number;
   health_spend_share_pct: number;
+  non_food_spend_share_pct: number;
 }
 
 export interface ResolvedPincode {
@@ -33,8 +35,10 @@ const FALLBACK: ResolvedPincode = {
   expected_insurance_zone: mapData.default_fallback?.zone || "Zone 3",
   mospi_stats: mapData.default_fallback?.mospi_stats || {
     cpi_health_inflation_pct: 6.2,
+    cpi_general_inflation_pct: 2.03,
     urban_mpce_salaried_monthly: 7606,
     health_spend_share_pct: 6.8,
+    non_food_spend_share_pct: 59.69,
   },
 };
 

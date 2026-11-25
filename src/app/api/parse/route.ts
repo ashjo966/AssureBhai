@@ -15,7 +15,7 @@ function getGenAIClient() {
   if (!apiKey) {
     throw new Error("Missing GEMINI_API_KEY environment variable");
   }
-  return new GoogleGenAI({ apiKey });
+  return new GoogleGenAI({ apiKey, vertexai: false });
 }
 
 // Load IRDAI statistical benchmarks strictly from src/data
@@ -316,18 +316,23 @@ Please inspect the attached insurance policy PDF document and extract all factua
 
     for (const modelName of candidateModels) {
       try {
+        const genConfig: Record<string, unknown> = {
+          systemInstruction: fullSystemPrompt,
+          responseMimeType: "application/json",
+          temperature: 0.1,
+        };
+        // Lite models do not support thinkingConfig
+        if (!modelName.includes("lite")) {
+          genConfig.thinkingConfig = {
+            thinkingBudget: 0,
+          };
+        }
+
         const response = await withRetry(() =>
           ai.models.generateContent({
             model: modelName,
             contents: contentsPayload,
-            config: {
-              systemInstruction: fullSystemPrompt,
-              responseMimeType: "application/json",
-              temperature: 0.1,
-              thinkingConfig: {
-                thinkingBudget: 0,
-              },
-            },
+            config: genConfig,
           })
         );
         responseText = response.text || "{}";
